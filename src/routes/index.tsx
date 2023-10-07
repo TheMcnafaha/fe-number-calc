@@ -6,19 +6,37 @@ import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-to
 export default component$(() => {
   return (
     <>
-      <main class=" px-4">
+      <main class=" px-4 flex flex-col items-center">
         <div class="flex w-full  justify-between">
           <h1>Calc</h1>
           <div>
             <ThreeStageToggle></ThreeStageToggle>
           </div>
         </div>{" "}
-        <section class="bg-tp1-main-bg">
+        <section class="bg-tp1-alt-bg max-w-fit flex flex-col items-center rounded-lg gap-3 py-4">
           <div class="flex justify-center  gap-3 px-6">
             <NumberInput input={7}></NumberInput>
             <NumberInput input={8}></NumberInput>
             <NumberInput input={9}></NumberInput>
+            <NumberInput input={"D"}></NumberInput>
+          </div>
+          <div class="flex justify-center  gap-3 px-6">
+            <NumberInput input={4}></NumberInput>
+            <NumberInput input={5}></NumberInput>
+            <NumberInput input={6}></NumberInput>
+            <NumberInput input={"+"}></NumberInput>
+          </div>
+          <div class="flex justify-center  gap-3 px-6">
+            <NumberInput input={1}></NumberInput>
+            <NumberInput input={2}></NumberInput>
+            <NumberInput input={3}></NumberInput>
+            <NumberInput input={"-"}></NumberInput>
+          </div>
+          <div class="flex justify-center  gap-3 px-6">
+            <NumberInput input={"."}></NumberInput>
             <NumberInput input={0}></NumberInput>
+            <NumberInput input={"/"}></NumberInput>
+            <NumberInput input={"x"}></NumberInput>
           </div>
         </section>
         <h1>Hi 👋</h1>
