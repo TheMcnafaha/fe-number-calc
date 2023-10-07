@@ -11,6 +11,8 @@ module.exports = {
       "tp1-key-shadow": " hsl(224, 28%, 35%)",
       "tp1-key-alt-bg": " hsl(6, 63%, 50%)",
       "tp1-key-alt-shadow": " hsl(6, 70%, 34%)",
+      "tp-key": " rgba(234,227,219,255)",
+      "tp-key-border": " rgba(176,164,152,255)",
     },
     extend: {},
   },

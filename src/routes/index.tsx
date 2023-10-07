@@ -1,17 +1,26 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import { NumberInput } from "~/components/number-input/number-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
 
 export default component$(() => {
   return (
     <>
-      <main class="">
+      <main class=" px-4">
         <div class="flex w-full  justify-between">
           <h1>Calc</h1>
           <div>
             <ThreeStageToggle></ThreeStageToggle>
           </div>
         </div>{" "}
+        <section class="bg-tp1-main-bg">
+          <div class="flex justify-center  gap-3 px-6">
+            <NumberInput input={7}></NumberInput>
+            <NumberInput input={8}></NumberInput>
+            <NumberInput input={9}></NumberInput>
+            <NumberInput input={0}></NumberInput>
+          </div>
+        </section>
         <h1>Hi 👋</h1>
         <p>
           Can't wait to see what you build with qwik!
