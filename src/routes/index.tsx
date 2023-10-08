@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import { LargeTextInput } from "~/components/large-text-input/large-text-input";
 import { NumberInput } from "~/components/number-input/number-input";
 import { TextInput } from "~/components/text-input/text-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
@@ -41,7 +42,10 @@ export default component$(() => {
               {" "}
             </TextInput>
           </div>
-          <div></div>
+          <div class="grid px-4 grid-cols-2 gap-3 justify-between w-full">
+            <LargeTextInput input="RESET" color="normal"></LargeTextInput>
+            <LargeTextInput input="=" color="normal"></LargeTextInput>
+          </div>
         </section>
         <h1 class="bg-red-400">Hi 👋</h1>
         <p>
