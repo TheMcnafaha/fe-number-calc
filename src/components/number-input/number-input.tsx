@@ -1,10 +1,10 @@
 import { component$, PropFunction, Signal } from "@builder.io/qwik";
-import type { MathType } from "~/routes";
+import type { MathType, Sides } from "~/routes";
 
 export interface NumberInputProps {
   input: number;
-  mathOperation: Signal<MathType>;
-  side: "leftSide" | "rightSide";
+  mathOperation: MathType;
+  side: Sides;
 }
 
 export const NumberInput = component$<NumberInputProps>(
@@ -15,11 +15,7 @@ export const NumberInput = component$<NumberInputProps>(
         value={input}
         onClick$={(event, currentTarget) => {
           const target = currentTarget as HTMLInputElement;
-          alert(target.value);
-          mathOperation.value = {
-            ...mathOperation.value,
-            [side]: target.value,
-          };
+          mathOperation[side] = Number(target.value);
         }}
       >
         {input}
