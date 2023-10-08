@@ -5,7 +5,7 @@ import { LargeTextInput } from "~/components/large-text-input/large-text-input";
 import { NumberInput } from "~/components/number-input/number-input";
 import { TextInput } from "~/components/text-input/text-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
-type Math = {
+export type MathType = {
   rightSide: number | "default";
   operation: "+" | "-" | "default";
   leftSide: number | "default";
@@ -15,7 +15,7 @@ type Display = {
   operation: string;
   leftSide: string;
 };
-function getDisplay(math: Math): string {
+function getDisplay(math: MathType): string {
   let responseString: Display = {
     rightSide: "",
     operation: "",
@@ -38,7 +38,7 @@ function getDisplay(math: Math): string {
   );
 }
 export default component$(() => {
-  const mathOperation = useSignal<Math>({
+  const mathOperation = useSignal<MathType>({
     rightSide: "default",
     operation: "default",
     leftSide: "default",
@@ -54,6 +54,12 @@ export default component$(() => {
     }
     isRigthSide.value = !isRigthSide.value;
   });
+  const defineSides = $((input: number) => {
+    if (isRigthSide) {
+      mathOperation.value.rightSide = input;
+    }
+    mathOperation.value.leftSide = input;
+  });
   return (
     <>
       <main class=" px-4 flex flex-col items-center">
@@ -62,7 +68,10 @@ export default component$(() => {
 
           <div>
             <ThreeStageToggle></ThreeStageToggle>
-            <p> isR: {`${isRigthSide.value}`}</p>
+            <div class="text-white">
+              <p> isR: {`${isRigthSide.value}`}</p>
+              <p> leftS: {`${mathOperation.value.leftSide}`}</p>
+            </div>
           </div>
         </div>{" "}
         <CalculatorDisplay input="399,981"></CalculatorDisplay>
@@ -80,10 +89,14 @@ export default component$(() => {
             <TextInput input="+" onClick$={goRigthSide} color="normal" />
           </div>
           <div class="flex justify-center  gap-3 px-4">
-            <NumberInput input={1}></NumberInput>
+            <NumberInput
+              input={1}
+              mathOperation={mathOperation}
+              side="leftSide"
+            ></NumberInput>
             <NumberInput input={2}></NumberInput>
             <NumberInput input={3}></NumberInput>
-            <TextInput input="-" color="normal" />
+            <TextInput input="-" onClick$={goRigthSide} color="normal" />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <TextInput input="." color="normal" />
