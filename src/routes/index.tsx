@@ -1,6 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { NumberInput } from "~/components/number-input/number-input";
+import { TextInput } from "~/components/text-input/text-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
 
 export default component$(() => {
@@ -18,26 +19,29 @@ export default component$(() => {
             <NumberInput input={7}></NumberInput>
             <NumberInput input={8}></NumberInput>
             <NumberInput input={9}></NumberInput>
-            <NumberInput input={"D"}></NumberInput>
+            <TextInput input="DEL" color="blue" />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput input={4}></NumberInput>
             <NumberInput input={5}></NumberInput>
             <NumberInput input={6}></NumberInput>
-            <NumberInput input={"+"}></NumberInput>
+            <TextInput input="+" color="normal" />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput input={1}></NumberInput>
             <NumberInput input={2}></NumberInput>
             <NumberInput input={3}></NumberInput>
-            <NumberInput input={"-"}></NumberInput>
+            <TextInput input="-" color="normal" />
           </div>
           <div class="flex justify-center  gap-3 px-4">
-            <NumberInput input={"."}></NumberInput>
+            <TextInput input="." color="normal" />
             <NumberInput input={0}></NumberInput>
-            <NumberInput input={"/"}></NumberInput>
-            <NumberInput input={"x"}></NumberInput>
+            <TextInput input="/" color="normal" />
+            <TextInput input="x" color="normal">
+              {" "}
+            </TextInput>
           </div>
+          <div></div>
         </section>
         <h1 class="bg-red-400">Hi 👋</h1>
         <p>

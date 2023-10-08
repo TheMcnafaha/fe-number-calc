@@ -14,6 +14,7 @@ module.exports = {
       "body-bg": " hsl(222, 26%, 31%)",
       "display-bg": " hsl(224, 36%, 15%)",
       "keypad-bg": " hsl(223, 31%, 20%)",
+      white: " hsl(0, 0%, 100%)",
     },
     extend: {},
   },
