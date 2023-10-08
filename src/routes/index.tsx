@@ -8,9 +8,10 @@ import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-to
 export type Sides = "leftSide" | "rightSide";
 export type MathType = {
   rightSide: number | "default";
-  operation: "+" | "-" | "default";
+  operation: Operators;
   leftSide: number | "default";
 };
+export type Operators = "+" | "-" | "default";
 type Display = {
   rightSide: string;
   operation: string;
@@ -47,16 +48,19 @@ export default component$(() => {
   const isRigthSide = useSignal(false);
   const side = useSignal<Sides>("leftSide");
   const display = getDisplay(mathOperation);
-  const goRigthSide = $(() => {
+  const swapSide = $(() => {
     if (
       mathOperation.operation != "default" &&
       mathOperation.leftSide != "default"
     ) {
-      isRigthSide.value = true;
+      isRigthSide.value = !isRigthSide.value;
       side.value = "rightSide";
     }
     side.value = "rightSide";
     isRigthSide.value = !isRigthSide.value;
+  });
+  const setOperator = $((input: Operators) => {
+    mathOperation.operation = input;
   });
   return (
     <>
@@ -70,6 +74,8 @@ export default component$(() => {
               <p> isR: {`${isRigthSide.value}`}</p>
               <p> side: {`${side.value}`}</p>
               <p> leftS: {`${mathOperation.leftSide}`}</p>
+              <p> rightS: {`${mathOperation.rightSide}`}</p>
+              <p> opeation: {`${mathOperation.operation}`}</p>
             </div>
           </div>
         </div>{" "}
@@ -109,7 +115,7 @@ export default component$(() => {
               mathOperation={mathOperation}
               side={side.value}
             ></NumberInput>
-            <TextInput input="+" onClick$={goRigthSide} color="normal" />
+            <TextInput input="+" color="normal" mathOperation={mathOperation} />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput
@@ -127,7 +133,12 @@ export default component$(() => {
               mathOperation={mathOperation}
               side={side.value}
             ></NumberInput>
-            <TextInput input="-" onClick$={goRigthSide} color="normal" />
+            <TextInput
+              input="-"
+              swapSide$={swapSide}
+              mathOperation={mathOperation}
+              color="normal"
+            />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <TextInput input="." color="normal" />

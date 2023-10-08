@@ -1,20 +1,33 @@
-import { PropFunction, component$ } from "@builder.io/qwik";
+import { PropFunction, component$, $ } from "@builder.io/qwik";
+import type { MathType, Operators } from "~/routes";
 
 export interface TextInputProps {
   input: string;
+  mathOperation: MathType;
   color: "blue" | "normal";
-  onClick$?: PropFunction<() => void>;
+  swapSide$?: PropFunction<() => void>;
 }
 
 export const TextInput = component$<TextInputProps>(
-  ({ input, color, onClick$ }) => {
+  ({ input, color, swapSide$, mathOperation, setOperator$ }) => {
     const colorOptions = {
       blue: "w-12 py-[.5rem] bg-key-blue border-key-blue-bg border-b-[3px] font-bold rounded-md   text-md text-white",
       normal:
         "w-12 py-[.5rem] bg-key border-key-border border-b-[3px] font-bold rounded-md   text-2xl text-key-text",
     };
     return (
-      <button onClick$={onClick$} class={colorOptions[color]}>
+      <button
+        class={colorOptions[color]}
+        value={input}
+        onClick$={[
+          swapSide$,
+          $((event, currentTarget) => {
+            const target = currentTarget as HTMLInputElement;
+            alert(target.value);
+            mathOperation.operation = target.value;
+          }),
+        ]}
+      >
         {input}
       </button>
     );
