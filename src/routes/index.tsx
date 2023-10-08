@@ -42,9 +42,9 @@ export default component$(() => {
               {" "}
             </TextInput>
           </div>
-          <div class="grid px-4 grid-cols-2 gap-3 justify-between w-full">
+          <div class="grid px-4 grid-cols-2 gap-3  justify-between w-full">
             <LargeTextInput input="RESET" color="normal"></LargeTextInput>
-            <LargeTextInput input="=" color="normal"></LargeTextInput>
+            <LargeTextInput input="=" color="red"></LargeTextInput>
           </div>
         </section>
         <h1 class="bg-red-400">Hi 👋</h1>
