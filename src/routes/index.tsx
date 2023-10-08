@@ -1,21 +1,72 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useSignal, $ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import { CalculatorDisplay } from "~/components/calculator-display/calculator-display";
 import { LargeTextInput } from "~/components/large-text-input/large-text-input";
 import { NumberInput } from "~/components/number-input/number-input";
 import { TextInput } from "~/components/text-input/text-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
+type Math = {
+  rightSide: number | "default";
+  operation: "+" | "-" | "default";
+  leftSide: number | "default";
+};
+type Display = {
+  rightSide: string;
+  operation: string;
+  leftSide: string;
+};
+function getDisplay(math: Math): string {
+  let responseString: Display = {
+    rightSide: "",
+    operation: "",
+    leftSide: "",
+  };
+  if (math.rightSide != "default") {
+    responseString.rightSide = math.rightSide.toString();
+  }
+  if (math.operation != "default") {
+    responseString.operation = math.operation.toString();
+  }
+  if (math.leftSide != "default") {
+    responseString.leftSide = math.leftSide.toString();
+  }
 
+  return (
+    responseString.leftSide +
+    responseString.operation +
+    responseString.rightSide
+  );
+}
 export default component$(() => {
+  const mathOperation = useSignal<Math>({
+    rightSide: "default",
+    operation: "default",
+    leftSide: "default",
+  });
+  const isRigthSide = useSignal(false);
+  const display = getDisplay(mathOperation.value);
+  const goRigthSide = $(() => {
+    if (
+      mathOperation.value.operation != "default" &&
+      mathOperation.value.leftSide != "default"
+    ) {
+      isRigthSide.value = true;
+    }
+    isRigthSide.value = !isRigthSide.value;
+  });
   return (
     <>
       <main class=" px-4 flex flex-col items-center">
         <div class="flex w-full   justify-between">
           <h1>Calc</h1>
+
           <div>
             <ThreeStageToggle></ThreeStageToggle>
+            <p> isR: {`${isRigthSide.value}`}</p>
           </div>
         </div>{" "}
-        <section class="bg-keypad-bg  max-w-fit flex flex-col items-center rounded-lg gap-3 py-4">
+        <CalculatorDisplay input="399,981"></CalculatorDisplay>
+        <section class="bg-keypad-bg   flex flex-col items-center rounded-lg gap-3 py-4">
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput input={7}></NumberInput>
             <NumberInput input={8}></NumberInput>
@@ -26,7 +77,7 @@ export default component$(() => {
             <NumberInput input={4}></NumberInput>
             <NumberInput input={5}></NumberInput>
             <NumberInput input={6}></NumberInput>
-            <TextInput input="+" color="normal" />
+            <TextInput input="+" onClick$={goRigthSide} color="normal" />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput input={1}></NumberInput>
