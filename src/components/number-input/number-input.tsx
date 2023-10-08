@@ -15,6 +15,12 @@ export const NumberInput = component$<NumberInputProps>(
         value={input}
         onClick$={(event, currentTarget) => {
           const target = currentTarget as HTMLInputElement;
+          if (typeof mathOperation[side] === "number") {
+            mathOperation[side] = Number(
+              mathOperation[side].toString() + input,
+            );
+            return;
+          }
           mathOperation[side] = Number(target.value);
         }}
       >
