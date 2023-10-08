@@ -21,10 +21,9 @@ export const TextInput = component$<TextInputProps>(
         value={input}
         onClick$={[
           swapSide$,
-          $((event, currentTarget) => {
+          $((event, currentTarget: HTMLButtonElement) => {
             const target = currentTarget as HTMLInputElement;
-            alert(target.value);
-            mathOperation.operation = target.value;
+            mathOperation.operation = target.value as Operators;
           }),
         ]}
       >

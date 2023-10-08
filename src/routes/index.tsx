@@ -97,7 +97,7 @@ export default component$(() => {
               mathOperation={mathOperation}
               side={side.value}
             ></NumberInput>
-            <TextInput input="DEL" color="blue" />
+            <TextInput input="DEL" color="blue" mathOperation={mathOperation} />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput
@@ -141,14 +141,14 @@ export default component$(() => {
             />
           </div>
           <div class="flex justify-center  gap-3 px-4">
-            <TextInput input="." color="normal" />
+            <TextInput input="." color="normal" mathOperation={mathOperation} />
             <NumberInput
               input={0}
               mathOperation={mathOperation}
               side={side.value}
             ></NumberInput>
-            <TextInput input="/" color="normal" />
-            <TextInput input="x" color="normal">
+            <TextInput input="/" color="normal" mathOperation={mathOperation} />
+            <TextInput input="x" color="normal" mathOperation={mathOperation}>
               {" "}
             </TextInput>
           </div>
