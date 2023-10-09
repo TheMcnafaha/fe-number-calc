@@ -39,6 +39,7 @@ function getDisplayOnMathNode(math: MathType): string {
       math.operation =
       math.rightSide =
         "default";
+    math.isRightSide = false;
 
     return math.total.toString();
   }
