@@ -10,8 +10,17 @@ export type MathType = {
   rightSide: number | "default";
   operation: Operators;
   leftSide: number | "default";
+  action: Actions;
+  total: number | "default";
 };
+type MathGalactusNode = {
+  mathOperation: MathType;
+  prev?: MathGalactusNode;
+};
+// we use arrs bc we can
+type MathGalactusStack = Array<MathGalactusNode>;
 export type Operators = "+" | "-" | "default";
+export type Actions = "=" | "default";
 type Display = {
   rightSide: string;
   operation: string;
@@ -23,6 +32,10 @@ function getDisplay(math: MathType): string {
     operation: "",
     leftSide: "",
   };
+  if (math.total != "default") {
+    math.leftSide = math.operation = math.rightSide = "default";
+    return math.total.toString();
+  }
   if (math.rightSide != "default") {
     responseString.rightSide = math.rightSide.toString();
   }
@@ -32,18 +45,37 @@ function getDisplay(math: MathType): string {
   if (math.leftSide != "default") {
     responseString.leftSide = math.leftSide.toString();
   }
-
+  const allResponseAreFilled =
+    responseString.leftSide != "default" &&
+    responseString.operation != "default" &&
+    responseString.rightSide != "default";
+  if (allResponseAreFilled && math.action != "default") {
+    const answer: number = math.rightSide + math.leftSide;
+    math.total = answer;
+    return answer.toString();
+  }
   return (
     responseString.leftSide +
     responseString.operation +
     responseString.rightSide
   );
 }
+function doMath(mathOperation: MathType): number {
+  switch (mathOperation.operation) {
+    case "+":
+      break;
+
+    default:
+      break;
+  }
+}
 export default component$(() => {
   const mathOperation = useStore<MathType>({
     rightSide: "default",
     operation: "default",
     leftSide: "default",
+    action: "default",
+    total: "default",
   });
   const isRigthSide = useSignal(false);
   const side = useSignal<Sides>("leftSide");
@@ -59,9 +91,6 @@ export default component$(() => {
     side.value = "rightSide";
     isRigthSide.value = !isRigthSide.value;
   });
-  const setOperator = $((input: Operators) => {
-    mathOperation.operation = input;
-  });
   return (
     <>
       <main class=" px-4 flex flex-col items-center">
@@ -70,16 +99,18 @@ export default component$(() => {
 
           <div>
             <ThreeStageToggle></ThreeStageToggle>
-            <div class="text-white">
+            <div class="text-white flex flex-wrap gap-3 w-[260px]">
               <p> isR: {`${isRigthSide.value}`}</p>
               <p> side: {`${side.value}`}</p>
               <p> leftS: {`${mathOperation.leftSide}`}</p>
               <p> rightS: {`${mathOperation.rightSide}`}</p>
               <p> opeation: {`${mathOperation.operation}`}</p>
+              <p> action: {`${mathOperation.action}`}</p>
+              <p> total: {`${mathOperation.total}`}</p>
             </div>
           </div>
         </div>{" "}
-        <CalculatorDisplay input="399,981"></CalculatorDisplay>
+        <CalculatorDisplay input={display}></CalculatorDisplay>
         <section class="bg-keypad-bg   flex flex-col items-center rounded-lg gap-3 py-4">
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput
@@ -115,7 +146,12 @@ export default component$(() => {
               mathOperation={mathOperation}
               side={side.value}
             ></NumberInput>
-            <TextInput input="+" color="normal" mathOperation={mathOperation} />
+            <TextInput
+              input="+"
+              color="normal"
+              mathOperation={mathOperation}
+              swapSide$={swapSide}
+            />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput
@@ -153,8 +189,16 @@ export default component$(() => {
             </TextInput>
           </div>
           <div class="grid px-4 grid-cols-2 gap-3  justify-between w-full">
-            <LargeTextInput input="RESET" color="normal"></LargeTextInput>
-            <LargeTextInput input="=" color="red"></LargeTextInput>
+            <LargeTextInput
+              input="RESET"
+              color="normal"
+              mathOperation={mathOperation}
+            ></LargeTextInput>
+            <LargeTextInput
+              input="="
+              color="red"
+              mathOperation={mathOperation}
+            ></LargeTextInput>
           </div>
         </section>
         <h1 class="bg-red-400">Hi 👋</h1>
