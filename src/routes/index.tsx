@@ -12,6 +12,7 @@ export type MathType = {
   leftSide: number | "default";
   action: Actions;
   total: number | "default";
+  isRightSide: boolean;
 };
 type MathGalactusNode = {
   mathOperation: MathType;
@@ -26,14 +27,19 @@ type Display = {
   operation: string;
   leftSide: string;
 };
-function getDisplay(math: MathType): string {
+function getDisplayOnMathNode(math: MathType): string {
   let responseString: Display = {
     rightSide: "",
     operation: "",
     leftSide: "",
   };
   if (math.total != "default") {
-    math.leftSide = math.operation = math.rightSide = "default";
+    math.rightSide =
+      math.leftSide =
+      math.operation =
+      math.rightSide =
+        "default";
+
     return math.total.toString();
   }
   if (math.rightSide != "default") {
@@ -50,9 +56,12 @@ function getDisplay(math: MathType): string {
     responseString.operation != "default" &&
     responseString.rightSide != "default";
   if (allResponseAreFilled && math.action != "default") {
-    const answer: number = math.rightSide + math.leftSide;
-    math.total = answer;
-    return answer.toString();
+    if (typeof math.rightSide != "string" && typeof math.leftSide != "string") {
+      const answer: number = math.rightSide + math.leftSide;
+      math.total = answer;
+      return answer.toString();
+    }
+    return "lol";
   }
   return (
     responseString.leftSide +
@@ -76,20 +85,20 @@ export default component$(() => {
     leftSide: "default",
     action: "default",
     total: "default",
+    isRightSide: false,
   });
-  const isRigthSide = useSignal(false);
   const side = useSignal<Sides>("leftSide");
-  const display = getDisplay(mathOperation);
+  const display = getDisplayOnMathNode(mathOperation);
   const swapSide = $(() => {
     if (
       mathOperation.operation != "default" &&
       mathOperation.leftSide != "default"
     ) {
-      isRigthSide.value = !isRigthSide.value;
+      mathOperation.isRightSide = !mathOperation.isRightSide;
       side.value = "rightSide";
     }
     side.value = "rightSide";
-    isRigthSide.value = !isRigthSide.value;
+    mathOperation.isRightSide = !mathOperation.isRightSide;
   });
   return (
     <>
@@ -100,7 +109,7 @@ export default component$(() => {
           <div>
             <ThreeStageToggle></ThreeStageToggle>
             <div class="text-white flex flex-wrap gap-3 w-[260px]">
-              <p> isR: {`${isRigthSide.value}`}</p>
+              <p> isR: {`${mathOperation.isRightSide}`}</p>
               <p> side: {`${side.value}`}</p>
               <p> leftS: {`${mathOperation.leftSide}`}</p>
               <p> rightS: {`${mathOperation.rightSide}`}</p>
