@@ -70,7 +70,16 @@ function getDisplayOnMathNode(math: MathType): string {
     responseString.rightSide
   );
 }
-function doMath(mathOperation: MathType): number {
+export function getStackDisplay(mathStack: MathGalactusStack) {
+  return mathStack.reduce((display: string, mathNode, i, a) => {
+    const currentTotal = getDisplayOfMathNode(mathNode.mathOperation);
+    if (i < a.length && i > 0) {
+      return display.concat("+", currentTotal.toString());
+    }
+    return display.concat(currentTotal.toString());
+  }, "");
+}
+function doMath(mathOperation: CheckedMathType): number {
   switch (mathOperation.operation) {
     case "+":
       break;
