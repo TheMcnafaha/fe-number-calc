@@ -14,12 +14,21 @@ export type MathType = {
   total: number | "default";
   isRightSide: boolean;
 };
-type MathGalactusNode = {
+
+export type CheckedMathType = {
+  rightSide: number;
+  operation: Operators;
+  leftSide: number;
+  action: Actions;
+  total: number | "default";
+  isRightSide: boolean;
+};
+export type MathGalactusNode = {
   mathOperation: MathType;
   prev?: MathGalactusNode;
 };
 // we use arrs bc we can
-type MathGalactusStack = Array<MathGalactusNode>;
+export type MathGalactusStack = Array<MathGalactusNode>;
 export type Operators = "+" | "-" | "default";
 export type Actions = "=" | "default";
 type Display = {
@@ -27,20 +36,14 @@ type Display = {
   operation: string;
   leftSide: string;
 };
-function getDisplayOnMathNode(math: MathType): string {
+export function getDisplayOfMathNode(math: MathType): string {
   let responseString: Display = {
     rightSide: "",
     operation: "",
     leftSide: "",
   };
   if (math.total != "default") {
-    math.rightSide =
-      math.leftSide =
-      math.operation =
-      math.rightSide =
-        "default";
     math.isRightSide = false;
-
     return math.total.toString();
   }
   if (math.rightSide != "default") {
@@ -82,10 +85,13 @@ export function getStackDisplay(mathStack: MathGalactusStack) {
 function doMath(mathOperation: CheckedMathType): number {
   switch (mathOperation.operation) {
     case "+":
-      break;
-
+      return mathOperation.leftSide + mathOperation.rightSide;
+    case "-":
+      return mathOperation.leftSide - mathOperation.rightSide;
+    case "default":
     default:
-      break;
+      // this should make it clear something went wrong to the user without making it my problem lol
+      return -10000;
   }
 }
 export default component$(() => {
@@ -98,7 +104,7 @@ export default component$(() => {
     isRightSide: false,
   });
   const side = useSignal<Sides>("leftSide");
-  const display = getDisplayOnMathNode(mathOperation);
+  const display = getDisplayOfMathNode(mathOperation);
   const swapSide = $(() => {
     if (
       mathOperation.operation != "default" &&
