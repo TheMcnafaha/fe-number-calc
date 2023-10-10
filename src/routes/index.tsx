@@ -82,7 +82,15 @@ export function getStackDisplay(mathStack: MathGalactusStack) {
     return display.concat(currentTotal.toString());
   }, "");
 }
-function doMath(mathOperation: CheckedMathType): number {
+export function isCheckedMathType(mathOperation: MathType): boolean {
+  const leftValue = mathOperation.leftSide;
+  const rightValue = mathOperation.rightSide;
+  if (leftValue != "default" && rightValue != "default") {
+    return true;
+  }
+  return false;
+}
+export function doMath(mathOperation: CheckedMathType): number {
   switch (mathOperation.operation) {
     case "+":
       return mathOperation.leftSide + mathOperation.rightSide;
