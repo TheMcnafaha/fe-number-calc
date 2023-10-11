@@ -9,6 +9,8 @@ export interface NumberInputProps {
 
 export const NumberInput = component$<NumberInputProps>(
   ({ input, side, mathOperation }) => {
+    console.log("side is: ", side);
+
     return (
       <button
         class="w-12 py-[.5rem] bg-key border-key-border border-b-[3px] font-bold rounded-md   text-2xl text-key-text"
@@ -21,6 +23,10 @@ export const NumberInput = component$<NumberInputProps>(
             );
             return;
           }
+          if (mathOperation.isRightSide) {
+            mathOperation[side] = Number(target.value);
+          }
+
           mathOperation[side] = Number(target.value);
         }}
       >

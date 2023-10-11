@@ -1,5 +1,6 @@
-import { component$, useSignal, $, useStore } from "@builder.io/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import { component$, useSignal, $, useStore, useTask$ } from "@builder.io/qwik";
+import { isServer } from "@builder.io/qwik/build";
+import { server$, type DocumentHead } from "@builder.io/qwik-city";
 import { CalculatorDisplay } from "~/components/calculator-display/calculator-display";
 import { LargeTextInput } from "~/components/large-text-input/large-text-input";
 import { NumberInput } from "~/components/number-input/number-input";
@@ -48,7 +49,10 @@ export function doMath(mathOperation: CheckedMathType): number {
       return -10000;
   }
 }
-export function getDisplayOfMathNode(math: MathType): string {
+export function getDisplayOfMathNode(
+  math: MathType,
+  mathStack: MathGalactusStack,
+): string {
   let responseString: Display = {
     rightSide: "",
     operation: "",
@@ -75,6 +79,8 @@ export function getDisplayOfMathNode(math: MathType): string {
     if (isCheckedMathType(math)) {
       const answer: number = doMath(math as CheckedMathType);
       math.total = answer;
+      // addNewMathNode({ mathOperation: math }, mathStack);
+      // resetMathOperation(math);
       return answer.toString();
     }
     return "lol";
@@ -87,7 +93,10 @@ export function getDisplayOfMathNode(math: MathType): string {
 }
 export function getStackDisplay(mathStack: MathGalactusStack) {
   return mathStack.reduce((display: string, mathNode, i, a) => {
-    const currentTotal = getDisplayOfMathNode(mathNode.mathOperation);
+    const currentTotal = getDisplayOfMathNode(
+      mathNode.mathOperation,
+      mathStack,
+    );
     if (i < a.length && i > 0) {
       return display.concat("+", currentTotal.toString());
     }
@@ -130,17 +139,14 @@ export default component$(() => {
     total: "default",
     isRightSide: false,
   });
-  const side = useSignal<Sides>("leftSide");
-  const display = getDisplayOfMathNode(mathOperation);
-  const swapSide = $(() => {
-    if (
-      mathOperation.operation != "default" &&
-      mathOperation.leftSide != "default"
-    ) {
-      mathOperation.isRightSide = !mathOperation.isRightSide;
-      side.value = "rightSide";
+  const mathStack = useStore<MathGalactusStack>([]);
+  const display = getDisplayOfMathNode(mathOperation, mathStack);
+  useTask$(({ track }) => {
+    track(() => mathOperation.operation);
+    if (isServer) {
+      return;
     }
-    side.value = "rightSide";
+    console.log("changed ops");
     mathOperation.isRightSide = !mathOperation.isRightSide;
   });
   return (
@@ -153,7 +159,10 @@ export default component$(() => {
             <ThreeStageToggle></ThreeStageToggle>
             <div class="text-white flex flex-wrap gap-3 w-[260px]">
               <p> isR: {`${mathOperation.isRightSide}`}</p>
-              <p> side: {`${side.value}`}</p>
+              <p>
+                {" "}
+                side: {mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              </p>
               <p> leftS: {`${mathOperation.leftSide}`}</p>
               <p> rightS: {`${mathOperation.rightSide}`}</p>
               <p> opeation: {`${mathOperation.operation}`}</p>
@@ -168,17 +177,17 @@ export default component$(() => {
             <NumberInput
               input={7}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
             <NumberInput
               input={8}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
             <NumberInput
               input={9}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
             <TextInput input="DEL" color="blue" mathOperation={mathOperation} />
           </div>
@@ -186,54 +195,44 @@ export default component$(() => {
             <NumberInput
               input={4}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
             <NumberInput
               input={5}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
             <NumberInput
               input={6}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
-            <TextInput
-              input="+"
-              color="normal"
-              mathOperation={mathOperation}
-              swapSide$={swapSide}
-            />
+            <TextInput input="+" color="normal" mathOperation={mathOperation} />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput
               input={1}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
             <NumberInput
               input={2}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
             <NumberInput
               input={3}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
-            <TextInput
-              input="-"
-              swapSide$={swapSide}
-              mathOperation={mathOperation}
-              color="normal"
-            />
+            <TextInput input="-" mathOperation={mathOperation} color="normal" />
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <TextInput input="." color="normal" mathOperation={mathOperation} />
             <NumberInput
               input={0}
               mathOperation={mathOperation}
-              side={side.value}
+              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
             <TextInput input="/" color="normal" mathOperation={mathOperation} />
             <TextInput input="x" color="normal" mathOperation={mathOperation}>

@@ -5,11 +5,10 @@ export interface TextInputProps {
   input: string;
   mathOperation: MathType;
   color: "blue" | "normal";
-  swapSide$?: PropFunction<() => void>;
 }
 
 export const TextInput = component$<TextInputProps>(
-  ({ input, color, swapSide$, mathOperation, setOperator$ }) => {
+  ({ input, color, mathOperation }) => {
     const colorOptions = {
       blue: "w-12 py-[.5rem] bg-key-blue border-key-blue-bg border-b-[3px] font-bold rounded-md   text-md text-white",
       normal:
@@ -19,13 +18,10 @@ export const TextInput = component$<TextInputProps>(
       <button
         class={colorOptions[color]}
         value={input}
-        onClick$={[
-          swapSide$,
-          $((event, currentTarget: HTMLButtonElement) => {
-            const target = currentTarget as HTMLInputElement;
-            mathOperation.operation = target.value as Operators;
-          }),
-        ]}
+        onClick$={(event, currentTarget: HTMLButtonElement) => {
+          const target = currentTarget as HTMLInputElement;
+          mathOperation.operation = target.value as Operators;
+        }}
       >
         {input}
       </button>
