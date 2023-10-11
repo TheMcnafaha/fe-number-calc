@@ -36,6 +36,18 @@ type Display = {
   operation: string;
   leftSide: string;
 };
+export function doMath(mathOperation: CheckedMathType): number {
+  switch (mathOperation.operation) {
+    case "+":
+      return mathOperation.leftSide + mathOperation.rightSide;
+    case "-":
+      return mathOperation.leftSide - mathOperation.rightSide;
+    case "default":
+    default:
+      // this should make it clear something went wrong to the user without making it my problem lol
+      return -10000;
+  }
+}
 export function getDisplayOfMathNode(math: MathType): string {
   let responseString: Display = {
     rightSide: "",
@@ -60,8 +72,8 @@ export function getDisplayOfMathNode(math: MathType): string {
     responseString.operation != "default" &&
     responseString.rightSide != "default";
   if (allResponseAreFilled && math.action != "default") {
-    if (typeof math.rightSide != "string" && typeof math.leftSide != "string") {
-      const answer: number = math.rightSide + math.leftSide;
+    if (isCheckedMathType(math)) {
+      const answer: number = doMath(math as CheckedMathType);
       math.total = answer;
       return answer.toString();
     }
@@ -90,18 +102,7 @@ export function isCheckedMathType(mathOperation: MathType): boolean {
   }
   return false;
 }
-export function doMath(mathOperation: CheckedMathType): number {
-  switch (mathOperation.operation) {
-    case "+":
-      return mathOperation.leftSide + mathOperation.rightSide;
-    case "-":
-      return mathOperation.leftSide - mathOperation.rightSide;
-    case "default":
-    default:
-      // this should make it clear something went wrong to the user without making it my problem lol
-      return -10000;
-  }
-}
+
 export default component$(() => {
   const mathOperation = useStore<MathType>({
     rightSide: "default",
