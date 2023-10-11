@@ -54,9 +54,9 @@ response=doMath(mockMathNodeDefault.mathOperation as CheckedMathType )
 })
 
 test("reset the current mathOperation obj on submit/=", ()=>{
-	let copy={}
+	let copy={} as MathGalactusNode
 	Object.assign(copy,mockMathNodeDefault)
-	expect(resetMathOperation(copy.mathOperation as MathGalactusNode)).toStrictEqual(defaultMathOperation)
+	expect(resetMathOperation(copy.mathOperation )).toStrictEqual(defaultMathOperation)
 
 	
 
