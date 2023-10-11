@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
-import { CheckedMathType, MathGalactusNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation } from ".";
-const mockMathNodeNumber:MathGalactusNode={
+import { CheckedMathType, MathNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation, addNewMathNode } from ".";
+const mockMathNodeNumber:MathNode={
 	mathOperation:{
 		leftSide:10,
 		operation:"+",
@@ -11,7 +11,7 @@ const mockMathNodeNumber:MathGalactusNode={
 		isRightSide:true
 	}
 }
-const mockMathNodeDefault:MathGalactusNode={
+const mockMathNodeDefault:MathNode={
 	mathOperation:{
 		leftSide:"default",
 		operation:"+",
@@ -54,10 +54,14 @@ response=doMath(mockMathNodeDefault.mathOperation as CheckedMathType )
 })
 
 test("reset the current mathOperation obj on submit/=", ()=>{
-	let copy={} as MathGalactusNode
+	let copy={} as MathNode
 	Object.assign(copy,mockMathNodeDefault)
 	expect(resetMathOperation(copy.mathOperation )).toStrictEqual(defaultMathOperation)
+})
 
-	
-
+test("add new node correctly", ()=>{
+	let singleStack:MathGalactusStack=[
+		mockMathNodeNumber,
+	]
+expect(addNewMathNode(mockMathNodeNumber,singleStack)).toStrictEqual(mockMathStack)
 })

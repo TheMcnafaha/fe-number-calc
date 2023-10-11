@@ -23,12 +23,12 @@ export type CheckedMathType = {
   total: number | "default";
   isRightSide: boolean;
 };
-export type MathGalactusNode = {
+export type MathNode = {
   mathOperation: MathType;
-  prev?: MathGalactusNode;
+  prev?: MathNode;
 };
 // we use arrs bc we can
-export type MathGalactusStack = Array<MathGalactusNode>;
+export type MathGalactusStack = Array<MathNode>;
 export type Operators = "+" | "-" | "default";
 export type Actions = "=" | "default";
 type Display = {
@@ -112,6 +112,13 @@ export function resetMathOperation(mathOperation: MathType): MathType {
       "default";
   mathOperation.isRightSide = false;
   return mathOperation;
+}
+export function addNewMathNode(
+  mathNode: MathNode,
+  mathStack: MathGalactusStack,
+) {
+  mathStack.push(mathNode);
+  return mathStack;
 }
 
 export default component$(() => {
