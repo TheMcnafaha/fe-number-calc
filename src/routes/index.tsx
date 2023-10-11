@@ -103,6 +103,17 @@ export function isCheckedMathType(mathOperation: MathType): boolean {
   return false;
 }
 
+export function resetMathOperation(mathOperation: MathType): MathType {
+  mathOperation.leftSide =
+    mathOperation.operation =
+    mathOperation.rightSide =
+    mathOperation.action =
+    mathOperation.total =
+      "default";
+  mathOperation.isRightSide = false;
+  return mathOperation;
+}
+
 export default component$(() => {
   const mathOperation = useStore<MathType>({
     rightSide: "default",

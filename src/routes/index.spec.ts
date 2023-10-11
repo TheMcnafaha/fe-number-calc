@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { CheckedMathType, MathGalactusNode, MathGalactusStack, doMath, getStackDisplay, isCheckedMathType } from ".";
+import { CheckedMathType, MathGalactusNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation } from ".";
 const mockMathNodeNumber:MathGalactusNode={
 	mathOperation:{
 		leftSide:10,
@@ -22,6 +22,14 @@ const mockMathNodeDefault:MathGalactusNode={
 		isRightSide:true
 	}
 }
+const defaultMathOperation:MathType={
+rightSide: "default",
+    operation: "default",
+    leftSide: "default",
+    action: "default",
+    total: "default",
+    isRightSide: false,
+}
 const mockMathStack:MathGalactusStack=[
 	mockMathNodeNumber, mockMathNodeNumber
 ]
@@ -43,4 +51,13 @@ test("stop default values from doing math (failed response)", ()=>{
 response=doMath(mockMathNodeDefault.mathOperation as CheckedMathType )
 	}
 		expect(response).toBe("failed")
+})
+
+test("reset the current mathOperation obj on submit/=", ()=>{
+	let copy={}
+	Object.assign(copy,mockMathNodeDefault)
+	expect(resetMathOperation(copy.mathOperation as MathGalactusNode)).toStrictEqual(defaultMathOperation)
+
+	
+
 })
