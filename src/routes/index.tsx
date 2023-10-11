@@ -139,8 +139,9 @@ export default component$(() => {
     total: "default",
     isRightSide: false,
   });
-  const mathStack = useStore<MathGalactusStack>([]);
-  const display = getDisplayOfMathNode(mathOperation, mathStack);
+
+  // const mathStack = useStore<MathGalactusStack>([]);
+  const display = useSignal<string>("");
   useTask$(({ track }) => {
     track(() => mathOperation.operation);
     if (isServer) {
@@ -148,6 +149,12 @@ export default component$(() => {
     }
     console.log("changed ops");
     mathOperation.isRightSide = !mathOperation.isRightSide;
+  });
+  useTask$(({ track }) => {
+    // this does log/track :)
+    track(mathOperation);
+    console.log("im tracking!!!");
+    display.value = getDisplayOfMathNode(mathOperation);
   });
   return (
     <>
@@ -171,7 +178,7 @@ export default component$(() => {
             </div>
           </div>
         </div>{" "}
-        <CalculatorDisplay input={display}></CalculatorDisplay>
+        <CalculatorDisplay input={display.value}></CalculatorDisplay>
         <section class="bg-keypad-bg   flex flex-col items-center rounded-lg gap-3 py-4">
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput
