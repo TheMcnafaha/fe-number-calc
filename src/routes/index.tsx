@@ -130,6 +130,24 @@ export function addNewMathNode(
   return mathStack;
 }
 
+export function leftShift(math: CheckedMathType): MathType {
+  return {
+    leftSide: doMath(math),
+    operation: "default",
+    rightSide: "default",
+    action: "default",
+    total: "default",
+    isRightSide: true,
+  };
+}
+export function newLeftShiftMathNode(
+  newNode: CheckedMathType,
+  mathStack: MathGalactusStack,
+): MathGalactusStack {
+  mathStack.push({ mathOperation: leftShift(newNode) });
+  return mathStack;
+}
+
 export default component$(() => {
   const mathOperation = useStore<MathType>({
     rightSide: "default",
