@@ -334,10 +334,7 @@ function getDisplayFromMathStack(
     manageMathActions(mathOperations.action, mathStack, mathOperations);
     console.log("im better");
     const newMathNode = getHeadNode(mathStack);
-    mathOperations.action = newMathNode.action;
-    mathOperations.leftSide = newMathNode.leftSide;
-    mathOperations.rightSide = newMathNode.rightSide;
-    mathOperations.operation = newMathNode.operation;
+    Object.assign(mathOperations, newMathNode);
     return getDisplayOfMathNode(mathOperations);
   }
   return getDisplayOfMathNode(mathOperations);
