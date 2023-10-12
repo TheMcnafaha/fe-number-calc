@@ -50,8 +50,10 @@ export type NeoGalactusStack = {
   head: number;
   MathNodes: Array<MathType>;
 };
-export type Operators = "+" | "-" | "default";
-export type Actions = "=" | "default";
+// operators are all arethmetic operators in nature
+export type Operators = "+" | "-" | "x" | "/" | "default";
+// actions are non-arethmetic display actions
+export type Actions = "=" | "." | "default";
 type Display = {
   rightSide: string;
   operation: string;
@@ -78,8 +80,9 @@ export default component$(() => {
     if (isServer) {
       return;
     }
+
     console.log("changed ops");
-    mathOperation.isRightSide = !mathOperation.isRightSide;
+    mathOperation.isRightSide = true;
   });
   useTask$(({ track }) => {
     // this does log/track :)
@@ -220,6 +223,14 @@ export function doMath(mathOperation: MathType): number {
       return mathOperation.leftSide + mathOperation.rightSide;
     case "-":
       return mathOperation.leftSide - mathOperation.rightSide;
+    case "x":
+      return mathOperation.leftSide * mathOperation.rightSide;
+    case "/":
+      if (mathOperation.rightSide === 0) {
+        // :)
+        return 0;
+      }
+      return mathOperation.leftSide / mathOperation.rightSide;
     case "default":
     default:
       // this should make it clear something went wrong to the user without making it my problem lol
@@ -256,6 +267,8 @@ export function getDisplayOfMathNode(math: MathType): string {
       // addNewMathNode({ mathOperation: math }, mathStack);
       // resetMathOperation(math);
       return answer.toString();
+    }
+    if ((math.action = ".")) {
     }
     return "lol";
   }
@@ -337,6 +350,7 @@ function getDisplayFromMathStack(
     Object.assign(mathOperations, newMathNode);
     return getDisplayOfMathNode(mathOperations);
   }
+  manageMathActions(mathOperations.action, mathStack, mathOperations);
   return getDisplayOfMathNode(mathOperations);
 }
 export const head: DocumentHead = {
@@ -375,6 +389,9 @@ export function manageMathActions(
       // newMathOperation(mathOperation, mathStack);
       return mathStack;
 
+    case ".":
+
+    case "default":
     default:
       break;
   }
@@ -390,4 +407,9 @@ function newMathOperation(
   mathOperation.rightSide = newMathOperation.rightSide;
   mathOperation.total = newMathOperation.total;
   mathOperation.isRightSide = newMathOperation.isRightSide;
+}
+
+export function decimator(input: number): number {
+  const stringRepresentation = input.toString();
+  return Number("." + stringRepresentation);
 }

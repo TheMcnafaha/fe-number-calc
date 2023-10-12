@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { CheckedMathType, MathNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation, addNewMathNode, getDisplayOfMathNode, newLeftShiftMathNode, leftShift, NeoGalactusStack, head, manageMathActions, getHeadNode } from ".";
+import { CheckedMathType, MathNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation, addNewMathNode, getDisplayOfMathNode, newLeftShiftMathNode, leftShift, NeoGalactusStack, head, manageMathActions, getHeadNode, decimator } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
     leftSide: 10,
@@ -142,3 +142,8 @@ test("add new node correctly", () => {
     mockMathStack,
   );
 });
+
+test("decimate correctly",()=>{
+  expect(decimator(457)).toBe(.457)
+})
+// calc logic: actions
