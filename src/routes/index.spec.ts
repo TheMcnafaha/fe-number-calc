@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { CheckedMathType, MathNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation, addNewMathNode, getDisplayOfMathNode, newLeftShiftMathNode, leftShift } from ".";
+import { CheckedMathType, MathNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation, addNewMathNode, getDisplayOfMathNode, newLeftShiftMathNode, leftShift, NeoGalactusStack, head, manageMathActions, getHeadNode } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
     leftSide: 10,
@@ -76,6 +76,24 @@ test("when input is submitted, create a new mathNode that's left-shifted", () =>
   ];
 	expect(newLeftShiftMathNode(MathNodeSubmitted,test)).toStrictEqual(answer)
 });
+test("correctly \"house-keep\" the mathStack when the mathAction is submitted",()=>{
+  let test: NeoGalactusStack = {
+    MathNodes:[ MathNodeSubmitted],
+    head:0
+  };
+  const answer: NeoGalactusStack= {
+    head:1,
+    MathNodes:[MathNodeSubmitted, {
+	leftSide: 20,
+	operation:"default",
+        rightSide: "default",
+        action: "default",
+        total: "default",
+        isRightSide: true,
+      }],
+  };
+  expect(manageMathActions(getHeadNode(test).action,test)).toStrictEqual(answer)
+})
 // calc logic
 test("add 10+10 (should return 20)", () => {
   let response: number | string = "failed";

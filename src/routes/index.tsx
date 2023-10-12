@@ -41,111 +41,6 @@ type Display = {
   operation: string;
   leftSide: string;
 };
-export function doMath(mathOperation: CheckedMathType): number {
-  switch (mathOperation.operation) {
-    case "+":
-      return mathOperation.leftSide + mathOperation.rightSide;
-    case "-":
-      return mathOperation.leftSide - mathOperation.rightSide;
-    case "default":
-    default:
-      // this should make it clear something went wrong to the user without making it my problem lol
-      return -10000;
-  }
-}
-export function getDisplayOfMathNode(math: MathType): string {
-  let responseString: Display = {
-    rightSide: "",
-    operation: "",
-    leftSide: "",
-  };
-  if (math.total != "default") {
-    math.isRightSide = false;
-    return math.total.toString();
-  }
-  if (math.rightSide != "default") {
-    responseString.rightSide = math.rightSide.toString();
-  }
-  if (math.operation != "default") {
-    responseString.operation = math.operation.toString();
-  }
-  if (math.leftSide != "default") {
-    responseString.leftSide = math.leftSide.toString();
-  }
-  const allResponseAreFilled =
-    responseString.leftSide != "default" &&
-    responseString.operation != "default" &&
-    responseString.rightSide != "default";
-  if (allResponseAreFilled && math.action != "default") {
-    if (isCheckedMathType(math)) {
-      const answer: number = doMath(math as CheckedMathType);
-      math.total = answer;
-      // addNewMathNode({ mathOperation: math }, mathStack);
-      // resetMathOperation(math);
-      return answer.toString();
-    }
-    return "lol";
-  }
-  return (
-    responseString.leftSide +
-    responseString.operation +
-    responseString.rightSide
-  );
-}
-export function getStackDisplay(mathStack: MathGalactusStack) {
-  return mathStack.reduce((display: string, mathNode, i, a) => {
-    const currentTotal = getDisplayOfMathNode(mathNode.mathOperation);
-    if (i < a.length && i > 0) {
-      return display.concat("+", currentTotal.toString());
-    }
-    return display.concat(currentTotal.toString());
-  }, "");
-}
-export function isCheckedMathType(mathOperation: MathType): boolean {
-  const leftValue = mathOperation.leftSide;
-  const rightValue = mathOperation.rightSide;
-  if (leftValue != "default" && rightValue != "default") {
-    return true;
-  }
-  return false;
-}
-
-export function resetMathOperation(mathOperation: MathType): MathType {
-  mathOperation.leftSide =
-    mathOperation.operation =
-    mathOperation.rightSide =
-    mathOperation.action =
-    mathOperation.total =
-      "default";
-  mathOperation.isRightSide = false;
-  return mathOperation;
-}
-export function addNewMathNode(
-  mathNode: MathNode,
-  mathStack: MathGalactusStack,
-) {
-  mathStack.push(mathNode);
-  return mathStack;
-}
-
-export function leftShift(math: CheckedMathType): MathType {
-  return {
-    leftSide: doMath(math),
-    operation: "default",
-    rightSide: "default",
-    action: "default",
-    total: "default",
-    isRightSide: true,
-  };
-}
-export function newLeftShiftMathNode(
-  newNode: CheckedMathType,
-  mathStack: MathGalactusStack,
-): MathGalactusStack {
-  mathStack.push({ mathOperation: leftShift(newNode) });
-  return mathStack;
-}
-
 export default component$(() => {
   const mathOperation = useStore<MathType>({
     rightSide: "default",
@@ -173,6 +68,7 @@ export default component$(() => {
   useTask$(({ track }) => {
     // this does log/track :)
     track(mathOperation);
+
     console.log("im tracking!!!");
     display.value = getDisplayFromMathStack(mathStack);
   });
@@ -296,6 +192,124 @@ export default component$(() => {
     </>
   );
 });
+export function doMath(mathOperation: MathType): number {
+  if (
+    mathOperation.leftSide === "default" ||
+    mathOperation.rightSide === "default"
+  ) {
+    return 0;
+  }
+  switch (mathOperation.operation) {
+    case "+":
+      return mathOperation.leftSide + mathOperation.rightSide;
+    case "-":
+      return mathOperation.leftSide - mathOperation.rightSide;
+    case "default":
+    default:
+      // this should make it clear something went wrong to the user without making it my problem lol
+      return -10000;
+  }
+}
+export function getDisplayOfMathNode(math: MathType): string {
+  let responseString: Display = {
+    rightSide: "",
+    operation: "",
+    leftSide: "",
+  };
+  if (math.total != "default") {
+    math.isRightSide = false;
+    return math.total.toString();
+  }
+  if (math.rightSide != "default") {
+    responseString.rightSide = math.rightSide.toString();
+  }
+  if (math.operation != "default") {
+    responseString.operation = math.operation.toString();
+  }
+  if (math.leftSide != "default") {
+    responseString.leftSide = math.leftSide.toString();
+  }
+  const allResponseAreFilled =
+    responseString.leftSide != "default" &&
+    responseString.operation != "default" &&
+    responseString.rightSide != "default";
+  if (allResponseAreFilled && math.action != "default") {
+    if (isCheckedMathType(math)) {
+      const answer: number = doMath(math as CheckedMathType);
+      math.total = answer;
+      // addNewMathNode({ mathOperation: math }, mathStack);
+      // resetMathOperation(math);
+      return answer.toString();
+    }
+    return "lol";
+  }
+  return (
+    responseString.leftSide +
+    responseString.operation +
+    responseString.rightSide
+  );
+}
+export function getStackDisplay(mathStack: MathGalactusStack) {
+  return mathStack.reduce((display: string, mathNode, i, a) => {
+    const currentTotal = getDisplayOfMathNode(mathNode.mathOperation);
+    if (i < a.length && i > 0) {
+      return display.concat("+", currentTotal.toString());
+    }
+    return display.concat(currentTotal.toString());
+  }, "");
+}
+export function isCheckedMathType(mathOperation: MathType): boolean {
+  const leftValue = mathOperation.leftSide;
+  const rightValue = mathOperation.rightSide;
+  if (leftValue != "default" && rightValue != "default") {
+    return true;
+  }
+  return false;
+}
+
+export function resetMathOperation(mathOperation: MathType): MathType {
+  mathOperation.leftSide =
+    mathOperation.operation =
+    mathOperation.rightSide =
+    mathOperation.action =
+    mathOperation.total =
+      "default";
+  mathOperation.isRightSide = false;
+  return mathOperation;
+}
+export function addNewMathNode(
+  mathNode: MathNode,
+  mathStack: MathGalactusStack,
+) {
+  mathStack.push(mathNode);
+  return mathStack;
+}
+
+export function leftShift(math: MathType): MathType {
+  return {
+    leftSide: doMath(math),
+    operation: "default",
+    rightSide: "default",
+    action: "default",
+    total: "default",
+    isRightSide: true,
+  };
+}
+export function newLeftShiftMathNode(
+  newNode: MathType,
+  mathStack: MathGalactusStack,
+): MathGalactusStack {
+  mathStack.push({ mathOperation: leftShift(newNode) });
+  return mathStack;
+}
+export function neoAddLeftShiftMathNoe(
+  newNode: MathType,
+  mathStack: NeoGalactusStack,
+): NeoGalactusStack {
+  mathStack.MathNodes.push(leftShift(newNode));
+  return mathStack;
+}
+
 function getDisplayFromMathStack(mathStack: NeoGalactusStack): string {
   return getDisplayOfMathNode(mathStack.MathNodes[mathStack.head]);
 }
@@ -308,3 +322,17 @@ export const head: DocumentHead = {
     },
   ],
 };
+export function getHeadNode(mathStack: NeoGalactusStack): MathType {
+  return mathStack.MathNodes[mathStack.head];
+}
+export function manageMathActions(type: Actions, mathStack: NeoGalactusStack) {
+  switch (type) {
+    case "=":
+      neoAddLeftShiftMathNoe(getHeadNode(mathStack), mathStack);
+      mathStack.head++;
+      return mathStack;
+
+    default:
+      break;
+  }
+}
