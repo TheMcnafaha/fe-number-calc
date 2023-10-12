@@ -30,6 +30,10 @@ export type MathNode = {
 };
 // we use arrs bc we can
 export type MathGalactusStack = Array<MathNode>;
+export type NeoGalactusStack = {
+  head: number;
+  MathNodes: Array<MathType>;
+};
 export type Operators = "+" | "-" | "default";
 export type Actions = "=" | "default";
 type Display = {
@@ -49,10 +53,7 @@ export function doMath(mathOperation: CheckedMathType): number {
       return -10000;
   }
 }
-export function getDisplayOfMathNode(
-  math: MathType,
-  mathStack: MathGalactusStack,
-): string {
+export function getDisplayOfMathNode(math: MathType): string {
   let responseString: Display = {
     rightSide: "",
     operation: "",
@@ -93,10 +94,7 @@ export function getDisplayOfMathNode(
 }
 export function getStackDisplay(mathStack: MathGalactusStack) {
   return mathStack.reduce((display: string, mathNode, i, a) => {
-    const currentTotal = getDisplayOfMathNode(
-      mathNode.mathOperation,
-      mathStack,
-    );
+    const currentTotal = getDisplayOfMathNode(mathNode.mathOperation);
     if (i < a.length && i > 0) {
       return display.concat("+", currentTotal.toString());
     }
@@ -158,6 +156,10 @@ export default component$(() => {
     isRightSide: false,
   });
 
+  const mathStack = useStore<NeoGalactusStack>({
+    head: 0,
+    MathNodes: [mathOperation],
+  });
   // const mathStack = useStore<MathGalactusStack>([]);
   const display = useSignal<string>("");
   useTask$(({ track }) => {
@@ -172,7 +174,7 @@ export default component$(() => {
     // this does log/track :)
     track(mathOperation);
     console.log("im tracking!!!");
-    display.value = getDisplayOfMathNode(mathOperation);
+    display.value = getDisplayFromMathStack(mathStack);
   });
   return (
     <>
@@ -294,7 +296,9 @@ export default component$(() => {
     </>
   );
 });
-
+function getDisplayFromMathStack(mathStack: NeoGalactusStack): string {
+  return getDisplayOfMathNode(mathStack.MathNodes[mathStack.head]);
+}
 export const head: DocumentHead = {
   title: "Welcome to Qwik",
   meta: [
