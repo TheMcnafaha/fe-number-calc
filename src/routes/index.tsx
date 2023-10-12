@@ -1,4 +1,11 @@
-import { component$, useSignal, $, useStore, useTask$ } from "@builder.io/qwik";
+import {
+  component$,
+  useSignal,
+  $,
+  useStore,
+  useTask$,
+  QRL,
+} from "@builder.io/qwik";
 import { isServer } from "@builder.io/qwik/build";
 import { server$, type DocumentHead } from "@builder.io/qwik-city";
 import { CalculatorDisplay } from "~/components/calculator-display/calculator-display";
@@ -8,6 +15,15 @@ import { TextInput } from "~/components/text-input/text-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
 export type Sides = "leftSide" | "rightSide";
 export type MathType = {
+  rightSide: number | "default";
+  operation: Operators;
+  leftSide: number | "default";
+  action: Actions;
+  total: number | "default";
+  isRightSide: boolean;
+};
+
+export type MathInputType = {
   rightSide: number | "default";
   operation: Operators;
   leftSide: number | "default";
@@ -70,7 +86,7 @@ export default component$(() => {
     track(mathOperation);
 
     console.log("im tracking!!!");
-    display.value = getDisplayFromMathStack(mathStack);
+    display.value = getDisplayFromMathStack(mathStack, mathOperation);
   });
   return (
     <>
@@ -310,8 +326,21 @@ export function neoAddLeftShiftMathNoe(
   return mathStack;
 }
 
-function getDisplayFromMathStack(mathStack: NeoGalactusStack): string {
-  return getDisplayOfMathNode(mathStack.MathNodes[mathStack.head]);
+function getDisplayFromMathStack(
+  mathStack: NeoGalactusStack,
+  mathOperations: MathType,
+): string {
+  if (mathOperations.action != "default") {
+    manageMathActions(mathOperations.action, mathStack, mathOperations);
+    console.log("im better");
+    const newMathNode = getHeadNode(mathStack);
+    mathOperations.action = newMathNode.action;
+    mathOperations.leftSide = newMathNode.leftSide;
+    mathOperations.rightSide = newMathNode.rightSide;
+    mathOperations.operation = newMathNode.operation;
+    return getDisplayOfMathNode(mathOperations);
+  }
+  return getDisplayOfMathNode(mathOperations);
 }
 export const head: DocumentHead = {
   title: "Welcome to Qwik",
@@ -322,17 +351,46 @@ export const head: DocumentHead = {
     },
   ],
 };
-export function getHeadNode(mathStack: NeoGalactusStack): MathType {
+export function getHeadNode(mathStack: NeoGalactusStack | undefined): MathType {
+  if (mathStack === undefined) {
+    return {
+      rightSide: "default",
+      operation: "default",
+      leftSide: "default",
+      action: "default",
+      total: "default",
+      isRightSide: false,
+    };
+  }
   return mathStack.MathNodes[mathStack.head];
 }
-export function manageMathActions(type: Actions, mathStack: NeoGalactusStack) {
+export function manageMathActions(
+  type: Actions,
+  mathStack: NeoGalactusStack,
+  mathOperation: MathType,
+) {
   switch (type) {
     case "=":
-      neoAddLeftShiftMathNoe(getHeadNode(mathStack), mathStack);
+      neoAddLeftShiftMathNoe(mathOperation, mathStack);
       mathStack.head++;
+      console.log("new head ", getHeadNode(mathStack));
+
+      // newMathOperation(mathOperation, mathStack);
       return mathStack;
 
     default:
       break;
   }
+}
+function newMathOperation(
+  mathOperation: MathType,
+  mathStack: NeoGalactusStack,
+) {
+  const newMathOperation = getHeadNode(mathStack);
+  mathOperation.action = newMathOperation.action;
+  mathOperation.leftSide = newMathOperation.leftSide;
+  mathOperation.action = newMathOperation.action;
+  mathOperation.rightSide = newMathOperation.rightSide;
+  mathOperation.total = newMathOperation.total;
+  mathOperation.isRightSide = newMathOperation.isRightSide;
 }

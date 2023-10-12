@@ -30,7 +30,7 @@ const MathNodeSubmitted: CheckedMathType = {
   total: "default",
   isRightSide: true,
 };
-const defaultMathOperation: MathType = {
+export const defaultMathOperation: MathType = {
   rightSide: "default",
   operation: "default",
   leftSide: "default",
@@ -93,6 +93,24 @@ test("correctly \"house-keep\" the mathStack when the mathAction is submitted",(
       }],
   };
   expect(manageMathActions(getHeadNode(test).action,test)).toStrictEqual(answer)
+})
+test("correctly \"house-keep\" the mahtStack head when new mathNode is added",()=>{
+  let test: NeoGalactusStack = {
+    MathNodes:[ MathNodeSubmitted],
+    head:0
+  };
+  const answer: NeoGalactusStack= {
+    head:1,
+    MathNodes:[MathNodeSubmitted, {
+	leftSide: 20,
+	operation:"default",
+        rightSide: "default",
+        action: "default",
+        total: "default",
+        isRightSide: true,
+      }],
+  };
+  expect(getHeadNode( manageMathActions(getHeadNode(test).action,test) )).toStrictEqual(getHeadNode(answer))
 })
 // calc logic
 test("add 10+10 (should return 20)", () => {
