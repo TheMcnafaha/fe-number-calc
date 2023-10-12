@@ -144,6 +144,8 @@ test("add new node correctly", () => {
 });
 
 test("decimate correctly",()=>{
-  expect(decimator(457)).toBe(.457)
+  expect(decimator(457,0)).toBe(.457)
+  expect(decimator(457,1)).toBe(4.57)
+  expect(decimator(457,2)).toBe(45.7)
 })
 // calc logic: actions

@@ -409,7 +409,11 @@ function newMathOperation(
   mathOperation.isRightSide = newMathOperation.isRightSide;
 }
 
-export function decimator(input: number): number {
+export function decimator(input: number, start: number): number {
   const stringRepresentation = input.toString();
-  return Number("." + stringRepresentation);
+  return Number(
+    stringRepresentation.substring(0, start) +
+      "." +
+      stringRepresentation.substring(start),
+  );
 }
