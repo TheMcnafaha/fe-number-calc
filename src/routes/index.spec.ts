@@ -92,7 +92,7 @@ test("correctly \"house-keep\" the mathStack when the mathAction is submitted",(
         isRightSide: true,
       }],
   };
-  expect(manageMathActions(getHeadNode(test).action,test)).toStrictEqual(answer)
+  expect(manageMathActions(getHeadNode(test).action,test,test.MathNodes[0])).toStrictEqual(answer)
 })
 test("correctly \"house-keep\" the mahtStack head when new mathNode is added",()=>{
   let test: NeoGalactusStack = {
@@ -110,7 +110,7 @@ test("correctly \"house-keep\" the mahtStack head when new mathNode is added",()
         isRightSide: true,
       }],
   };
-  expect(getHeadNode( manageMathActions(getHeadNode(test).action,test) )).toStrictEqual(getHeadNode(answer))
+  expect(getHeadNode( manageMathActions(getHeadNode(test).action,test,getHeadNode(test)) )).toStrictEqual(getHeadNode(answer))
 })
 // calc logic
 test("add 10+10 (should return 20)", () => {
