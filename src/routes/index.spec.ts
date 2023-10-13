@@ -22,6 +22,17 @@ const mockMathNodeDefault: MathNode = {
     isRightSide: true,
   },
 };
+const mockMathTypeDecimal:MathType={
+    leftSide: "default",
+    operation: "+",
+    rightSide: 10,
+    action: "=",
+    //the total is porposefully wrong to test display logic outside of calc logic
+    total: 10,
+    isRightSide: true,
+
+  }
+}
 const MathNodeSubmitted: CheckedMathType = {
   leftSide: 10,
   operation: "+",
@@ -149,3 +160,18 @@ test("decimate correctly",()=>{
   expect(decimator(457,2)).toBe(45.7)
 })
 // calc logic: actions
+
+test("add correct decimal offset on mathNode",()=>{
+  const answer:MathType= {
+    leftSide: "default",
+    operation: "+",
+    rightSide: 10
+    action: "=",
+    //the total is porposefully wrong to test display logic outside of calc logic
+    total: 10,
+    isRightSide: true,
+    rightSideDecimalOffSet=2
+
+  }
+manageMathActions(mockMathTypeDecimal)
+})

@@ -21,6 +21,9 @@ export type MathType = {
   action: Actions;
   total: number | "default";
   isRightSide: boolean;
+  // right
+  rightSideDecimalOffSet?: number;
+  leftSideDecimalOffSet?: number;
 };
 
 export type MathInputType = {
@@ -384,6 +387,8 @@ export function manageMathActions(
       return mathStack;
 
     case ".":
+      if (mathOperation.isRightSide) {
+      }
 
     case "default":
     default:
@@ -403,11 +408,19 @@ function newMathOperation(
   mathOperation.isRightSide = newMathOperation.isRightSide;
 }
 
-export function decimator(input: number, start: number): number {
+export function decimator(input: number, offset: number): number {
   const stringRepresentation = input.toString();
   return Number(
-    stringRepresentation.substring(0, start) +
+    stringRepresentation.substring(0, offset) +
       "." +
-      stringRepresentation.substring(start),
+      stringRepresentation.substring(offset),
   );
+}
+
+export function setDecimal(input: MathType, isRightSide: boolean) {
+  if (isRightSide) {
+    input.rightSideDecimalOffSet = input.rightSide.toString().length;
+    return;
+  }
+  input.leftSideDecimalOffSet = input.leftSide.toString().length;
 }
