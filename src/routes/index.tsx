@@ -243,14 +243,14 @@ export function getDisplayOfMathNode(math: MathType): string {
   if (math.total != "default") {
     return math.total.toString();
   }
-  if (math.rightSide != "default") {
-    responseString.rightSide = math.rightSide.toString();
+  if (math.leftSide != "default") {
+    responseString.leftSide = math.leftSide.toString();
   }
   if (math.operation != "default") {
     responseString.operation = math.operation.toString();
   }
-  if (math.leftSide != "default") {
-    responseString.leftSide = math.leftSide.toString();
+  if (math.rightSide != "default") {
+    responseString.rightSide = math.rightSide.toString();
   }
   const allResponseAreFilled =
     responseString.leftSide != "default" &&
