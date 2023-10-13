@@ -241,7 +241,6 @@ export function getDisplayOfMathNode(math: MathType): string {
     leftSide: "",
   };
   if (math.total != "default") {
-    math.isRightSide = false;
     return math.total.toString();
   }
   if (math.rightSide != "default") {
