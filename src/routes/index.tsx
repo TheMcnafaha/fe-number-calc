@@ -76,18 +76,12 @@ export default component$(() => {
   // const mathStack = useStore<MathGalactusStack>([]);
   const display = useSignal<string>("");
   useTask$(({ track }) => {
-    track(() => mathOperation.operation);
-    if (isServer) {
-      return;
-    }
-
-    console.log("changed ops");
-    mathOperation.isRightSide = true;
-  });
-  useTask$(({ track }) => {
     // this does log/track :)
     track(mathOperation);
-
+    if (mathOperation.operation != "default") {
+      console.log("changed ops");
+      mathOperation.isRightSide = true;
+    }
     console.log("im tracking!!!");
     display.value = getDisplayFromMathStack(mathStack, mathOperation);
   });
