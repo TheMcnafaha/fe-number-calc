@@ -337,7 +337,7 @@ function getDisplayFromMathStack(
   mathStack: NeoGalactusStack,
   mathOperations: MathType,
 ): string {
-  if (mathOperations.action != "default") {
+  if (mathOperations.action === "=") {
     manageMathActions(mathOperations.action, mathStack, mathOperations);
     console.log("im better");
     const newMathNode = getHeadNode(mathStack);
