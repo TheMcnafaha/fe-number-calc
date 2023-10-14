@@ -261,17 +261,6 @@ export function getDisplayOfMathNode(math: MathType): string {
   if (math.rightSide != "default") {
     responseString.rightSide = setSideString("right", math);
   }
-  const allResponseAreFilled = trueIfAllInputFilled(math);
-  if (allResponseAreFilled && math.action === "=") {
-    if (isCheckedMathType(math)) {
-      const answer: number = doMath(math as CheckedMathType);
-      math.total = answer;
-      // addNewMathNode({ mathOperation: math }, mathStack);
-      // resetMathOperation(math);
-      return answer.toString();
-    }
-    return "lol here";
-  }
   return (
     responseString.leftSide +
     responseString.operation +
