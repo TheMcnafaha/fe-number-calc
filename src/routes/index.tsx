@@ -262,7 +262,7 @@ export function getDisplayOfMathNode(math: MathType): string {
     responseString.rightSide = setSideString("right", math);
   }
   const allResponseAreFilled = trueIfAllInputFilled(math);
-  if (allResponseAreFilled && math.action != "default") {
+  if (allResponseAreFilled && math.action === "=") {
     if (isCheckedMathType(math)) {
       const answer: number = doMath(math as CheckedMathType);
       math.total = answer;
