@@ -54,6 +54,14 @@ const mockMathStack: MathGalactusStack = [
   mockMathNodeNumber,
 ];
 // display logic
+
+test("return true on submmited node",()=>{
+  expect(trueIfAllInputFilled(MathNodeSubmitted)).toBe(true)
+})
+test("return false on mostly submmited node",()=>{
+  const mostlyFIlled:MathType={...MathNodeSubmitted,rightSide:"default"}
+  expect(trueIfAllInputFilled(mostlyFIlled)).toBe(false)
+})
 test("return a display of 10+10 from two mathNode with a total of 10 each", () => {
   expect(getStackDisplay(mockMathStack)).toBe("10+10");
 });

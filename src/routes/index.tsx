@@ -253,10 +253,7 @@ export function getDisplayOfMathNode(math: MathType): string {
   if (math.rightSide != "default") {
     responseString.rightSide = setSideString("right", math);
   }
-  const allResponseAreFilled =
-    responseString.leftSide != "default" &&
-    responseString.operation != "default" &&
-    responseString.rightSide != "default";
+  const allResponseAreFilled = trueIfAllInputFilled(math);
   if (allResponseAreFilled && math.action != "default") {
     if (isCheckedMathType(math)) {
       const answer: number = doMath(math as CheckedMathType);
@@ -460,4 +457,36 @@ export function setDecimal(input: MathType, isRightSide: boolean) {
     return;
   }
   input.leftSideDecimalOffSet = input.leftSide.toString().length;
+}
+export function trueIfAllInputFilled(math: MathType): boolean {
+  /* 
+              /=\\
+             /===\ \
+            /=====\' \
+           /=======\'' \
+          /=========\ ' '\
+         /===========\''   \
+        /=============\ ' '  \
+       /===============\   ''  \
+      /=================\' ' ' ' \
+     /===================\' ' '  ' \
+    /=====================\' '   ' ' \
+   /=======================\  '   ' /
+  /=========================\   ' /
+ /===========================\'  /
+/=============================\/
+
+*/
+  if (math.leftSide !== "default") {
+    if (math.operation !== "default") {
+      if (math.rightSide !== "default") {
+        if (math.action !== "default") {
+          if (math.total === "default") {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
 }
