@@ -243,14 +243,15 @@ export function getDisplayOfMathNode(math: MathType): string {
   if (math.total != "default") {
     return math.total.toString();
   }
+  // TODO: refactor the double check of default on  setSideString
   if (math.leftSide != "default") {
-    responseString.leftSide = math.leftSide.toString();
+    responseString.leftSide = setSideString("left", math);
   }
   if (math.operation != "default") {
     responseString.operation = math.operation.toString();
   }
   if (math.rightSide != "default") {
-    responseString.rightSide = math.rightSide.toString();
+    responseString.rightSide = setSideString("right", math);
   }
   const allResponseAreFilled =
     responseString.leftSide != "default" &&
@@ -347,6 +348,7 @@ function getDisplayFromMathStack(
     return getDisplayOfMathNode(mathOperations);
   }
   manageMathActions(mathOperations.action, mathStack, mathOperations);
+
   return getDisplayOfMathNode(mathOperations);
 }
 export const head: DocumentHead = {
@@ -414,6 +416,42 @@ export function decimator(input: number, offset: number): number {
       "." +
       stringRepresentation.substring(offset),
   );
+}
+export function strgDecimator(input: number, offset: number): string {
+  const stringRepresentation = input.toString();
+  return (
+    stringRepresentation.substring(0, offset) +
+    "." +
+    stringRepresentation.substring(offset)
+  );
+}
+function setSideString(
+  side: "left" | "right",
+  mathOperation: MathType,
+): string {
+  if (side === "left") {
+    if (
+      mathOperation.leftSideDecimalOffSet !== undefined &&
+      mathOperation.leftSide != "default"
+    ) {
+      return strgDecimator(
+        mathOperation.leftSide,
+        mathOperation.leftSideDecimalOffSet,
+      );
+    }
+    return mathOperation.leftSide.toString();
+  }
+
+  if (
+    mathOperation.rightSideDecimalOffSet !== undefined &&
+    mathOperation.rightSide != "default"
+  ) {
+    return strgDecimator(
+      mathOperation.rightSide,
+      mathOperation.rightSideDecimalOffSet,
+    );
+  }
+  return mathOperation.rightSide.toString();
 }
 
 export function setDecimal(input: MathType, isRightSide: boolean) {

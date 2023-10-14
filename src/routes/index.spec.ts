@@ -23,13 +23,13 @@ const mockMathNodeDefault: MathNode = {
   },
 };
 const mockMathTypeDecimal:MathType={
-    leftSide: "default",
-    operation: "+",
-    rightSide: 10,
-    action: "=",
-    //the total is porposefully wrong to test display logic outside of calc logic
-    total: 10,
+    leftSide:10,
+    operation: "default",
+    rightSide: "default",
+    action: "default",
+    total: "default",
     isRightSide: true,
+  leftSideDecimalOffSet:2
 
   }
 
@@ -123,6 +123,10 @@ test("correctly \"house-keep\" the mahtStack head when new mathNode is added",()
   };
   expect(getHeadNode( manageMathActions(getHeadNode(test).action,test,getHeadNode(test)) )).toStrictEqual(getHeadNode(answer))
 })
+
+test("add correct decimal offset on first instance on mathNode",()=>{
+  expect(getDisplayOfMathNode(mockMathTypeDecimal)).toBe("10.")
+})
 // calc logic
 test("add 10+10 (should return 20)", () => {
   let response: number | string = "failed";
@@ -160,17 +164,3 @@ test("decimate correctly",()=>{
   expect(decimator(457,2)).toBe(45.7)
 })
 // calc logic: actions
-
-test("add correct decimal offset on mathNode",()=>{
-  const answer:MathType= {
-    leftSide: "default",
-    operation: "+",
-    rightSide: 10,
-    action: "=",
-    //the total is porposefully wrong to test display logic outside of calc logic
-    total: 10,
-    isRightSide: true,
-    rightSideDecimalOffSet:2
-
-  }
-})
