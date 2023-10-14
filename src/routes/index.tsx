@@ -42,6 +42,8 @@ export type CheckedMathType = {
   action: Actions;
   total: number | "default";
   isRightSide: boolean;
+  rightSideDecimalOffSet?: number;
+  leftSideDecimalOffSet?: number;
 };
 export type MathNode = {
   mathOperation: MathType;
@@ -85,6 +87,7 @@ export default component$(() => {
       console.log("changed ops");
       mathOperation.isRightSide = true;
     }
+    // adjustDecimalOffset("left", mathOperation);
     console.log("im tracking!!!");
     display.value = getDisplayFromMathStack(mathStack, mathOperation);
   });
@@ -104,6 +107,8 @@ export default component$(() => {
               </p>
               <p> leftS: {`${mathOperation.leftSide}`}</p>
               <p> rightS: {`${mathOperation.rightSide}`}</p>
+              <p> leftD: {`${mathOperation.leftSideDecimalOffSet}`}</p>
+              <p> rightD: {`${mathOperation.rightSideDecimalOffSet}`}</p>
               <p> opeation: {`${mathOperation.operation}`}</p>
               <p> action: {`${mathOperation.action}`}</p>
               <p> total: {`${mathOperation.total}`}</p>
@@ -262,9 +267,7 @@ export function getDisplayOfMathNode(math: MathType): string {
       // resetMathOperation(math);
       return answer.toString();
     }
-    if ((math.action = ".")) {
-    }
-    return "lol";
+    return "lol here";
   }
   return (
     responseString.leftSide +
@@ -337,7 +340,9 @@ function getDisplayFromMathStack(
   mathStack: NeoGalactusStack,
   mathOperations: MathType,
 ): string {
+  // handle actions here before they are passed to the display node
   if (mathOperations.action === "=") {
+    // TODO: refactor this code into the mageMathActions fn
     manageMathActions(mathOperations.action, mathStack, mathOperations);
     console.log("im better");
     const newMathNode = getHeadNode(mathStack);
@@ -377,7 +382,7 @@ export function manageMathActions(
 ) {
   switch (type) {
     case "=":
-      neoAddLeftShiftMathNoe(mathOperation, mathStack);
+      neoAddLeftShiftMathNoe(decimalAdjustAndReset(mathOperation), mathStack);
       mathStack.head++;
       console.log("new head ", getHeadNode(mathStack));
 
@@ -386,7 +391,16 @@ export function manageMathActions(
 
     case ".":
       if (mathOperation.isRightSide) {
+        if (mathOperation.rightSideDecimalOffSet === undefined) {
+          setDecimalOffSet(mathOperation, "right");
+        }
       }
+      if (mathOperation.leftSideDecimalOffSet === undefined) {
+        setDecimalOffSet(mathOperation, "left");
+      }
+
+      // house-keeping
+      mathOperation.action = "default";
 
     case "default":
     default:
@@ -450,14 +464,28 @@ function setSideString(
   }
   return mathOperation.rightSide.toString();
 }
-
-export function setDecimal(input: MathType, isRightSide: boolean) {
-  if (isRightSide) {
-    input.rightSideDecimalOffSet = input.rightSide.toString().length;
-    return;
+export function decimalAdjustAndReset(
+  mathOperation: CheckedMathType,
+): CheckedMathType {
+  if (mathOperation.leftSideDecimalOffSet != undefined) {
+    mathOperation.leftSide = decimator(
+      mathOperation.leftSide,
+      mathOperation.leftSideDecimalOffSet,
+    );
+    mathOperation.leftSideDecimalOffSet = undefined;
   }
-  input.leftSideDecimalOffSet = input.leftSide.toString().length;
+
+  if (mathOperation.rightSideDecimalOffSet != undefined) {
+    mathOperation.rightSide = decimator(
+      mathOperation.rightSide,
+      mathOperation.rightSideDecimalOffSet,
+    );
+    mathOperation.rightSideDecimalOffSet = undefined;
+  }
+
+  return mathOperation;
 }
+
 export function trueIfAllInputFilled(math: MathType): boolean {
   /* 
               /=\\
@@ -489,4 +517,11 @@ export function trueIfAllInputFilled(math: MathType): boolean {
     }
   }
   return false;
+}
+export function setDecimalOffSet(input: MathType, side: "left" | "right") {
+  if (side === "right") {
+    input.rightSideDecimalOffSet = input.rightSide.toString().length;
+    return;
+  }
+  input.leftSideDecimalOffSet = input.leftSide.toString().length;
 }

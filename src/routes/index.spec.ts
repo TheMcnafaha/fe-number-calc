@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { CheckedMathType, MathNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation, addNewMathNode, getDisplayOfMathNode, newLeftShiftMathNode, leftShift, NeoGalactusStack, head, manageMathActions, getHeadNode, decimator } from ".";
+import { CheckedMathType, MathNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation, addNewMathNode, getDisplayOfMathNode, newLeftShiftMathNode, leftShift, NeoGalactusStack, head, manageMathActions, getHeadNode, decimator, trueIfAllInputFilled, decimalAdjustAndReset } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
     leftSide: 10,
@@ -26,7 +26,7 @@ const mockMathTypeDecimal:MathType={
     leftSide:10,
     operation: "default",
     rightSide: "default",
-    action: "default",
+    action: ".",
     total: "default",
     isRightSide: true,
   leftSideDecimalOffSet:2
@@ -41,6 +41,26 @@ const MathNodeSubmitted: CheckedMathType = {
   total: "default",
   isRightSide: true,
 };
+const mathNodeDecimalSubmitted: CheckedMathType = {
+  leftSide: 123,
+  leftSideDecimalOffSet:2,
+  operation: "+",
+  rightSide: 123,
+  rightSideDecimalOffSet:1,
+  action: "=",
+  total: "default",
+  isRightSide: true,
+};
+const correctDecimalSubmitted: CheckedMathType={
+leftSide: 12.3,
+  leftSideDecimalOffSet:undefined,
+  operation: "+",
+  rightSide: 1.23,
+  rightSideDecimalOffSet:undefined,
+  action: "=",
+  total: "default",
+  isRightSide: true,
+} 
 export const defaultMathOperation: MathType = {
   rightSide: "default",
   operation: "default",
@@ -131,10 +151,12 @@ test("correctly \"house-keep\" the mahtStack head when new mathNode is added",()
   };
   expect(getHeadNode( manageMathActions(getHeadNode(test).action,test,getHeadNode(test)) )).toStrictEqual(getHeadNode(answer))
 })
+// display logic: decimal pain
 
 test("add correct decimal offset on first instance on mathNode",()=>{
   expect(getDisplayOfMathNode(mockMathTypeDecimal)).toBe("10.")
 })
+
 // calc logic
 test("add 10+10 (should return 20)", () => {
   let response: number | string = "failed";
@@ -170,5 +192,11 @@ test("decimate correctly",()=>{
   expect(decimator(457,0)).toBe(.457)
   expect(decimator(457,1)).toBe(4.57)
   expect(decimator(457,2)).toBe(45.7)
+})
+test("convert decimal from mathNode correctly",()=>{
+  expect(decimalAdjustAndReset(mathNodeDecimalSubmitted)).toStrictEqual(correctDecimalSubmitted)
+})
+test("dont mess with non-decimals",()=>{
+  expect(decimalAdjustAndReset(MathNodeSubmitted)).toStrictEqual(MathNodeSubmitted)
 })
 // calc logic: actions
