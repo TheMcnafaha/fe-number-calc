@@ -83,7 +83,10 @@ export default component$(() => {
   useTask$(({ track }) => {
     // this does log/track :)
     track(mathOperation);
-    if (mathOperation.operation != "default") {
+    if (
+      mathOperation.operation != "default" &&
+      mathOperation.isRightSide != true
+    ) {
       console.log("changed ops");
       mathOperation.isRightSide = true;
     }
