@@ -305,7 +305,8 @@ export function addNewMathNode(
 
 export function leftShift(math: MathType): MathType {
   return {
-    leftSide: doMath(math),
+    // TODO: find more less sketchy rounding xdd
+    leftSide: Math.round(doMath(math) * 10000) / 10000,
     operation: "default",
     rightSide: "default",
     action: "default",
