@@ -1,5 +1,25 @@
 import { expect, test } from "vitest";
-import { CheckedMathType, MathNode, MathGalactusStack, MathType, doMath, getStackDisplay, isCheckedMathType, resetMathOperation, addNewMathNode, getDisplayOfMathNode, newLeftShiftMathNode, leftShift, NeoGalactusStack, head, manageMathActions, getHeadNode, decimator, trueIfAllInputFilled, decimalAdjustAndReset } from ".";
+import {
+  CheckedMathType,
+  MathNode,
+  MathGalactusStack,
+  MathType,
+  doMath,
+  getStackDisplay,
+  isCheckedMathType,
+  resetMathOperation,
+  addNewMathNode,
+  getDisplayOfMathNode,
+  newLeftShiftMathNode,
+  leftShift,
+  NeoGalactusStack,
+  head,
+  manageMathActions,
+  getHeadNode,
+  decimator,
+  trueIfAllInputFilled,
+  decimalAdjustAndReset,
+} from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
     leftSide: 10,
@@ -22,16 +42,15 @@ const mockMathNodeDefault: MathNode = {
     isRightSide: true,
   },
 };
-const mockMathTypeDecimal:MathType={
-    leftSide:10,
-    operation: "default",
-    rightSide: "default",
-    action: ".",
-    total: "default",
-    isRightSide: true,
-  leftSideDecimalOffSet:2
-
-  }
+const mockMathTypeDecimal: MathType = {
+  leftSide: 10,
+  operation: "default",
+  rightSide: "default",
+  action: ".",
+  total: "default",
+  isRightSide: true,
+  leftSideDecimalOffSet: 2,
+};
 
 const MathNodeSubmitted: CheckedMathType = {
   leftSide: 10,
@@ -43,24 +62,24 @@ const MathNodeSubmitted: CheckedMathType = {
 };
 const mathNodeDecimalSubmitted: CheckedMathType = {
   leftSide: 123,
-  leftSideDecimalOffSet:2,
+  leftSideDecimalOffSet: 2,
   operation: "+",
   rightSide: 123,
-  rightSideDecimalOffSet:1,
+  rightSideDecimalOffSet: 1,
   action: "=",
   total: "default",
   isRightSide: true,
 };
-const correctDecimalSubmitted: CheckedMathType={
-leftSide: 12.3,
-  leftSideDecimalOffSet:undefined,
+const correctDecimalSubmitted: CheckedMathType = {
+  leftSide: 12.3,
+  leftSideDecimalOffSet: undefined,
   operation: "+",
   rightSide: 1.23,
-  rightSideDecimalOffSet:undefined,
+  rightSideDecimalOffSet: undefined,
   action: "=",
   total: "default",
   isRightSide: true,
-} 
+};
 export const defaultMathOperation: MathType = {
   rightSide: "default",
   operation: "default",
@@ -75,37 +94,37 @@ const mockMathStack: MathGalactusStack = [
 ];
 // display logic
 
-test("return true on submmited node",()=>{
-  expect(trueIfAllInputFilled(MathNodeSubmitted)).toBe(true)
-})
-test("return false on mostly submmited node",()=>{
-  const mostlyFIlled:MathType={...MathNodeSubmitted,rightSide:"default"}
-  expect(trueIfAllInputFilled(mostlyFIlled)).toBe(false)
-})
+test("return true on submmited node", () => {
+  expect(trueIfAllInputFilled(MathNodeSubmitted)).toBe(true);
+});
+test("return false on mostly submmited node", () => {
+  const mostlyFIlled: MathType = { ...MathNodeSubmitted, rightSide: "default" };
+  expect(trueIfAllInputFilled(mostlyFIlled)).toBe(false);
+});
 test("return a display of 10+10 from two mathNode with a total of 10 each", () => {
   expect(getStackDisplay(mockMathStack)).toBe("10+10");
 });
 // display logic: left-shifting
 
-test("correctly leftshit a math node", ()=>{
-	const answer:MathType={
-  leftSide: 20,
-  operation: "default",
-  rightSide: "default",
-  action: "default",
-  total: "default",
-  isRightSide: true,
-}
-	expect(leftShift(MathNodeSubmitted)).toStrictEqual(answer)
-})
+test("correctly leftshit a math node", () => {
+  const answer: MathType = {
+    leftSide: 20,
+    operation: "default",
+    rightSide: "default",
+    action: "default",
+    total: "default",
+    isRightSide: true,
+  };
+  expect(leftShift(MathNodeSubmitted)).toStrictEqual(answer);
+});
 test("when input is submitted, create a new mathNode that's left-shifted", () => {
   let test: MathGalactusStack = [{ mathOperation: MathNodeSubmitted }];
   const answer = [
     { mathOperation: MathNodeSubmitted },
     {
       mathOperation: {
-	leftSide: 20,
-	operation:"default",
+        leftSide: 20,
+        operation: "default",
         rightSide: "default",
         action: "default",
         total: "default",
@@ -113,49 +132,61 @@ test("when input is submitted, create a new mathNode that's left-shifted", () =>
       },
     },
   ];
-	expect(newLeftShiftMathNode(MathNodeSubmitted,test)).toStrictEqual(answer)
+  expect(newLeftShiftMathNode(MathNodeSubmitted, test)).toStrictEqual(answer);
 });
-test("correctly \"house-keep\" the mathStack when the mathAction is submitted",()=>{
+test('correctly "house-keep" the mathStack when the mathAction is submitted', () => {
   let test: NeoGalactusStack = {
-    MathNodes:[ MathNodeSubmitted],
-    head:0
+    MathNodes: [MathNodeSubmitted],
+    head: 0,
   };
-  const answer: NeoGalactusStack= {
-    head:1,
-    MathNodes:[MathNodeSubmitted, {
-	leftSide: 20,
-	operation:"default",
+  const answer: NeoGalactusStack = {
+    head: 1,
+    MathNodes: [
+      MathNodeSubmitted,
+      {
+        leftSide: 20,
+        operation: "default",
         rightSide: "default",
         action: "default",
         total: "default",
         isRightSide: true,
-      }],
+      },
+    ],
   };
-  expect(manageMathActions(getHeadNode(test).action,test,test.MathNodes[0])).toStrictEqual(answer)
-})
-test("correctly \"house-keep\" the mahtStack head when new mathNode is added",()=>{
+  expect(
+    manageMathActions(getHeadNode(test).action, test, test.MathNodes[0]),
+  ).toStrictEqual(answer);
+});
+test('correctly "house-keep" the mahtStack head when new mathNode is added', () => {
   let test: NeoGalactusStack = {
-    MathNodes:[ MathNodeSubmitted],
-    head:0
+    MathNodes: [MathNodeSubmitted],
+    head: 0,
   };
-  const answer: NeoGalactusStack= {
-    head:1,
-    MathNodes:[MathNodeSubmitted, {
-	leftSide: 20,
-	operation:"default",
+  const answer: NeoGalactusStack = {
+    head: 1,
+    MathNodes: [
+      MathNodeSubmitted,
+      {
+        leftSide: 20,
+        operation: "default",
         rightSide: "default",
         action: "default",
         total: "default",
         isRightSide: true,
-      }],
+      },
+    ],
   };
-  expect(getHeadNode( manageMathActions(getHeadNode(test).action,test,getHeadNode(test)) )).toStrictEqual(getHeadNode(answer))
-})
+  expect(
+    getHeadNode(
+      manageMathActions(getHeadNode(test).action, test, getHeadNode(test)),
+    ),
+  ).toStrictEqual(getHeadNode(answer));
+});
 // display logic: decimal pain
 
-test("add correct decimal offset on first instance on mathNode",()=>{
-  expect(getDisplayOfMathNode(mockMathTypeDecimal)).toBe("10.")
-})
+test("add correct decimal offset on first instance on mathNode", () => {
+  expect(getDisplayOfMathNode(mockMathTypeDecimal)).toBe("10.");
+});
 
 // calc logic
 test("add 10+10 (should return 20)", () => {
@@ -188,15 +219,19 @@ test("add new node correctly", () => {
   );
 });
 
-test("decimate correctly",()=>{
-  expect(decimator(457,0)).toBe(.457)
-  expect(decimator(457,1)).toBe(4.57)
-  expect(decimator(457,2)).toBe(45.7)
-})
-test("convert decimal from mathNode correctly",()=>{
-  expect(decimalAdjustAndReset(mathNodeDecimalSubmitted)).toStrictEqual(correctDecimalSubmitted)
-})
-test("dont mess with non-decimals",()=>{
-  expect(decimalAdjustAndReset(MathNodeSubmitted)).toStrictEqual(MathNodeSubmitted)
-})
+test("decimate correctly", () => {
+  expect(decimator(457, 0)).toBe(0.457);
+  expect(decimator(457, 1)).toBe(4.57);
+  expect(decimator(457, 2)).toBe(45.7);
+});
+test("convert decimal from mathNode correctly", () => {
+  expect(decimalAdjustAndReset(mathNodeDecimalSubmitted)).toStrictEqual(
+    correctDecimalSubmitted,
+  );
+});
+test("dont mess with non-decimals", () => {
+  expect(decimalAdjustAndReset(MathNodeSubmitted)).toStrictEqual(
+    MathNodeSubmitted,
+  );
+});
 // calc logic: actions
