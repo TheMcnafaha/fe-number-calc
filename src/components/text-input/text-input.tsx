@@ -20,10 +20,6 @@ export const TextInput = component$<TextInputProps>(
         value={input}
         onClick$={(event, currentTarget: HTMLButtonElement) => {
           const target = currentTarget as HTMLInputElement;
-          if (target.value === ".") {
-            mathOperation.action = target.value;
-            return;
-          }
           mathOperation.operation = target.value as Operators;
         }}
       >

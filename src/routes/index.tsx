@@ -1,18 +1,11 @@
-import {
-  component$,
-  useSignal,
-  $,
-  useStore,
-  useTask$,
-  QRL,
-} from "@builder.io/qwik";
-import { isServer } from "@builder.io/qwik/build";
-import { server$, type DocumentHead } from "@builder.io/qwik-city";
+import { component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
+import { type DocumentHead } from "@builder.io/qwik-city";
 import { CalculatorDisplay } from "~/components/calculator-display/calculator-display";
 import { LargeTextInput } from "~/components/large-text-input/large-text-input";
 import { NumberInput } from "~/components/number-input/number-input";
 import { TextInput } from "~/components/text-input/text-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
+import { TextInputSlot } from "~/components/text-input-slot/text-input-slot";
 export type Sides = "leftSide" | "rightSide";
 export type MathType = {
   rightSide: number | "default";
@@ -58,7 +51,7 @@ export type NeoGalactusStack = {
 // operators are all arethmetic operators in nature
 export type Operators = "+" | "-" | "x" | "/" | "default";
 // actions are non-arethmetic display actions
-export type Actions = "=" | "." | "default";
+export type Actions = "=" | "." | "delete" | "default";
 type Display = {
   rightSide: string;
   operation: string;
@@ -136,7 +129,16 @@ export default component$(() => {
               mathOperation={mathOperation}
               side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
-            <TextInput input="DEL" color="blue" mathOperation={mathOperation} />
+            <TextInputSlot color="blue">
+              <button
+                value={"DEL"}
+                onClick$={() => {
+                  resetMathOperation(mathOperation);
+                }}
+              >
+                {"DEL"}
+              </button>
+            </TextInputSlot>
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput
@@ -175,7 +177,16 @@ export default component$(() => {
             <TextInput input="-" mathOperation={mathOperation} color="normal" />
           </div>
           <div class="flex justify-center  gap-3 px-4">
-            <TextInput input="." color="normal" mathOperation={mathOperation} />
+            <TextInputSlot color="normal">
+              <button
+                value={"."}
+                onClick$={() => {
+                  mathOperation.action = ".";
+                }}
+              >
+                {"."}
+              </button>
+            </TextInputSlot>
             <NumberInput
               input={0}
               mathOperation={mathOperation}
@@ -517,4 +528,24 @@ export function setDecimalOffSet(input: MathType, side: "left" | "right") {
     return;
   }
   input.leftSideDecimalOffSet = input.leftSide.toString().length;
+}
+
+export function deleteDigit(mathNode: MathType) {
+  // house-keeping
+  mathNode.action = "default";
+  if (mathNode.isRightSide) {
+    const number_string = mathNode.rightSide.toString();
+    if (number_string.length <= 1) {
+      mathNode.rightSide = "default";
+      return;
+    }
+    mathNode.rightSide = Number(number_string.slice(0, -1));
+    return;
+  }
+  const number_string = mathNode.leftSide.toString();
+  if (number_string.length <= 1) {
+    mathNode.leftSide = "default";
+    return;
+  }
+  mathNode.leftSide = Number(number_string.slice(0, -1));
 }

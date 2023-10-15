@@ -19,6 +19,7 @@ import {
   decimator,
   trueIfAllInputFilled,
   decimalAdjustAndReset,
+  deleteDigit,
 } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
@@ -235,3 +236,47 @@ test("dont mess with non-decimals", () => {
   );
 });
 // calc logic: actions
+
+test("correctly delete digits", () => {
+  const deleteMockRight: MathType = {
+    leftSide: 123,
+    operation: "+",
+    rightSide: 10,
+    action: "delete",
+    //the total is porposefully wrong to test display logic outside of calc logic
+    total: "default",
+    isRightSide: true,
+  };
+  const deleteMockLeft: MathType = {
+    leftSide: 123,
+    operation: "+",
+    rightSide: 10,
+    action: "delete",
+    //the total is porposefully wrong to test display logic outside of calc logic
+    total: "default",
+    isRightSide: false,
+  };
+  const answerMockRight: MathType = {
+    leftSide: 123,
+    operation: "+",
+    rightSide: 1,
+    action: "default",
+    //the total is porposefully wrong to test display logic outside of calc logic
+    total: "default",
+    isRightSide: true,
+  };
+  const answerMockLeft: MathType = {
+    leftSide: 12,
+    operation: "+",
+    rightSide: 10,
+    action: "default",
+    //the total is porposefully wrong to test display logic outside of calc logic
+    total: "default",
+    isRightSide: false,
+  };
+  deleteDigit(deleteMockRight);
+  deleteDigit(deleteMockLeft);
+  console.log(deleteMockLeft, deleteMockRight);
+  expect(deleteMockRight).toStrictEqual(answerMockRight);
+  expect(deleteMockLeft).toStrictEqual(answerMockLeft);
+});
