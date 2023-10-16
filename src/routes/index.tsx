@@ -134,7 +134,7 @@ export default component$(() => {
                 value={"DEL"}
                 onClick$={() => {
                   console.log("DELETED");
-                  deleteDigit(mathOperation);
+                  handleDelete(mathOperation);
                 }}
               >
                 {"DEL"}
@@ -576,4 +576,21 @@ export function isDeletingOnDecimal(mathNode: MathType): boolean {
     return false;
   }
   return mathNode.leftSide.toString().length === mathNode.leftSideDecimalOffSet;
+}
+
+function deleteOperator(mathNode: MathType) {
+  mathNode.operation = "default";
+  mathNode.action = "default";
+}
+
+export function handleDelete(mathNode: MathType) {
+  const isDeleteOperator: boolean =
+    mathNode.rightSide === "default" && mathNode.operation !== "default";
+  if (isDeleteOperator) {
+    console.log("miss me with the operator");
+
+    deleteOperator(mathNode);
+    return;
+  }
+  deleteDigit(mathNode);
 }

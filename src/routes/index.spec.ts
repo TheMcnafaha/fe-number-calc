@@ -21,6 +21,7 @@ import {
   decimalAdjustAndReset,
   deleteDigit,
   isDeletingOnDecimal,
+  handleDelete,
 } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
@@ -378,4 +379,30 @@ test("only delete the decimal point when deleting on decimal point", () => {
   };
   deleteDigit(leftSideTest);
   expect(leftSideTest).toStrictEqual(leftSideAnswer);
+});
+
+test("delete operator", () => {
+  const test: MathType = {
+    leftSide: 10,
+    operation: "+",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "delete",
+    total: "default",
+    isRightSide: false,
+    leftSideDecimalOffSet: 2,
+  };
+  const answer: MathType = {
+    leftSide: 10,
+    operation: "default",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "default",
+    total: "default",
+    isRightSide: false,
+    leftSideDecimalOffSet: 2,
+  };
+
+  handleDelete(test);
+  expect(test).toStrictEqual(answer);
 });
