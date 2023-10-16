@@ -34,7 +34,10 @@ html {
     "Segoe UI Symbol",
     "Noto Color Emoji";
 }
-
+:root {
+  --bg-color: hsl(222, 26%, 31%);
+  --secondary-color: #000;
+}
 body {
   padding: 0;
   line-height: inherit;
