@@ -133,7 +133,9 @@ export default component$(() => {
               <button
                 value={"DEL"}
                 onClick$={() => {
-                  resetMathOperation(mathOperation);
+                  console.log("DELETED");
+
+                  deleteDigit(mathOperation);
                 }}
               >
                 {"DEL"}
@@ -347,8 +349,9 @@ function getDisplayFromMathStack(
   // handle actions here before they are passed to the display node
   if (mathOperations.action === "=") {
     // TODO: refactor this code into the mageMathActions fn
+    // TODO: deprecated manageMathActions
     manageMathActions(mathOperations.action, mathStack, mathOperations);
-    console.log("im better");
+    console.log("im better", getHeadNode(mathStack));
     const newMathNode = getHeadNode(mathStack);
     Object.assign(mathOperations, newMathNode);
     return getDisplayOfMathNode(mathOperations);
@@ -534,6 +537,10 @@ export function deleteDigit(mathNode: MathType) {
   // house-keeping
   mathNode.action = "default";
   if (mathNode.isRightSide) {
+    if (isDeletingOnDecimal(mathNode)) {
+      mathNode.rightSideDecimalOffSet = undefined;
+      return;
+    }
     const number_string = mathNode.rightSide.toString();
     if (number_string.length <= 1) {
       mathNode.rightSide = "default";
@@ -542,12 +549,17 @@ export function deleteDigit(mathNode: MathType) {
     mathNode.rightSide = Number(number_string.slice(0, -1));
     return;
   }
+  if (isDeletingOnDecimal(mathNode)) {
+    mathNode.leftSideDecimalOffSet = undefined;
+    return;
+  }
   const number_string = mathNode.leftSide.toString();
   if (number_string.length <= 1) {
     mathNode.leftSide = "default";
     return;
   }
   mathNode.leftSide = Number(number_string.slice(0, -1));
+  return;
 }
 
 export function isDeletingOnDecimal(mathNode: MathType): boolean {

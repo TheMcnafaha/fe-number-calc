@@ -331,3 +331,51 @@ test("return false if not deliting on decimal point", () => {
   expect(isDeletingOnDecimal(testRightSide)).toBe(false);
   expect(isDeletingOnDecimal(testLeftSide)).toBe(false);
 });
+
+test("only delete the decimal point when deleting on decimal point", () => {
+  const testRightSide: MathType = {
+    leftSide: 10,
+    operation: "default",
+    rightSide: 123,
+    rightSideDecimalOffSet: 3,
+    action: "delete",
+    total: "default",
+    isRightSide: true,
+    leftSideDecimalOffSet: 2,
+  };
+  const rightSideAnswer: MathType = {
+    leftSide: 10,
+    operation: "default",
+    rightSide: 123,
+    rightSideDecimalOffSet: undefined,
+    action: "default",
+    total: "default",
+    isRightSide: true,
+    leftSideDecimalOffSet: 2,
+  };
+  deleteDigit(testRightSide);
+  expect(testRightSide).toStrictEqual(rightSideAnswer);
+
+  const leftSideTest: MathType = {
+    leftSide: 10,
+    operation: "default",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "delete",
+    total: "default",
+    isRightSide: false,
+    leftSideDecimalOffSet: 2,
+  };
+  const leftSideAnswer: MathType = {
+    leftSide: 10,
+    operation: "default",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "default",
+    total: "default",
+    isRightSide: false,
+    leftSideDecimalOffSet: undefined,
+  };
+  deleteDigit(leftSideTest);
+  expect(leftSideTest).toStrictEqual(leftSideAnswer);
+});
