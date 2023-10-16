@@ -474,7 +474,7 @@ function setSideString(
 export function decimalAdjustAndReset(
   mathOperation: CheckedMathType,
 ): CheckedMathType {
-  if (mathOperation.leftSideDecimalOffSet != undefined) {
+  if (mathOperation.leftSideDecimalOffSet !== undefined) {
     mathOperation.leftSide = decimator(
       mathOperation.leftSide,
       mathOperation.leftSideDecimalOffSet,
@@ -482,7 +482,7 @@ export function decimalAdjustAndReset(
     mathOperation.leftSideDecimalOffSet = undefined;
   }
 
-  if (mathOperation.rightSideDecimalOffSet != undefined) {
+  if (mathOperation.rightSideDecimalOffSet !== undefined) {
     mathOperation.rightSide = decimator(
       mathOperation.rightSide,
       mathOperation.rightSideDecimalOffSet,
