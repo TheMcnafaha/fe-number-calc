@@ -6,6 +6,7 @@ import { NumberInput } from "~/components/number-input/number-input";
 import { TextInput } from "~/components/text-input/text-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
 import { TextInputSlot } from "~/components/text-input-slot/text-input-slot";
+import { LargeTextInputSlot } from "~/components/large-text-input-slot/large-text-input-slot";
 export type Sides = "leftSide" | "rightSide";
 export type MathType = {
   rightSide: number | "default";
@@ -199,11 +200,17 @@ export default component$(() => {
             </TextInput>
           </div>
           <div class="grid px-4 grid-cols-2 gap-3  justify-between w-full">
-            <LargeTextInput
-              input="RESET"
-              color="normal"
-              mathOperation={mathOperation}
-            ></LargeTextInput>
+            <LargeTextInputSlot color="normal">
+              <button
+                value={"reset"}
+                onClick$={() => {
+                  console.log("reseteted");
+                  resetMathOperation(mathOperation);
+                }}
+              >
+                {"RESET"}
+              </button>
+            </LargeTextInputSlot>
             <LargeTextInput
               input="="
               color="red"
