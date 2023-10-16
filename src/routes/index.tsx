@@ -134,7 +134,6 @@ export default component$(() => {
                 value={"DEL"}
                 onClick$={() => {
                   console.log("DELETED");
-
                   deleteDigit(mathOperation);
                 }}
               >
@@ -536,7 +535,7 @@ export function setDecimalOffSet(input: MathType, side: "left" | "right") {
 export function deleteDigit(mathNode: MathType) {
   // house-keeping
   mathNode.action = "default";
-  if (mathNode.isRightSide) {
+  if (mathNode.isRightSide && mathNode.rightSide !== "default") {
     if (isDeletingOnDecimal(mathNode)) {
       mathNode.rightSideDecimalOffSet = undefined;
       return;
@@ -549,17 +548,19 @@ export function deleteDigit(mathNode: MathType) {
     mathNode.rightSide = Number(number_string.slice(0, -1));
     return;
   }
-  if (isDeletingOnDecimal(mathNode)) {
-    mathNode.leftSideDecimalOffSet = undefined;
+  if (mathNode.leftSide !== "default") {
+    if (isDeletingOnDecimal(mathNode)) {
+      mathNode.leftSideDecimalOffSet = undefined;
+      return;
+    }
+    const number_string = mathNode.leftSide.toString();
+    if (number_string.length <= 1) {
+      mathNode.leftSide = "default";
+      return;
+    }
+    mathNode.leftSide = Number(number_string.slice(0, -1));
     return;
   }
-  const number_string = mathNode.leftSide.toString();
-  if (number_string.length <= 1) {
-    mathNode.leftSide = "default";
-    return;
-  }
-  mathNode.leftSide = Number(number_string.slice(0, -1));
-  return;
 }
 
 export function isDeletingOnDecimal(mathNode: MathType): boolean {
