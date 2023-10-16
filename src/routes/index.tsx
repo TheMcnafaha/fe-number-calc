@@ -549,3 +549,18 @@ export function deleteDigit(mathNode: MathType) {
   }
   mathNode.leftSide = Number(number_string.slice(0, -1));
 }
+
+export function isDeletingOnDecimal(mathNode: MathType): boolean {
+  if (mathNode.isRightSide) {
+    if (mathNode.rightSideDecimalOffSet === undefined) {
+      return false;
+    }
+    return (
+      mathNode.rightSide.toString().length === mathNode.rightSideDecimalOffSet
+    );
+  }
+  if (mathNode.leftSideDecimalOffSet === undefined) {
+    return false;
+  }
+  return mathNode.leftSide.toString().length === mathNode.leftSideDecimalOffSet;
+}

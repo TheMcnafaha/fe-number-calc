@@ -20,6 +20,7 @@ import {
   trueIfAllInputFilled,
   decimalAdjustAndReset,
   deleteDigit,
+  isDeletingOnDecimal,
 } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
@@ -276,7 +277,57 @@ test("correctly delete digits", () => {
   };
   deleteDigit(deleteMockRight);
   deleteDigit(deleteMockLeft);
-  console.log(deleteMockLeft, deleteMockRight);
   expect(deleteMockRight).toStrictEqual(answerMockRight);
   expect(deleteMockLeft).toStrictEqual(answerMockLeft);
+});
+
+test("return true if deleting on decimal point", () => {
+  const testRigthSide: MathType = {
+    leftSide: 10,
+    operation: "default",
+    rightSide: 123,
+    rightSideDecimalOffSet: 3,
+    action: "delete",
+    total: "default",
+    isRightSide: true,
+    leftSideDecimalOffSet: 2,
+  };
+  const testLeftSide: MathType = {
+    leftSide: 10,
+    leftSideDecimalOffSet: 2,
+    operation: "default",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "delete",
+    total: "default",
+    isRightSide: false,
+  };
+
+  expect(isDeletingOnDecimal(testRigthSide)).toBe(true);
+  expect(isDeletingOnDecimal(testLeftSide)).toBe(true);
+});
+test("return false if not deliting on decimal point", () => {
+  const testRightSide: MathType = {
+    leftSide: 10,
+    operation: "default",
+    rightSide: 1234567,
+    rightSideDecimalOffSet: 3,
+    action: "delete",
+    total: "default",
+    isRightSide: true,
+    leftSideDecimalOffSet: 2,
+  };
+  const testLeftSide: MathType = {
+    leftSide: 101,
+    leftSideDecimalOffSet: 2,
+    operation: "default",
+    rightSide: 1234567,
+    rightSideDecimalOffSet: 3,
+    action: "delete",
+    total: "default",
+    isRightSide: false,
+  };
+
+  expect(isDeletingOnDecimal(testRightSide)).toBe(false);
+  expect(isDeletingOnDecimal(testLeftSide)).toBe(false);
 });
