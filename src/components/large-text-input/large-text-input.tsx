@@ -10,9 +10,9 @@ export interface LargeTextInputProps {
 export const LargeTextInput = component$<LargeTextInputProps>(
   ({ input, color, mathOperation }) => {
     const colorOptions = {
-      red: " py-[.5rem] px-[.5rem]  bg-key-red border-key-red-bg  border-b-[3px] font-bold rounded-md   text-2xl text-white",
+      red: " py-[.5rem] px-[.5rem]  bg-accent-bg border-accent-border  border-b-[3px] font-bold rounded-md   text-2xl text-alt-key-text",
       normal:
-        " py-[.5rem] px-[.5rem]  bg-key-blue border-key-blue-bg border-b-[3px] font-bold rounded-md   text-md text-white",
+        " py-[.5rem] px-[.5rem]  bg-key-blue border-key-blue-bg border-b-[3px] font-bold rounded-md   text-md text-alt-key-text",
     };
     return (
       <button
