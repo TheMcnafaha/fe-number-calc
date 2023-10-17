@@ -222,7 +222,7 @@ export default component$(() => {
             </LargeTextInputSlot>
             <LargeTextInput
               input="="
-              color="red"
+              color="accent"
               mathOperation={mathOperation}
             ></LargeTextInput>
           </div>
@@ -612,6 +612,6 @@ export function handleDelete(mathNode: MathType) {
 }
 
 function toggleRootCSSVar(variable: string, new_value: string) {
-  const root = document.querySelector(":root");
+  const root = document.querySelector(":root") as HTMLElement;
   root!.style.setProperty(variable, new_value);
 }
