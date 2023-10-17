@@ -17,6 +17,7 @@ module.exports = {
       // "keypad-bg": " hsl(223, 31%, 20%)",
       // white: " hsl(0, 0%, 100%)",
       // theme 2
+
       "bg-color": "var(--bg-color)",
       "key-text": "var(--key-text)",
       "alt-key-text": "var(--alt-key-text)",
@@ -25,6 +26,7 @@ module.exports = {
       "alt-key-bg": "var(--alt-key-bg)",
       "alt-key-border": "var(--alt-key-border)",
       "display-bg": "var(--display-bg)",
+      "display-text": "var(--display-text)",
       "keypad-bg": "var(--keypad-bg)",
       "accent-bg": "var(--accent-bg)",
       "accent-border": "var(--accent-border)",

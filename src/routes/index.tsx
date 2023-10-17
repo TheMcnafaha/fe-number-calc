@@ -69,9 +69,10 @@ type Theme = {
   accent_bg: string;
   accent_border: string;
   display_bg: string;
+  display_text: string;
   bg_color: string;
 };
-const themes = [
+export const themeArr: Array<Theme> = [
   {
     key_text: "  hsl(221, 14%, 31%)",
     alt_key_text: "  hsl(0, 0%, 100%)",
@@ -83,6 +84,7 @@ const themes = [
     accent_bg: "  hsl(6, 63%, 50%)",
     accent_border: "  hsl(6, 70%, 34%)",
     display_bg: "  hsl(224, 36%, 15%)",
+    display_text: "hsl(0, 0%, 100%)",
     bg_color: "  hsl(222, 26%, 31%)",
   },
   {
@@ -96,6 +98,7 @@ const themes = [
     accent_bg: "hsl(25, 98%, 40%) ",
     accent_border: "hsl(25, 99%, 27%)",
     display_bg: "hsl(0, 0%, 93%) ",
+    display_text: "hsl(60, 10%, 19%)",
     bg_color: "hsl(0, 0%, 90%)",
   },
   {
@@ -106,10 +109,11 @@ const themes = [
     alt_key_bg: "hsl(281, 89%, 26%)",
     key_border: "hsl(290, 70%, 36%)",
     alt_key_border: "hsl(285, 91%, 52%)",
-    keypad_bg: "hsl(176, 100%, 44%)",
-    accent_bg: "hsl(177, 92%, 70%)",
-    accent_border: "hsl(25, 99%, 27%)",
-    display_bg: "hsl(0, 0%, 93%) ",
+    keypad_bg: "hsl(268, 71%, 12%)",
+    accent_bg: "hsl(176, 100%, 44%)",
+    accent_border: "hsl(177, 92%, 70%)",
+    display_bg: "hsl(268, 71%, 12%)",
+    display_text: "hsl(52, 100%, 62%)",
     bg_color: "hsl(268, 75%, 9%)",
   },
 ];
@@ -122,6 +126,7 @@ export default component$(() => {
     total: "default",
     isRightSide: false,
   });
+  const themeIndex = useSignal<number>(1);
 
   const mathStack = useStore<NeoGalactusStack>({
     head: 0,
@@ -171,9 +176,18 @@ export default component$(() => {
           <button
             onClick$={() => {
               // toggleRootCSSVar("--bg-color", "red");
-              Object.keys(themes[0]).forEach((key_name) => {
-                toggleRootCSSVar(CSSvarfy(key_name), "red");
-              });
+              themeIndex.value = themeIndex.value + 1;
+              if (themeIndex.value > themeArr.length - 1) {
+                themeIndex.value = 0;
+              }
+              Object.keys(themeArr[themeIndex.value]).forEach(
+                (key_name, index) => {
+                  toggleRootCSSVar(
+                    CSSvarfy(key_name),
+                    themeArr[themeIndex.value][key_name],
+                  );
+                },
+              );
             }}
           >
             TOGGLER
@@ -282,10 +296,11 @@ export default component$(() => {
               input="="
               color="accent"
               mathOperation={mathOperation}
+              isPurpleTheme={themeIndex.value === 2}
             ></LargeTextInput>
           </div>
         </section>
-        <h1 class="bg-red-400">Hi 👋</h1>
+        <h1 class="bg-red-400 ">Hi 👋</h1>
         <p>
           Can't wait to see what you build with qwik!
           <br />
@@ -674,49 +689,7 @@ function toggleRootCSSVar(variable: string, new_value: string) {
   root!.style.setProperty(variable, new_value);
 }
 
-export function nextTheme(index: number, themeObj: Theme) {
-  const themeArr: Array<Theme> = [
-    {
-      key_text: "  hsl(221, 14%, 31%)",
-      alt_key_text: "  hsl(0, 0%, 100%)",
-      key_bg: "  hsl(30, 25%, 89%)",
-      alt_key_bg: "  hsl(225, 21%, 49%)",
-      key_border: "  hsl(28, 16%, 65%)",
-      alt_key_border: "  hsl(224, 28%, 35%)",
-      keypad_bg: "  hsl(223, 31%, 20%)",
-      accent_bg: "  hsl(6, 63%, 50%)",
-      accent_border: "  hsl(6, 70%, 34%)",
-      display_bg: "  hsl(224, 36%, 15%)",
-      bg_color: "  hsl(222, 26%, 31%)",
-    },
-    {
-      key_text: "hsl(60, 10%, 19%)",
-      alt_key_text: "  hsl(0, 0%, 100%)",
-      key_bg: "hsl(45, 7%, 89%)",
-      alt_key_bg: "hsl(185, 42%, 37%) ",
-      key_border: "hsl(35, 11%, 61%)",
-      alt_key_border: "hsl(185, 58%, 25%)",
-      keypad_bg: "hsl(0, 5%, 81%) ",
-      accent_bg: "hsl(25, 98%, 40%) ",
-      accent_border: "hsl(25, 99%, 27%)",
-      display_bg: "hsl(0, 0%, 93%) ",
-      bg_color: "hsl(0, 0%, 90%)",
-    },
-    {
-      // - Very dark blue: hsl(198, 20%, 13%)
-      key_text: "hsl(52, 100%, 62%)",
-      alt_key_text: "  hsl(0, 0%, 100%)",
-      key_bg: "hsl(268, 47%, 21%)",
-      alt_key_bg: "hsl(281, 89%, 26%)",
-      key_border: "hsl(290, 70%, 36%)",
-      alt_key_border: "hsl(285, 91%, 52%)",
-      keypad_bg: "hsl(176, 100%, 44%)",
-      accent_bg: "hsl(177, 92%, 70%)",
-      accent_border: "hsl(25, 99%, 27%)",
-      display_bg: "hsl(0, 0%, 93%) ",
-      bg_color: "hsl(268, 75%, 9%)",
-    },
-  ];
+export function nextTheme(themeObj: Theme) {
   const currentIndex = themeArr.findIndex(
     (e) => e.accent_bg === themeObj.accent_bg,
   );
