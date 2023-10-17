@@ -23,6 +23,7 @@ import {
   isDeletingOnDecimal,
   handleDelete,
   nextTheme,
+  CSSvarfy,
 } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
@@ -482,4 +483,8 @@ test("currect get currentIndex", () => {
   expect(nextTheme(0, index_0)).toBe(0);
   expect(nextTheme(0, index_1)).toBe(1);
   expect(nextTheme(0, index_2)).toBe(2);
+});
+
+test("make key into css var", () => {
+  expect(CSSvarfy("key_text")).toBe("--key-text");
 });

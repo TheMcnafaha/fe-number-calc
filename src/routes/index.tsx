@@ -677,3 +677,7 @@ export function nextTheme(index: number, themeObj: Theme) {
   );
   return currentIndex;
 }
+export function CSSvarfy(input: string): string {
+  const textArr = input.split("_");
+  return `--${textArr[0]}-${textArr[1]}`;
+}
