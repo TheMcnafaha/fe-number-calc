@@ -1,14 +1,15 @@
 import { Slot, component$ } from "@builder.io/qwik";
 export interface LargeTextInputSlotProps {
-  color: "red" | "normal";
+  color: "accent" | "normal";
 }
 
 export const LargeTextInputSlot = component$<LargeTextInputSlotProps>(
   ({ color }) => {
     const colorOptions = {
-      red: " py-[.5rem] px-[.5rem]  bg-key-red border-key-red-bg  border-b-[3px] font-bold rounded-md   flex justify-center text-2xl text-white",
+      accent:
+        " py-[.5rem] px-[.5rem]  bg-accent-bg border-accent-border  border-b-[3px] font-bold rounded-md   text-2xl text-alt-key-text",
       normal:
-        " py-[.5rem] px-[.5rem]  bg-key-blue border-key-blue-bg border-b-[3px] font-bold rounded-md   flex justify-center text-md text-white",
+        " py-[.5rem] px-[.5rem]  bg-alt-key-bg border-alt-key-border border-b-[3px] font-bold rounded-md   flex justify-center text-md text-alt-key-text",
     };
     return (
       <div class={colorOptions[color]}>

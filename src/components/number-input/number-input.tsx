@@ -13,7 +13,7 @@ export const NumberInput = component$<NumberInputProps>(
 
     return (
       <button
-        class="w-12 py-[.5rem] bg-key border-key-border border-b-[3px] font-bold rounded-md   text-2xl text-key-text"
+        class="w-12 py-[.5rem] bg-key-bg border-key-border border-b-[3px] font-bold rounded-md   text-2xl text-key-text"
         value={input}
         onClick$={(event, currentTarget) => {
           const target = currentTarget as HTMLInputElement;

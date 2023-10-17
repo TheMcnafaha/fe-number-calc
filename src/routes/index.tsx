@@ -112,7 +112,7 @@ export default component$(() => {
             </div>
           </div>
         </div>{" "}
-        <LargeTextInputSlot color="red">
+        <LargeTextInputSlot color="accent">
           <button
             onClick$={() => {
               toggleRootCSSVar("--bg-color", "red");
@@ -139,7 +139,7 @@ export default component$(() => {
               mathOperation={mathOperation}
               side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
             ></NumberInput>
-            <TextInputSlot color="blue">
+            <TextInputSlot color="alt">
               <button
                 value={"DEL"}
                 onClick$={() => {
