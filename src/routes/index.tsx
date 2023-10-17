@@ -112,6 +112,15 @@ export default component$(() => {
             </div>
           </div>
         </div>{" "}
+        <LargeTextInputSlot color="red">
+          <button
+            onClick$={() => {
+              toggleRootCSSVar("--bg-color", "red");
+            }}
+          >
+            TOGGLER
+          </button>
+        </LargeTextInputSlot>
         <CalculatorDisplay input={display.value}></CalculatorDisplay>
         <section class="bg-keypad-bg   flex flex-col items-center rounded-lg gap-3 py-4">
           <div class="flex justify-center  gap-3 px-4">
@@ -600,4 +609,9 @@ export function handleDelete(mathNode: MathType) {
     return;
   }
   deleteDigit(mathNode);
+}
+
+function toggleRootCSSVar(variable: string, new_value: string) {
+  const root = document.querySelector(":root");
+  root!.style.setProperty(variable, new_value);
 }
