@@ -487,4 +487,6 @@ test("currect get currentIndex", () => {
 
 test("make key into css var", () => {
   expect(CSSvarfy("key_text")).toBe("--key-text");
+
+  expect(CSSvarfy("alt_key_bg")).toBe("--alt-key-bg");
 });
