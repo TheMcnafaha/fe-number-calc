@@ -58,6 +58,61 @@ type Display = {
   operation: string;
   leftSide: string;
 };
+type Theme = {
+  key_text: string;
+  alt_key_text: string;
+  key_bg: string;
+  alt_key_bg: string;
+  key_border: string;
+  alt_key_border: string;
+  keypad_bg: string;
+  accent_bg: string;
+  accent_border: string;
+  display_bg: string;
+  bg_color: string;
+};
+const themes = [
+  {
+    key_text: "  hsl(221, 14%, 31%)",
+    alt_key_text: "  hsl(0, 0%, 100%)",
+    key_bg: "  hsl(30, 25%, 89%)",
+    alt_key_bg: "  hsl(225, 21%, 49%)",
+    key_border: "  hsl(28, 16%, 65%)",
+    alt_key_border: "  hsl(224, 28%, 35%)",
+    keypad_bg: "  hsl(223, 31%, 20%)",
+    accent_bg: "  hsl(6, 63%, 50%)",
+    accent_border: "  hsl(6, 70%, 34%)",
+    display_bg: "  hsl(224, 36%, 15%)",
+    bg_color: "  hsl(222, 26%, 31%)",
+  },
+  {
+    key_text: "hsl(60, 10%, 19%)",
+    alt_key_text: "  hsl(0, 0%, 100%)",
+    key_bg: "hsl(45, 7%, 89%)",
+    alt_key_bg: "hsl(185, 42%, 37%) ",
+    key_border: "hsl(35, 11%, 61%)",
+    alt_key_border: "hsl(185, 58%, 25%)",
+    keypad_bg: "hsl(0, 5%, 81%) ",
+    accent_bg: "hsl(25, 98%, 40%) ",
+    accent_border: "hsl(25, 99%, 27%)",
+    display_bg: "hsl(0, 0%, 93%) ",
+    bg_color: "hsl(0, 0%, 90%)",
+  },
+  {
+    // - Very dark blue: hsl(198, 20%, 13%)
+    key_text: "hsl(52, 100%, 62%)",
+    alt_key_text: "  hsl(0, 0%, 100%)",
+    key_bg: "hsl(268, 47%, 21%)",
+    alt_key_bg: "hsl(281, 89%, 26%)",
+    key_border: "hsl(290, 70%, 36%)",
+    alt_key_border: "hsl(285, 91%, 52%)",
+    keypad_bg: "hsl(176, 100%, 44%)",
+    accent_bg: "hsl(177, 92%, 70%)",
+    accent_border: "hsl(25, 99%, 27%)",
+    display_bg: "hsl(0, 0%, 93%) ",
+    bg_color: "hsl(268, 75%, 9%)",
+  },
+];
 export default component$(() => {
   const mathOperation = useStore<MathType>({
     rightSide: "default",
@@ -112,10 +167,13 @@ export default component$(() => {
             </div>
           </div>
         </div>{" "}
-        <LargeTextInputSlot color="red">
+        <LargeTextInputSlot color="accent">
           <button
             onClick$={() => {
-              toggleRootCSSVar("--bg-color", "red");
+              // toggleRootCSSVar("--bg-color", "red");
+              Object.keys(themes[0]).forEach((key_name) => {
+                toggleRootCSSVar(CSSvarfy(key_name), "red");
+              });
             }}
           >
             TOGGLER
@@ -222,7 +280,7 @@ export default component$(() => {
             </LargeTextInputSlot>
             <LargeTextInput
               input="="
-              color="red"
+              color="accent"
               mathOperation={mathOperation}
             ></LargeTextInput>
           </div>
@@ -612,6 +670,66 @@ export function handleDelete(mathNode: MathType) {
 }
 
 function toggleRootCSSVar(variable: string, new_value: string) {
-  const root = document.querySelector(":root");
+  const root = document.querySelector(":root") as HTMLElement;
   root!.style.setProperty(variable, new_value);
+}
+
+export function nextTheme(index: number, themeObj: Theme) {
+  const themeArr: Array<Theme> = [
+    {
+      key_text: "  hsl(221, 14%, 31%)",
+      alt_key_text: "  hsl(0, 0%, 100%)",
+      key_bg: "  hsl(30, 25%, 89%)",
+      alt_key_bg: "  hsl(225, 21%, 49%)",
+      key_border: "  hsl(28, 16%, 65%)",
+      alt_key_border: "  hsl(224, 28%, 35%)",
+      keypad_bg: "  hsl(223, 31%, 20%)",
+      accent_bg: "  hsl(6, 63%, 50%)",
+      accent_border: "  hsl(6, 70%, 34%)",
+      display_bg: "  hsl(224, 36%, 15%)",
+      bg_color: "  hsl(222, 26%, 31%)",
+    },
+    {
+      key_text: "hsl(60, 10%, 19%)",
+      alt_key_text: "  hsl(0, 0%, 100%)",
+      key_bg: "hsl(45, 7%, 89%)",
+      alt_key_bg: "hsl(185, 42%, 37%) ",
+      key_border: "hsl(35, 11%, 61%)",
+      alt_key_border: "hsl(185, 58%, 25%)",
+      keypad_bg: "hsl(0, 5%, 81%) ",
+      accent_bg: "hsl(25, 98%, 40%) ",
+      accent_border: "hsl(25, 99%, 27%)",
+      display_bg: "hsl(0, 0%, 93%) ",
+      bg_color: "hsl(0, 0%, 90%)",
+    },
+    {
+      // - Very dark blue: hsl(198, 20%, 13%)
+      key_text: "hsl(52, 100%, 62%)",
+      alt_key_text: "  hsl(0, 0%, 100%)",
+      key_bg: "hsl(268, 47%, 21%)",
+      alt_key_bg: "hsl(281, 89%, 26%)",
+      key_border: "hsl(290, 70%, 36%)",
+      alt_key_border: "hsl(285, 91%, 52%)",
+      keypad_bg: "hsl(176, 100%, 44%)",
+      accent_bg: "hsl(177, 92%, 70%)",
+      accent_border: "hsl(25, 99%, 27%)",
+      display_bg: "hsl(0, 0%, 93%) ",
+      bg_color: "hsl(268, 75%, 9%)",
+    },
+  ];
+  const currentIndex = themeArr.findIndex(
+    (e) => e.accent_bg === themeObj.accent_bg,
+  );
+  return currentIndex;
+}
+export function CSSvarfy(input: string): string {
+  const textArr = input.split("_");
+  // return `--${textArr[0]}-${textArr[1]}`;
+  return textArr.reduce((str, key, i) => {
+    if (i === 0) {
+      return str.concat(`--${key}`);
+    }
+
+    return str.concat(`-${key}`);
+  }, "");
 }

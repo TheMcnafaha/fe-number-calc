@@ -3,14 +3,15 @@ import { Actions, MathType, Operators } from "~/routes";
 
 export interface LargeTextInputProps {
   input: string;
-  color: "red" | "normal";
+  color: "accent" | "normal";
   mathOperation: MathType;
 }
 
 export const LargeTextInput = component$<LargeTextInputProps>(
   ({ input, color, mathOperation }) => {
     const colorOptions = {
-      red: " py-[.5rem] px-[.5rem]  bg-accent-bg border-accent-border  border-b-[3px] font-bold rounded-md   text-2xl text-alt-key-text",
+      accent:
+        " py-[.5rem] px-[.5rem]  bg-accent-bg border-accent-border  border-b-[3px] font-bold rounded-md   text-2xl text-alt-key-text",
       normal:
         " py-[.5rem] px-[.5rem]  bg-key-blue border-key-blue-bg border-b-[3px] font-bold rounded-md   text-md text-alt-key-text",
     };
