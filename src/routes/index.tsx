@@ -157,8 +157,9 @@ export default component$(() => {
             <p class="text-xs place-self-end uppercase text-display-text">
               Theme
             </p>
-            <ThreeStageToggle index={themeIndex.value}>
+            <ThreeStageToggle index={themeIndex.value} id="toggle">
               <button
+                id="toggle"
                 class="w-3 h-3 bg-accent-bg rounded-full"
                 onClick$={() => {
                   // toggleRootCSSVar("--bg-color", "red");
@@ -303,20 +304,7 @@ export default component$(() => {
             ></LargeTextInput>
           </div>
         </section>
-        <h1 class="bg-red-400 ">Hi 👋</h1>
-        <p>
-          Can't wait to see what you build with qwik!
-          <br />
-          Happy coding.
-        </p>
       </main>
-      <div class="attribution">
-        Challenge by{" "}
-        <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">
-          Frontend Mentor
-        </a>
-        . Coded by <a href="#">Your Name Here</a>.
-      </div>
     </>
   );
 });

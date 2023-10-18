@@ -2,10 +2,11 @@ import { Slot, component$ } from "@builder.io/qwik";
 
 export interface ThreeStageToggleProps {
   index: number;
+  id: string;
 }
 
 export const ThreeStageToggle = component$<ThreeStageToggleProps>(
-  ({ index }) => {
+  ({ index, id }) => {
     let className: string = "";
 
     if (index === 0) {
@@ -25,9 +26,9 @@ export const ThreeStageToggle = component$<ThreeStageToggleProps>(
           <li class=" w-[12px]">2</li>
           <li class=" w-[12px]">3</li>
         </ul>
-        <div class={className}>
+        <label class={className} for={id}>
           <Slot></Slot>
-        </div>
+        </label>
       </div>
     );
   },
