@@ -25,6 +25,7 @@ import {
   nextTheme,
   CSSvarfy,
   themeArr,
+  commafier,
 } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
@@ -420,4 +421,14 @@ test("currect get currentIndex", () => {
 test("make key into css var", () => {
   expect(CSSvarfy("key_text")).toBe("--key-text");
   expect(CSSvarfy("alt_key_bg")).toBe("--alt-key-bg");
+});
+
+test("currectly add commas to big nums", () => {
+  expect(commafier(100)).toBe("100");
+  expect(commafier(1000)).toBe("1,000");
+  expect(commafier(10000)).toBe("10,000");
+  expect(commafier(100000)).toBe("100,000");
+  expect(commafier(1000000)).toBe("1,000,000");
+  expect(commafier(10000000)).toBe("10,000,000");
+  expect(commafier(123000000)).toBe("123,000,000");
 });

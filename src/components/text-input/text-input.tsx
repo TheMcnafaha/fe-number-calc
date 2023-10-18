@@ -10,9 +10,9 @@ export interface TextInputProps {
 export const TextInput = component$<TextInputProps>(
   ({ input, color, mathOperation }) => {
     const colorOptions = {
-      alt: "w-12 py-[.5rem] bg-alt-key-bg border-alt-key-border border-b-[3px] font-bold rounded-md   text-md text-white",
+      alt: "w-12 py-2 bg-alt-key-bg border-alt-key-border border-b-[3px] font-bold rounded-md   text-md text-white",
       normal:
-        "w-12 py-[.5rem] bg-key-bg border-key-border border-b-[3px] font-bold rounded-md   text-3xl text-key-text",
+        "w-12 py-2 bg-key-bg border-key-border border-b-[3px] font-bold rounded-md   text-3xl text-key-text",
     };
     return (
       <button
