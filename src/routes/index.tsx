@@ -126,7 +126,7 @@ export default component$(() => {
     total: "default",
     isRightSide: false,
   });
-  const themeIndex = useSignal<number>(1);
+  const themeIndex = useSignal<number>(0);
 
   const mathStack = useStore<NeoGalactusStack>({
     head: 0,
@@ -151,48 +151,51 @@ export default component$(() => {
   return (
     <>
       <main class=" px-4 flex flex-col items-center">
-        <div class="flex w-full   justify-between">
-          <h1>Calc</h1>
-
-          <div>
-            <ThreeStageToggle></ThreeStageToggle>
-            <div class="text-white flex flex-wrap gap-3 w-[260px]">
-              <p> isR: {`${mathOperation.isRightSide}`}</p>
-              <p>
-                {" "}
-                side: {mathOperation.isRightSide ? "rightSide" : "leftSide"}
-              </p>
-              <p> leftS: {`${mathOperation.leftSide}`}</p>
-              <p> rightS: {`${mathOperation.rightSide}`}</p>
-              <p> leftD: {`${mathOperation.leftSideDecimalOffSet}`}</p>
-              <p> rightD: {`${mathOperation.rightSideDecimalOffSet}`}</p>
-              <p> opeation: {`${mathOperation.operation}`}</p>
-              <p> action: {`${mathOperation.action}`}</p>
-              <p> total: {`${mathOperation.total}`}</p>
-            </div>
+        <div class="flex w-full   justify-center">
+          <div class="grid w-[260px] grid-cols-3 py-4">
+            <h1 class="self-end text-display-text">Calc</h1>
+            <p class="text-xs place-self-end uppercase text-display-text">
+              Theme
+            </p>
+            <ThreeStageToggle index={themeIndex.value}>
+              <button
+                class="w-3 h-3 bg-accent-bg rounded-full"
+                onClick$={() => {
+                  // toggleRootCSSVar("--bg-color", "red");
+                  themeIndex.value = themeIndex.value + 1;
+                  if (themeIndex.value > themeArr.length - 1) {
+                    themeIndex.value = 0;
+                  }
+                  Object.keys(themeArr[themeIndex.value]).forEach(
+                    (key_name, index) => {
+                      toggleRootCSSVar(
+                        CSSvarfy(key_name),
+                        themeArr[themeIndex.value][key_name],
+                      );
+                    },
+                  );
+                }}
+              ></button>
+            </ThreeStageToggle>
+            {
+              //
+              // <div class="text-white flex flex-wrap gap-3 w-[260px]">
+              //   <p> isR: {`${mathOperation.isRightSide}`}</p>
+              //   <p>
+              //     {" "}
+              //     side: {mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              //   </p>
+              //   <p> leftS: {`${mathOperation.leftSide}`}</p>
+              //   <p> rightS: {`${mathOperation.rightSide}`}</p>
+              //   <p> leftD: {`${mathOperation.leftSideDecimalOffSet}`}</p>
+              //   <p> rightD: {`${mathOperation.rightSideDecimalOffSet}`}</p>
+              //   <p> opeation: {`${mathOperation.operation}`}</p>
+              //   <p> action: {`${mathOperation.action}`}</p>
+              //   <p> total: {`${mathOperation.total}`}</p>
+              // </div>
+            }
           </div>
         </div>{" "}
-        <LargeTextInputSlot color="accent">
-          <button
-            onClick$={() => {
-              // toggleRootCSSVar("--bg-color", "red");
-              themeIndex.value = themeIndex.value + 1;
-              if (themeIndex.value > themeArr.length - 1) {
-                themeIndex.value = 0;
-              }
-              Object.keys(themeArr[themeIndex.value]).forEach(
-                (key_name, index) => {
-                  toggleRootCSSVar(
-                    CSSvarfy(key_name),
-                    themeArr[themeIndex.value][key_name],
-                  );
-                },
-              );
-            }}
-          >
-            TOGGLER
-          </button>
-        </LargeTextInputSlot>
         <CalculatorDisplay input={display.value}></CalculatorDisplay>
         <section class="bg-keypad-bg   flex flex-col items-center rounded-lg gap-3 py-4">
           <div class="flex justify-center  gap-3 px-4">
