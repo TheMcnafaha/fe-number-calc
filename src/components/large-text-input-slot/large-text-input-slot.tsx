@@ -7,9 +7,9 @@ export const LargeTextInputSlot = component$<LargeTextInputSlotProps>(
   ({ color }) => {
     const colorOptions = {
       accent:
-        " py-[.5rem] px-[.5rem]  bg-accent-bg border-accent-border  border-b-[3px] font-bold rounded-md   text-2xl text-alt-key-text",
+        " py-[.5rem] px-[.5rem]  bg-accent-bg border-accent-border  border-b-[3px] font-bold rounded-md   text-3xl text-alt-key-text",
       normal:
-        " py-[.5rem] px-[.5rem]  bg-alt-key-bg border-alt-key-border border-b-[3px] font-bold rounded-md   flex justify-center text-md text-alt-key-text",
+        " py-[.5rem] px-[.5rem]  bg-alt-key-bg border-alt-key-border border-b-[3px] font-bold rounded-md   flex justify-center text-lg text-alt-key-text",
     };
     return (
       <div class={colorOptions[color]}>

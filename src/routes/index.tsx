@@ -198,8 +198,8 @@ export default component$(() => {
           </div>
         </div>{" "}
         <CalculatorDisplay input={display.value}></CalculatorDisplay>
-        <section class="bg-keypad-bg   flex flex-col items-center rounded-lg gap-3 py-4">
-          <div class="flex justify-center  gap-3 px-4">
+        <section class="bg-keypad-bg   grid grid-rows-5 grid-cols-1 items-center rounded-lg gap-2 py-4">
+          <div class="flex justify-center  h-full gap-3 px-4">
             <NumberInput
               input={7}
               mathOperation={mathOperation}

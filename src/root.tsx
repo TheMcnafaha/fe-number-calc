@@ -21,9 +21,22 @@ export default component$(() => {
       <head>
         <meta charSet="utf-8" />
         <link rel="manifest" href="/manifest.json" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap"
+          rel="stylesheet"
+        />
         <RouterHead />
       </head>
-      <body lang="en" class="bg-bg-color flex flex-col justify-center h-screen">
+      <body
+        lang="en"
+        class="bg-bg-color text-xl flex flex-col justify-center h-screen font-spartan font-bold"
+      >
         <RouterOutlet />
         <ServiceWorkerRegister />
       </body>
