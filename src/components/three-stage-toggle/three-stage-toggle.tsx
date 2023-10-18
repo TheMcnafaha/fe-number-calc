@@ -20,10 +20,10 @@ export const ThreeStageToggle = component$<ThreeStageToggleProps>(
     }
     return (
       <div class="w-[60px] justify-self-end text-sm">
-        <ul class="flex justify-between p-1 text-display-text">
-          <li>1</li>
-          <li>2</li>
-          <li>3</li>
+        <ul class="flex text-center justify-between text-display-text p-1">
+          <li class=" w-[12px]">1</li>
+          <li class=" w-[12px]">2</li>
+          <li class=" w-[12px]">3</li>
         </ul>
         <div class={className}>
           <Slot></Slot>
