@@ -26,6 +26,8 @@ import {
   CSSvarfy,
   themeArr,
   commafier,
+  isOperatorEmpty,
+  getNonDecimalStrg,
 } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
@@ -431,4 +433,46 @@ test("currectly add commas to big nums", () => {
   expect(commafier(1000000)).toBe("1,000,000");
   expect(commafier(10000000)).toBe("10,000,000");
   expect(commafier(123000000)).toBe("123,000,000");
+});
+
+test("correct bool logic to math operators", () => {
+  const shouldBeFalse: MathType = {
+    leftSide: 123,
+    operation: "default",
+    rightSide: "default",
+    action: "default",
+    total: "default",
+    isRightSide: true,
+  };
+  const shouldBeTrue1: MathType = {
+    leftSide: "default",
+    operation: "default",
+    rightSide: "default",
+    action: "default",
+    total: "default",
+    isRightSide: true,
+  };
+  const shouldBeTrue2: MathType = {
+    leftSide: 123,
+    operation: "default",
+    rightSide: 456,
+    action: "default",
+    total: "default",
+    isRightSide: false,
+  };
+
+  expect(isOperatorEmpty(shouldBeFalse)).toBe(false);
+  expect(isOperatorEmpty(shouldBeTrue1)).toBe(true);
+  // implementation detail: isRS is only changed on operation selection, so though this is the expected result, the current app behaviour would need to be changed/refactored
+  expect(isOperatorEmpty(shouldBeTrue2)).toBe(false);
+});
+test("currectly add commas to big nums but ingnore the decimal", () => {
+  expect(getNonDecimalStrg("1000.123")).toBe("1000");
+  expect(commafier(1000.123)).toBe("1,000.123");
+  expect(commafier(1000.123)).toBe("1,000.123");
+  expect(commafier(10000.123)).toBe("10,000.123");
+  expect(commafier(100000.123)).toBe("100,000.123");
+  expect(commafier(1000000.123)).toBe("1,000,000.123");
+  expect(commafier(10000000.123)).toBe("10,000,000.123");
+  expect(commafier(123000000.123)).toBe("123,000,000.123");
 });

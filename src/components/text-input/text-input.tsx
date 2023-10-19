@@ -1,5 +1,5 @@
 import { PropFunction, component$, $ } from "@builder.io/qwik";
-import type { MathType, Operators } from "~/routes";
+import { isOperatorEmpty, type MathType, type Operators } from "~/routes";
 
 export interface TextInputProps {
   input: string;
@@ -20,6 +20,9 @@ export const TextInput = component$<TextInputProps>(
         value={input}
         onClick$={(event, currentTarget: HTMLButtonElement) => {
           const target = currentTarget as HTMLInputElement;
+          if (isOperatorEmpty(mathOperation)) {
+            return;
+          }
           mathOperation.operation = target.value as Operators;
         }}
       >

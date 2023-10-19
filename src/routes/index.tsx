@@ -268,6 +268,12 @@ export default component$(() => {
               <button
                 value={"."}
                 onClick$={() => {
+                  if (
+                    isOperatorEmpty(mathOperation) &&
+                    mathOperation.leftSide === "default"
+                  ) {
+                    return;
+                  }
                   mathOperation.action = ".";
                 }}
               >
@@ -699,9 +705,36 @@ export function CSSvarfy(input: string): string {
 }
 export function commafier(input: number | string): string {
   let strg = typeof input === "number" ? input.toString() : input;
+  if (strg.includes(".")) {
+    let nonDecimalStrg = getNonDecimalStrg(strg);
+    // changes in steps of 4 chars, but bc of 0-indexing, fn use 3 as the step count
+    for (
+      let replacenonDecimalStrg = nonDecimalStrg.length - 3;
+      replacenonDecimalStrg > 0;
+      replacenonDecimalStrg -= 3
+    ) {
+      nonDecimalStrg =
+        nonDecimalStrg.substring(0, replacenonDecimalStrg) +
+        "," +
+        nonDecimalStrg.substring(replacenonDecimalStrg);
+    }
+    return nonDecimalStrg.concat(strg.substring(strg.indexOf(".")));
+  }
   // changes in steps of 4 chars, but bc of 0-indexing, fn use 3 as the step count
   for (let replaceStrg = strg.length - 3; replaceStrg > 0; replaceStrg -= 3) {
     strg = strg.substring(0, replaceStrg) + "," + strg.substring(replaceStrg);
   }
   return strg;
+}
+
+export function isOperatorEmpty(mathNode: MathType): boolean {
+  if (mathNode.leftSide != "default") {
+    return false;
+  }
+  return true;
+}
+
+export function getNonDecimalStrg(input: string): string {
+  const decimalIndex = input.indexOf(".");
+  return decimalIndex === -1 ? input : input.substring(0, decimalIndex);
 }
