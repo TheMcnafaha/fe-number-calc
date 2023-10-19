@@ -354,9 +354,9 @@ export function getDisplayOfMathNode(math: MathType): string {
     responseString.rightSide = setSideString("right", math);
   }
   return (
-    responseString.leftSide +
+    commafier(responseString.leftSide) +
     responseString.operation +
-    responseString.rightSide
+    commafier(responseString.rightSide)
   );
 }
 export function getStackDisplay(mathStack: MathGalactusStack) {
@@ -697,8 +697,8 @@ export function CSSvarfy(input: string): string {
     return str.concat(`-${key}`);
   }, "");
 }
-export function commafier(input: number): string {
-  let strg = input.toString();
+export function commafier(input: number | string): string {
+  let strg = typeof input === "number" ? input.toString() : input;
   // changes in steps of 4 chars, but bc of 0-indexing, fn use 3 as the step count
   for (let replaceStrg = strg.length - 3; replaceStrg > 0; replaceStrg -= 3) {
     strg = strg.substring(0, replaceStrg) + "," + strg.substring(replaceStrg);
