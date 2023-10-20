@@ -179,21 +179,20 @@ export default component$(() => {
               ></button>
             </ThreeStageToggle>
             {
-              //
-              // <div class="text-white flex flex-wrap gap-3 w-[260px]">
-              //   <p> isR: {`${mathOperation.isRightSide}`}</p>
-              //   <p>
-              //     {" "}
-              //     side: {mathOperation.isRightSide ? "rightSide" : "leftSide"}
-              //   </p>
-              //   <p> leftS: {`${mathOperation.leftSide}`}</p>
-              //   <p> rightS: {`${mathOperation.rightSide}`}</p>
-              //   <p> leftD: {`${mathOperation.leftSideDecimalOffSet}`}</p>
-              //   <p> rightD: {`${mathOperation.rightSideDecimalOffSet}`}</p>
-              //   <p> opeation: {`${mathOperation.operation}`}</p>
-              //   <p> action: {`${mathOperation.action}`}</p>
-              //   <p> total: {`${mathOperation.total}`}</p>
-              // </div>
+              <div class="text-display-text flex flex-wrap gap-3 w-[260px]">
+                <p> isR: {`${mathOperation.isRightSide}`}</p>
+                <p>
+                  {" "}
+                  side: {mathOperation.isRightSide ? "rightSide" : "leftSide"}
+                </p>
+                <p> leftS: {`${mathOperation.leftSide}`}</p>
+                <p> rightS: {`${mathOperation.rightSide}`}</p>
+                <p> leftD: {`${mathOperation.leftSideDecimalOffSet}`}</p>
+                <p> rightD: {`${mathOperation.rightSideDecimalOffSet}`}</p>
+                <p> opeation: {`${mathOperation.operation}`}</p>
+                <p> action: {`${mathOperation.action}`}</p>
+                <p> total: {`${mathOperation.total}`}</p>
+              </div>
             }
           </div>
         </div>{" "}
