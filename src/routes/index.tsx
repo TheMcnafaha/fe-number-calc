@@ -118,6 +118,7 @@ export const themeArr: Array<Theme> = [
   },
 ];
 export default component$(() => {
+  // remove this as its duplicate state
   const mathOperation = useStore<MathType>({
     rightSide: "default",
     operation: "default",
@@ -267,13 +268,15 @@ export default component$(() => {
               <button
                 value={"."}
                 onClick$={() => {
-                  if (
-                    isOperatorEmpty(mathOperation) &&
-                    mathOperation.leftSide === "default"
+                  if (mathOperation.isRightSide) {
+                    if (mathOperation.rightSideDecimalOffSet === undefined) {
+                      setDecimalOffSet(mathOperation, "right");
+                    }
+                  } else if (
+                    mathOperation.leftSideDecimalOffSet === undefined
                   ) {
-                    return;
+                    setDecimalOffSet(mathOperation, "left");
                   }
-                  mathOperation.action = ".";
                 }}
               >
                 {"."}
@@ -390,6 +393,8 @@ export function resetMathOperation(mathOperation: MathType): MathType {
     mathOperation.total =
       "default";
   mathOperation.isRightSide = false;
+  mathOperation.leftSideDecimalOffSet = mathOperation.rightSideDecimalOffSet =
+    undefined;
   return mathOperation;
 }
 export function addNewMathNode(
@@ -481,6 +486,7 @@ export function manageMathActions(
       return mathStack;
 
     case ".":
+      return;
       if (mathOperation.isRightSide) {
         if (mathOperation.rightSideDecimalOffSet === undefined) {
           setDecimalOffSet(mathOperation, "right");

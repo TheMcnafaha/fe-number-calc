@@ -193,7 +193,17 @@ test('correctly "house-keep" the mahtStack head when new mathNode is added', () 
 // display logic: decimal pain
 
 test("add correct decimal offset on first instance on mathNode", () => {
+  const test: MathType = {
+    leftSide: 0,
+    operation: "default",
+    rightSide: "default",
+    action: ".",
+    total: "default",
+    isRightSide: true,
+    leftSideDecimalOffSet: 1,
+  };
   expect(getDisplayOfMathNode(mockMathTypeDecimal)).toBe("10.");
+  expect(getDisplayOfMathNode(test)).toBe("0.");
 });
 
 // calc logic
@@ -308,9 +318,20 @@ test("return true if deleting on decimal point", () => {
     total: "default",
     isRightSide: false,
   };
+  const testLeftSide2: MathType = {
+    leftSide: 0,
+    leftSideDecimalOffSet: 1,
+    operation: "default",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "delete",
+    total: "default",
+    isRightSide: false,
+  };
 
   expect(isDeletingOnDecimal(testRigthSide)).toBe(true);
   expect(isDeletingOnDecimal(testLeftSide)).toBe(true);
+  expect(isDeletingOnDecimal(testLeftSide2)).toBe(true);
 });
 test("return false if not deliting on decimal point", () => {
   const testRightSide: MathType = {
@@ -382,8 +403,30 @@ test("only delete the decimal point when deleting on decimal point", () => {
     isRightSide: false,
     leftSideDecimalOffSet: undefined,
   };
+  const testLeftSide2: MathType = {
+    leftSide: 0,
+    leftSideDecimalOffSet: 1,
+    operation: "default",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "delete",
+    total: "default",
+    isRightSide: false,
+  };
+  const testLeftSideAnswer2: MathType = {
+    leftSide: 0,
+    leftSideDecimalOffSet: undefined,
+    operation: "default",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "default",
+    total: "default",
+    isRightSide: false,
+  };
   deleteDigit(leftSideTest);
+  deleteDigit(testLeftSide2);
   expect(leftSideTest).toStrictEqual(leftSideAnswer);
+  expect(testLeftSide2).toStrictEqual(testLeftSideAnswer2);
 });
 
 test("delete operator", () => {
@@ -407,9 +450,31 @@ test("delete operator", () => {
     isRightSide: false,
     leftSideDecimalOffSet: 2,
   };
+  const testLeftSide2: MathType = {
+    leftSide: 0,
+    leftSideDecimalOffSet: 1,
+    operation: "default",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "delete",
+    total: "default",
+    isRightSide: false,
+  };
+  const testLeftSideAnswer2: MathType = {
+    leftSide: 0,
+    leftSideDecimalOffSet: undefined,
+    operation: "default",
+    rightSide: "default",
+    rightSideDecimalOffSet: undefined,
+    action: "default",
+    total: "default",
+    isRightSide: false,
+  };
 
   handleDelete(test);
+  handleDelete(testLeftSide2);
   expect(test).toStrictEqual(answer);
+  expect(testLeftSide2).toStrictEqual(testLeftSideAnswer2);
 });
 test("currect get currentIndex", () => {
   const index_0 = themeArr[0];
