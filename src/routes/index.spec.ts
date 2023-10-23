@@ -115,13 +115,9 @@ test("return a display of 10+10 from two mathNode with a total of 10 each", () =
 // display logic: left-shifting
 
 test("correctly leftshit a math node", () => {
-  const answer: MathType = {
+  const answer: MathNode = {
     leftSide: 20,
-    operation: "default",
-    rightSide: "default",
-    action: "default",
-    total: "default",
-    isRightSide: true,
+    rightSide: "",
   };
   expect(leftShift(MathNodeSubmitted)).toStrictEqual(answer);
 });

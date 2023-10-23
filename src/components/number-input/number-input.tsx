@@ -1,5 +1,5 @@
 import { component$, PropFunction, Signal } from "@builder.io/qwik";
-import type { MathNode, MathType, Sides } from "~/routes";
+import { commafier, type MathNode, type MathType, type Sides } from "~/routes";
 
 export interface NumberInputProps {
   input: number;
@@ -18,7 +18,7 @@ export const NumberInput = component$<NumberInputProps>(
             currentMathNode.leftInput =
               currentMathNode.leftInput === undefined
                 ? target.value
-                : currentMathNode.leftInput.concat(target.value);
+                : commafier(currentMathNode.leftInput.concat(target.value));
           } else {
             currentMathNode.rightInput =
               currentMathNode.rightInput === undefined

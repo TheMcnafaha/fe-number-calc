@@ -1,9 +1,7 @@
-import { component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useStore } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { CalculatorDisplay } from "~/components/calculator-display/calculator-display";
-import { LargeTextInput } from "~/components/large-text-input/large-text-input";
 import { NumberInput } from "~/components/number-input/number-input";
-import { TextInput } from "~/components/text-input/text-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
 import { TextInputSlot } from "~/components/text-input-slot/text-input-slot";
 import { LargeTextInputSlot } from "~/components/large-text-input-slot/large-text-input-slot";
@@ -18,10 +16,6 @@ export type MathType = {
   // right
   rightSideDecimalOffSet?: number;
   leftSideDecimalOffSet?: number;
-  leftInput: string;
-  leftDecimalOffset?: number;
-  rightInput: string;
-  rightDecimalOffset?: number;
 };
 export type MathNode = {
   leftInput: string;
@@ -133,6 +127,8 @@ export default component$(() => {
   const themeIndex = useSignal<number>(0);
 
   // const mathStack = useStore<MathGalactusStack>([]);
+  // add commans when state changes,
+  // could be optimazid but is no big deal
   return (
     <>
       <main class=" px-4 flex flex-col items-center">
@@ -152,25 +148,31 @@ export default component$(() => {
                   if (themeIndex.value > themeArr.length - 1) {
                     themeIndex.value = 0;
                   }
-                  Object.keys(themeArr[themeIndex.value]).forEach(
-                    (key_name, index) => {
-                      toggleRootCSSVar(
-                        CSSvarfy(key_name),
-                        themeArr[themeIndex.value][key_name],
-                      );
-                    },
-                  );
+                  for (const key_name of Object.keys(
+                    themeArr[themeIndex.value],
+                  )) {
+                    toggleRootCSSVar(
+                      CSSvarfy(key_name),
+                      themeArr[themeIndex.value][key_name as keyof Theme],
+                    );
+                  }
+                  // Object.keys(themeArr[themeIndex.value]).forEach(
+                  //   (key_name) => {
+                  //     toggleRootCSSVar(
+                  //       CSSvarfy(key_name),
+                  //       themeArr[themeIndex.value][key_name],
+                  //     );
+                  //   },
+                  // );
                 }}
               ></button>
             </ThreeStageToggle>
             {
-              <div class="text-display-text flex flex-wrap gap-3 w-[260px] mx-0 my-auto">
-                <p> leftI: {`${currentMathNode.leftInput}`}</p>
-                <p> leftID: {`${currentMathNode.leftDecimalOffset}`}</p>
-                <p> rightI: {`${currentMathNode.rightInput}`}</p>
-                <p> rightID: {`${currentMathNode.rightDecimalOffset}`}</p>
-                <p> total: {`${currentMathNode.total}`}</p>
-              </div>
+              // <div class="text-display-text flex flex-wrap gap-3 w-[260px] mx-0 my-auto">
+              //   <p> leftI: {`${currentMathNode.leftInput}`}</p>
+              //   <p> rightI: {`${currentMathNode.rightInput}`}</p>
+              //   <p> total: {`${currentMathNode.total}`}</p>
+              // </div>
             }
           </div>
         </div>{" "}
@@ -196,8 +198,28 @@ export default component$(() => {
               <button
                 value={"DEL"}
                 onClick$={() => {
-                  console.log("DELETED");
-                  // handleDelete(mathOperation);
+                  if (
+                    currentMathNode.operation === undefined &&
+                    currentMathNode.leftInput !== ""
+                  ) {
+                    currentMathNode.leftInput = currentMathNode.leftInput.slice(
+                      0,
+                      -1,
+                    );
+                    return;
+                  }
+                  if (
+                    currentMathNode.operation !== undefined &&
+                    currentMathNode.rightInput === ""
+                  ) {
+                    currentMathNode.operation = undefined;
+                    return;
+                  }
+                  if (currentMathNode.rightInput !== "") {
+                    currentMathNode.rightInput =
+                      currentMathNode.rightInput.slice(0, -1);
+                    return;
+                  }
                 }}
               >
                 {"DEL"}
@@ -258,14 +280,16 @@ export default component$(() => {
               <button
                 value={"."}
                 onClick$={() => {
-                  if (mathOperation.isRightSide) {
-                    if (mathOperation.rightSideDecimalOffSet === undefined) {
-                      setDecimalOffSet(mathOperation, "right");
+                  if (currentMathNode.operation === undefined) {
+                    if (!currentMathNode.leftInput.includes(".")) {
+                      currentMathNode.leftInput =
+                        currentMathNode.leftInput.concat(".");
                     }
-                  } else if (
-                    mathOperation.leftSideDecimalOffSet === undefined
-                  ) {
-                    setDecimalOffSet(mathOperation, "left");
+                    return;
+                  }
+                  if (!currentMathNode.rightInput.includes(".")) {
+                    currentMathNode.rightInput =
+                      currentMathNode.rightInput.concat(".");
                   }
                 }}
               >
@@ -295,13 +319,19 @@ export default component$(() => {
               </button>
             </TextInputSlot>
           </div>
-          <div class="grid px-4 grid-cols-2 gap-3  justify-between w-full">
+          <div class="grid px-4  grid-cols-2 gap-3  justify-between w-full">
             <LargeTextInputSlot color="normal">
               <button
                 value={"reset"}
                 onClick$={() => {
                   console.log("reseteted");
-                  resetMathOperation(mathOperation);
+                  const resetted: MathNode = {
+                    leftInput: "",
+                    rightInput: "",
+                    operation: undefined,
+                    total: undefined,
+                  };
+                  Object.assign(currentMathNode, resetted);
                 }}
               >
                 {"RESET"}
@@ -389,15 +419,15 @@ function getDisplayText(mathNode: MathNode): string {
   }
   return mathNode.leftInput + mathNode.operation + mathNode.rightInput;
 }
-export function getStackDisplay(mathStack: MathGalactusStack) {
-  return mathStack.reduce((display: string, mathNode, i, a) => {
-    const currentTotal = getDisplayOfMathNode(mathNode.mathOperation);
-    if (i < a.length && i > 0) {
-      return display.concat("+", currentTotal.toString());
-    }
-    return display.concat(currentTotal.toString());
-  }, "");
-}
+// export function getStackDisplay(mathStack: MathGalactusStack) {
+//   return mathStack.reduce((display: string, mathNode, i, a) => {
+//     const currentTotal = getDisplayOfMathNode(mathNode.mathOperation);
+//     if (i < a.length && i > 0) {
+//       return display.concat("+", currentTotal.toString());
+//     }
+//     return display.concat(currentTotal.toString());
+//   }, "");
+// }
 export function isCheckedMathType(mathOperation: MathType): boolean {
   const leftValue = mathOperation.leftSide;
   const rightValue = mathOperation.rightSide;
@@ -417,7 +447,6 @@ export function resetMathOperation(mathOperation: MathType): MathType {
   mathOperation.isRightSide = false;
   mathOperation.leftSideDecimalOffSet = mathOperation.rightSideDecimalOffSet =
     undefined;
-  mathOperation.leftInput = "";
   return mathOperation;
 }
 export function addNewMathNode(
@@ -439,39 +468,40 @@ export function leftShift(mathNode: MathNode): MathNode {
     operation: undefined,
   };
 }
-export function newLeftShiftMathNode(
-  newNode: MathType,
-  mathStack: MathGalactusStack,
-): MathGalactusStack {
-  mathStack.push({ mathOperation: leftShift(newNode) });
-  return mathStack;
-}
-export function neoAddLeftShiftMathNoe(
-  newNode: MathType,
-  mathStack: NeoGalactusStack,
-): NeoGalactusStack {
-  mathStack.MathNodes.push(leftShift(newNode));
-  return mathStack;
-}
+// export function newLeftShiftMathNode(
+//   newNode: MathType,
+//   mathStack: MathGalactusStack,
+// ): MathGalactusStack {
+//   mathStack.push({ mathOperation: leftShift(newNode) });
+//   return mathStack;
+// }
+//
+// export function neoAddLeftShiftMathNoe(
+//   newNode: MathType,
+//   mathStack: NeoGalactusStack,
+// ): NeoGalactusStack {
+//   mathStack.MathNodes.push(leftShift(newNode));
+//   return mathStack;
+// }
 
-function getDisplayFromMathStack(
-  mathStack: NeoGalactusStack,
-  mathOperations: MathType,
-): string {
-  // handle actions here before they are passed to the display node
-  if (mathOperations.action === "=") {
-    // TODO: refactor this code into the mageMathActions fn
-    // TODO: deprecated manageMathActions
-    manageMathActions(mathOperations.action, mathStack, mathOperations);
-    console.log("im better", getHeadNode(mathStack));
-    const newMathNode = getHeadNode(mathStack);
-    Object.assign(mathOperations, newMathNode);
-    return getDisplayOfMathNode(mathOperations);
-  }
-  manageMathActions(mathOperations.action, mathStack, mathOperations);
-
-  return getDisplayOfMathNode(mathOperations);
-}
+// function getDisplayFromMathStack(
+//   mathStack: NeoGalactusStack,
+//   mathOperations: MathType,
+// ): string {
+//   // handle actions here before they are passed to the display node
+//   if (mathOperations.action === "=") {
+//     // TODO: refactor this code into the mageMathActions fn
+//     // TODO: deprecated manageMathActions
+//     manageMathActions(mathOperations.action, mathStack, mathOperations);
+//     console.log("im better", getHeadNode(mathStack));
+//     const newMathNode = getHeadNode(mathStack);
+//     Object.assign(mathOperations, newMathNode);
+//     return getDisplayOfMathNode(mathOperations);
+//   }
+//   manageMathActions(mathOperations.action, mathStack, mathOperations);
+//
+//   return getDisplayOfMathNode(mathOperations);
+// }
 export const head: DocumentHead = {
   title: "Welcome to Qwik",
   meta: [
@@ -494,39 +524,39 @@ export function getHeadNode(mathStack: NeoGalactusStack | undefined): MathType {
   }
   return mathStack.MathNodes[mathStack.head];
 }
-export function manageMathActions(
-  type: Actions,
-  mathStack: NeoGalactusStack,
-  mathOperation: MathType,
-) {
-  switch (type) {
-    case "=":
-      neoAddLeftShiftMathNoe(decimalAdjustAndReset(mathOperation), mathStack);
-      mathStack.head++;
-      console.log("new head ", getHeadNode(mathStack));
-
-      // newMathOperation(mathOperation, mathStack);
-      return mathStack;
-
-    case ".":
-      return;
-      if (mathOperation.isRightSide) {
-        if (mathOperation.rightSideDecimalOffSet === undefined) {
-          setDecimalOffSet(mathOperation, "right");
-        }
-      }
-      if (mathOperation.leftSideDecimalOffSet === undefined) {
-        setDecimalOffSet(mathOperation, "left");
-      }
-
-      // house-keeping
-      mathOperation.action = "default";
-
-    case "default":
-    default:
-      break;
-  }
-}
+// export function manageMathActions(
+//   type: Actions,
+//   mathStack: NeoGalactusStack,
+//   mathOperation: MathType,
+// ) {
+//   switch (type) {
+//     case "=":
+//       neoAddLeftShiftMathNoe(decimalAdjustAndReset(mathOperation), mathStack);
+//       mathStack.head++;
+//       console.log("new head ", getHeadNode(mathStack));
+//
+//       // newMathOperation(mathOperation, mathStack);
+//       return mathStack;
+//
+//     case ".":
+//       return;
+//       if (mathOperation.isRightSide) {
+//         if (mathOperation.rightSideDecimalOffSet === undefined) {
+//           setDecimalOffSet(mathOperation, "right");
+//         }
+//       }
+//       if (mathOperation.leftSideDecimalOffSet === undefined) {
+//         setDecimalOffSet(mathOperation, "left");
+//       }
+//
+//       // house-keeping
+//       mathOperation.action = "default";
+//
+//     case "default":
+//     default:
+//       break;
+//   }
+// }
 function newMathOperation(
   mathOperation: MathType,
   mathStack: NeoGalactusStack,
@@ -641,11 +671,9 @@ export function trueIfAllInputFilled(math: MathType): boolean {
 export function setDecimalOffSet(input: MathType, side: "left" | "right") {
   if (side === "right") {
     input.rightSideDecimalOffSet = input.rightSide.toString().length;
-    input.rightDecimalOffset = input.rightInput.length;
     return;
   }
   input.leftSideDecimalOffSet = input.leftSide.toString().length;
-  input.leftDecimalOffset = input.leftInput.length;
 }
 
 export function deleteDigit(mathNode: MathType) {
@@ -733,8 +761,8 @@ export function CSSvarfy(input: string): string {
     return str.concat(`-${key}`);
   }, "");
 }
-export function commafier(input: number | string): string {
-  let strg = typeof input === "number" ? input.toString() : input;
+export function commafier(input: string): string {
+  let strg = input;
   if (strg.includes(".")) {
     let nonDecimalStrg = getNonDecimalStrg(strg);
     // changes in steps of 4 chars, but bc of 0-indexing, fn use 3 as the step count
