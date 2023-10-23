@@ -18,8 +18,17 @@ export type MathType = {
   // right
   rightSideDecimalOffSet?: number;
   leftSideDecimalOffSet?: number;
+  leftInput: string;
+  leftDecimalOffset?: number;
+  rightInput: string;
+  rightDecimalOffset?: number;
 };
-
+export type MathNode = {
+  leftInput: string;
+  rightInput: string;
+  operation?: Operators;
+  total?: number;
+};
 export type MathInputType = {
   rightSide: number | "default";
   operation: Operators;
@@ -39,10 +48,6 @@ export type CheckedMathType = {
   rightSideDecimalOffSet?: number;
   leftSideDecimalOffSet?: number;
 };
-export type MathNode = {
-  mathOperation: MathType;
-  prev?: MathNode;
-};
 // we use arrs bc we can
 export type MathGalactusStack = Array<MathNode>;
 export type NeoGalactusStack = {
@@ -51,6 +56,7 @@ export type NeoGalactusStack = {
 };
 // operators are all arethmetic operators in nature
 export type Operators = "+" | "-" | "x" | "/" | "default";
+export type NeoOperators = "+" | "-" | "x" | "/" | undefined;
 // actions are non-arethmetic display actions
 export type Actions = "=" | "." | "delete" | "default";
 type Display = {
@@ -119,40 +125,18 @@ export const themeArr: Array<Theme> = [
 ];
 export default component$(() => {
   // remove this as its duplicate state
-  const mathOperation = useStore<MathType>({
-    rightSide: "default",
-    operation: "default",
-    leftSide: "default",
-    action: "default",
-    total: "default",
-    isRightSide: false,
+  const currentMathNode = useStore<MathNode>({
+    // string must be initialized as empty strg so that concatination can happen smoothly
+    leftInput: "",
+    rightInput: "",
   });
   const themeIndex = useSignal<number>(0);
 
-  const mathStack = useStore<NeoGalactusStack>({
-    head: 0,
-    MathNodes: [mathOperation],
-  });
   // const mathStack = useStore<MathGalactusStack>([]);
-  const display = useSignal<string>("");
-  useTask$(({ track }) => {
-    // this does log/track :)
-    track(mathOperation);
-    if (
-      mathOperation.operation != "default" &&
-      mathOperation.isRightSide != true
-    ) {
-      console.log("changed ops");
-      mathOperation.isRightSide = true;
-    }
-    // adjustDecimalOffset("left", mathOperation);
-    console.log("im tracking!!!");
-    display.value = getDisplayFromMathStack(mathStack, mathOperation);
-  });
   return (
     <>
       <main class=" px-4 flex flex-col items-center">
-        <div class="flex w-full   justify-center">
+        <div class="flex    justify-center">
           <div class="grid w-[260px] grid-cols-3 py-4">
             <h1 class="self-end text-display-text">Calc</h1>
             <p class="text-xs place-self-end uppercase text-display-text">
@@ -180,47 +164,40 @@ export default component$(() => {
               ></button>
             </ThreeStageToggle>
             {
-              <div class="text-display-text flex flex-wrap gap-3 w-[260px]">
-                <p> isR: {`${mathOperation.isRightSide}`}</p>
-                <p>
-                  {" "}
-                  side: {mathOperation.isRightSide ? "rightSide" : "leftSide"}
-                </p>
-                <p> leftS: {`${mathOperation.leftSide}`}</p>
-                <p> rightS: {`${mathOperation.rightSide}`}</p>
-                <p> leftD: {`${mathOperation.leftSideDecimalOffSet}`}</p>
-                <p> rightD: {`${mathOperation.rightSideDecimalOffSet}`}</p>
-                <p> opeation: {`${mathOperation.operation}`}</p>
-                <p> action: {`${mathOperation.action}`}</p>
-                <p> total: {`${mathOperation.total}`}</p>
+              <div class="text-display-text flex flex-wrap gap-3 w-[260px] mx-0 my-auto">
+                <p> leftI: {`${currentMathNode.leftInput}`}</p>
+                <p> leftID: {`${currentMathNode.leftDecimalOffset}`}</p>
+                <p> rightI: {`${currentMathNode.rightInput}`}</p>
+                <p> rightID: {`${currentMathNode.rightDecimalOffset}`}</p>
+                <p> total: {`${currentMathNode.total}`}</p>
               </div>
             }
           </div>
         </div>{" "}
-        <CalculatorDisplay input={display.value}></CalculatorDisplay>
+        <CalculatorDisplay
+          input={getDisplayText(currentMathNode)}
+        ></CalculatorDisplay>
         <section class="bg-keypad-bg   grid grid-rows-5 grid-cols-1 items-center rounded-lg gap-2 py-4">
           <div class="flex justify-center  h-full gap-3 px-4">
             <NumberInput
               input={7}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
             <NumberInput
               input={8}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
+
             <NumberInput
               input={9}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
             <TextInputSlot color="alt">
               <button
                 value={"DEL"}
                 onClick$={() => {
                   console.log("DELETED");
-                  handleDelete(mathOperation);
+                  // handleDelete(mathOperation);
                 }}
               >
                 {"DEL"}
@@ -230,38 +207,51 @@ export default component$(() => {
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput
               input={4}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
             <NumberInput
               input={5}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
             <NumberInput
               input={6}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
-            <TextInput input="+" color="normal" mathOperation={mathOperation} />
+            <TextInputSlot color="normal">
+              <button
+                onClick$={() => {
+                  setOperator("+", currentMathNode);
+                }}
+              >
+                +
+              </button>
+            </TextInputSlot>
+            {
+              // <TextInput input="+" color="normal" mathOperation={mathOperation} />
+            }
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <NumberInput
               input={1}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
             <NumberInput
               input={2}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
             <NumberInput
               input={3}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
-            <TextInput input="-" mathOperation={mathOperation} color="normal" />
+            <TextInputSlot color="normal">
+              <button
+                onClick$={() => {
+                  setOperator("-", currentMathNode);
+                }}
+              >
+                -
+              </button>
+            </TextInputSlot>
           </div>
           <div class="flex justify-center  gap-3 px-4">
             <TextInputSlot color="normal">
@@ -284,13 +274,26 @@ export default component$(() => {
             </TextInputSlot>
             <NumberInput
               input={0}
-              mathOperation={mathOperation}
-              side={mathOperation.isRightSide ? "rightSide" : "leftSide"}
+              currentMathNode={currentMathNode}
             ></NumberInput>
-            <TextInput input="/" color="normal" mathOperation={mathOperation} />
-            <TextInput input="x" color="normal" mathOperation={mathOperation}>
-              {" "}
-            </TextInput>
+            <TextInputSlot color="normal">
+              <button
+                onClick$={() => {
+                  setOperator("/", currentMathNode);
+                }}
+              >
+                /
+              </button>
+            </TextInputSlot>
+            <TextInputSlot color="normal">
+              <button
+                onClick$={() => {
+                  setOperator("x", currentMathNode);
+                }}
+              >
+                x
+              </button>
+            </TextInputSlot>
           </div>
           <div class="grid px-4 grid-cols-2 gap-3  justify-between w-full">
             <LargeTextInputSlot color="normal">
@@ -304,38 +307,51 @@ export default component$(() => {
                 {"RESET"}
               </button>
             </LargeTextInputSlot>
-            <LargeTextInput
-              input="="
-              color="accent"
-              mathOperation={mathOperation}
-              isPurpleTheme={themeIndex.value === 2}
-            ></LargeTextInput>
+            <LargeTextInputSlot color="accent">
+              <button
+                onClick$={() => {
+                  currentMathNode.total = doMath(currentMathNode);
+                  Object.assign(currentMathNode, leftShift(currentMathNode));
+                }}
+              >
+                =
+              </button>
+            </LargeTextInputSlot>
+            {
+              //
+              // <LargeTextInput
+              //   input="="
+              //   color="accent"
+              //   mathOperation={mathOperation}
+              //   isPurpleTheme={themeIndex.value === 2}
+              // ></LargeTextInput>
+            }
           </div>
         </section>
       </main>
     </>
   );
 });
-export function doMath(mathOperation: MathType): number {
+export function doMath(mathOperation: MathNode): number {
   if (
-    mathOperation.leftSide === "default" ||
-    mathOperation.rightSide === "default"
+    mathOperation.leftInput === "default" ||
+    mathOperation.rightInput === "default"
   ) {
     return 0;
   }
   switch (mathOperation.operation) {
     case "+":
-      return mathOperation.leftSide + mathOperation.rightSide;
+      return Number(mathOperation.leftInput) + Number(mathOperation.rightInput);
     case "-":
-      return mathOperation.leftSide - mathOperation.rightSide;
+      return Number(mathOperation.leftInput) - Number(mathOperation.rightInput);
     case "x":
-      return mathOperation.leftSide * mathOperation.rightSide;
+      return Number(mathOperation.leftInput) * Number(mathOperation.rightInput);
     case "/":
-      if (mathOperation.rightSide === 0) {
+      if (Number(mathOperation.rightInput) === 0) {
         // :)
         return 0;
       }
-      return mathOperation.leftSide / mathOperation.rightSide;
+      return Number(mathOperation.leftInput) / Number(mathOperation.rightInput);
     case "default":
     default:
       // this should make it clear something went wrong to the user without making it my problem lol
@@ -367,6 +383,12 @@ export function getDisplayOfMathNode(math: MathType): string {
     commafier(responseString.rightSide)
   );
 }
+function getDisplayText(mathNode: MathNode): string {
+  if (mathNode.operation === undefined) {
+    return mathNode.leftInput;
+  }
+  return mathNode.leftInput + mathNode.operation + mathNode.rightInput;
+}
 export function getStackDisplay(mathStack: MathGalactusStack) {
   return mathStack.reduce((display: string, mathNode, i, a) => {
     const currentTotal = getDisplayOfMathNode(mathNode.mathOperation);
@@ -395,6 +417,7 @@ export function resetMathOperation(mathOperation: MathType): MathType {
   mathOperation.isRightSide = false;
   mathOperation.leftSideDecimalOffSet = mathOperation.rightSideDecimalOffSet =
     undefined;
+  mathOperation.leftInput = "";
   return mathOperation;
 }
 export function addNewMathNode(
@@ -405,15 +428,15 @@ export function addNewMathNode(
   return mathStack;
 }
 
-export function leftShift(math: MathType): MathType {
+export function leftShift(mathNode: MathNode): MathNode {
+  if (mathNode.total === undefined) {
+    return mathNode;
+  }
   return {
     // TODO: find more less sketchy rounding xdd
-    leftSide: Math.round(doMath(math) * 10000) / 10000,
-    operation: "default",
-    rightSide: "default",
-    action: "default",
-    total: "default",
-    isRightSide: true,
+    leftInput: (Math.round(mathNode.total * 10000) / 10000).toString(),
+    rightInput: "",
+    operation: undefined,
   };
 }
 export function newLeftShiftMathNode(
@@ -618,9 +641,11 @@ export function trueIfAllInputFilled(math: MathType): boolean {
 export function setDecimalOffSet(input: MathType, side: "left" | "right") {
   if (side === "right") {
     input.rightSideDecimalOffSet = input.rightSide.toString().length;
+    input.rightDecimalOffset = input.rightInput.length;
     return;
   }
   input.leftSideDecimalOffSet = input.leftSide.toString().length;
+  input.leftDecimalOffset = input.leftInput.length;
 }
 
 export function deleteDigit(mathNode: MathType) {
@@ -742,4 +767,10 @@ export function isOperatorEmpty(mathNode: MathType): boolean {
 export function getNonDecimalStrg(input: string): string {
   const decimalIndex = input.indexOf(".");
   return decimalIndex === -1 ? input : input.substring(0, decimalIndex);
+}
+
+function setOperator(input: Operators, mathNode: MathNode) {
+  if (mathNode.leftInput !== "" && mathNode.operation === undefined) {
+    mathNode.operation = input;
+  }
 }
