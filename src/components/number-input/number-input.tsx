@@ -1,30 +1,45 @@
-import { component$, PropFunction, Signal } from "@builder.io/qwik";
-import { commafier, type MathNode, type MathType, type Sides } from "~/routes";
+import {
+  component$,
+  PropFunction,
+  Signal,
+  $,
+  useStore,
+  useSignal,
+} from "@builder.io/qwik";
+import {
+  commafier,
+  MathArr,
+  type MathNode,
+  type MathType,
+  type Sides,
+} from "~/routes";
 
+type magic = {
+  value: MathArr;
+};
 export interface NumberInputProps {
   input: number;
   currentMathNode: MathNode;
+  mathArr: magic;
 }
 
 export const NumberInput = component$<NumberInputProps>(
-  ({ input, currentMathNode }) => {
+  ({ input, currentMathNode, mathArr }) => {
     return (
       <button
         class="w-12  bg-key-bg border-key-border border-b-[3px] font-bold rounded-md   text-3xl text-key-text"
         value={input}
         onClick$={(event, currentTarget) => {
           const target = currentTarget as HTMLInputElement;
-          if (currentMathNode.operation === undefined) {
-            currentMathNode.leftInput =
-              currentMathNode.leftInput === undefined
-                ? target.value
-                : commafier(currentMathNode.leftInput.concat(target.value));
-          } else {
-            currentMathNode.rightInput =
-              currentMathNode.rightInput === undefined
-                ? target.value
-                : currentMathNode.rightInput.concat(target.value);
-          }
+          const currentStrng = mathArr.value[mathArr.value.length - 1];
+          mathArr.value = mathArr.value =
+            currentStrng === undefined
+              ? [target.value]
+              : [
+                  ...mathArr.value.slice(0, -1),
+                  currentStrng.concat(target.value),
+                ];
+          return;
         }}
       >
         {input}

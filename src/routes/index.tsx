@@ -31,7 +31,7 @@ export type MathInputType = {
   total: number | "default";
   isRightSide: boolean;
 };
-
+export type MathArr = Array<string | NeoOperators>;
 export type CheckedMathType = {
   rightSide: number;
   operation: Operators;
@@ -124,6 +124,7 @@ export default component$(() => {
     leftInput: "",
     rightInput: "",
   });
+  const mathArr = useSignal<MathArr>([]);
   const themeIndex = useSignal<number>(0);
 
   // const mathStack = useStore<MathGalactusStack>([]);
@@ -168,16 +169,14 @@ export default component$(() => {
               ></button>
             </ThreeStageToggle>
             {
-              // <div class="text-display-text flex flex-wrap gap-3 w-[260px] mx-0 my-auto">
-              //   <p> leftI: {`${currentMathNode.leftInput}`}</p>
-              //   <p> rightI: {`${currentMathNode.rightInput}`}</p>
-              //   <p> total: {`${currentMathNode.total}`}</p>
-              // </div>
+              <div class="text-display-text flex flex-wrap gap-3 w-[260px] mx-0 my-auto">
+                <p>mathArr: {mathArr}</p>
+              </div>
             }
           </div>
         </div>{" "}
         <CalculatorDisplay
-          input={getDisplayText(currentMathNode)}
+          input={getDisplayFromMathArr(mathArr.value)}
         ></CalculatorDisplay>
         <section class="bg-keypad-bg   grid grid-rows-5 grid-cols-1 items-center rounded-lg gap-2 py-4">
           <div class="flex justify-center  h-full gap-3 px-4">
@@ -193,6 +192,8 @@ export default component$(() => {
             <NumberInput
               input={9}
               currentMathNode={currentMathNode}
+              // mathStore={mathStore}
+              mathArr={mathArr}
             ></NumberInput>
             <TextInputSlot color="alt">
               <button
@@ -242,6 +243,7 @@ export default component$(() => {
             <TextInputSlot color="normal">
               <button
                 onClick$={() => {
+                  mathArr.value = [...mathArr.value, "+", ""];
                   setOperator("+", currentMathNode);
                 }}
               >
@@ -801,4 +803,20 @@ function setOperator(input: Operators, mathNode: MathNode) {
   if (mathNode.leftInput !== "" && mathNode.operation === undefined) {
     mathNode.operation = input;
   }
+}
+
+function getDisplayFromMathArr(mathArr: MathArr): string {
+  let display = "";
+  return mathArr.reduce((t, n) => {
+    return t + n;
+  }, "");
+  for (const strg of mathArr) {
+    console.log(strg);
+
+    if (strg === undefined || strg === "") {
+      continue;
+    }
+    display.concat(strg);
+  }
+  return display;
 }
