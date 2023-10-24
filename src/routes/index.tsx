@@ -826,18 +826,22 @@ function getTotal(mathArr: MathArr): string {
   let total = "";
   for (let index = 0; index < mathArr.length; index++) {
     const strg = mathArr[index];
-    if (strg === "+") {
-      const mathNode: MathNode = {
-        leftInput: mathArr[index - 1],
-        operation: strg,
-        rightInput: mathArr[index + 1],
-      };
-      console.log(mathNode);
-      console.log(doMath(mathNode));
 
-      console.log(total);
-      total = doMath(mathNode).toString();
-      console.log(total);
+    if (strg !== undefined) {
+      const isOperator = /^[+-/x]$/.test(strg);
+      if (isOperator) {
+        const mathNode: MathNode = {
+          leftInput: mathArr[index - 1],
+          operation: strg,
+          rightInput: mathArr[index + 1],
+        };
+        console.log(mathNode);
+        console.log(doMath(mathNode));
+
+        console.log(total);
+        total = doMath(mathNode).toString();
+        console.log(total);
+      }
     }
   }
   return total;

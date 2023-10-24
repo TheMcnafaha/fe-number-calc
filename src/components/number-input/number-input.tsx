@@ -14,13 +14,13 @@ import {
   type Sides,
 } from "~/routes";
 
-type magic = {
+export type MathStore = {
   value: MathArr;
 };
 export interface NumberInputProps {
   input: number;
   currentMathNode: MathNode;
-  mathArr: magic;
+  mathArr: MathStore;
 }
 
 export const NumberInput = component$<NumberInputProps>(
