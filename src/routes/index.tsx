@@ -342,6 +342,7 @@ export default component$(() => {
             <LargeTextInputSlot color="accent">
               <button
                 onClick$={() => {
+                  mathArr.value = [getTotal(mathArr.value)];
                   currentMathNode.total = doMath(currentMathNode);
                   Object.assign(currentMathNode, leftShift(currentMathNode));
                 }}
@@ -819,4 +820,25 @@ function getDisplayFromMathArr(mathArr: MathArr): string {
     display.concat(strg);
   }
   return display;
+}
+
+function getTotal(mathArr: MathArr): string {
+  let total = "";
+  for (let index = 0; index < mathArr.length; index++) {
+    const strg = mathArr[index];
+    if (strg === "+") {
+      const mathNode: MathNode = {
+        leftInput: mathArr[index - 1],
+        operation: strg,
+        rightInput: mathArr[index + 1],
+      };
+      console.log(mathNode);
+      console.log(doMath(mathNode));
+
+      console.log(total);
+      total = doMath(mathNode).toString();
+      console.log(total);
+    }
+  }
+  return total;
 }
