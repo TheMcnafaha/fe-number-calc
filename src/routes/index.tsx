@@ -830,17 +830,21 @@ function getTotal(mathArr: MathArr): string {
     if (strg !== undefined) {
       const isOperator = /^[+-/x]$/.test(strg);
       if (isOperator) {
-        const mathNode: MathNode = {
-          leftInput: mathArr[index - 1],
-          operation: strg,
-          rightInput: mathArr[index + 1],
-        };
-        console.log(mathNode);
-        console.log(doMath(mathNode));
+        const leftSide = mathArr[index - 1];
+        const rightSide = mathArr[index + 1];
+        if (leftSide && rightSide) {
+          const mathNode: MathNode = {
+            leftInput: leftSide,
+            operation: strg as Operators,
+            rightInput: rightSide,
+          };
+          console.log(mathNode);
+          console.log(doMath(mathNode));
 
-        console.log(total);
-        total = doMath(mathNode).toString();
-        console.log(total);
+          console.log(total);
+          total = doMath(mathNode).toString();
+          console.log(total);
+        }
       }
     }
   }
