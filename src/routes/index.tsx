@@ -842,8 +842,10 @@ function getTotal(mathArr: MathArr): string {
           console.log(doMath(mathNode));
 
           console.log(total);
-          total = doMath(mathNode).toString();
+          total = total + " " + doMath(mathNode).toString();
           console.log(total);
+          // todo: implement middle opartion
+          index += 2;
         }
       }
     }
