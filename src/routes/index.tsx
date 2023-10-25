@@ -182,7 +182,6 @@ export default component$(() => {
           <div class="flex justify-center  h-full gap-3 px-4">
             <NumberInput input={7} mathArr={mathArr}></NumberInput>
             <NumberInput input={8} mathArr={mathArr}></NumberInput>
-
             <NumberInput input={9} mathArr={mathArr}></NumberInput>
             <TextInputSlot color="alt">
               <button
@@ -825,8 +824,9 @@ export function getTotal(mathArr: MathArr): string {
           console.log(total);
           const mathy_boi = doMath(mathNode);
           const significant = Math.pow(10, 5);
-          const rounded_boi = Math.round(
-            (mathy_boi * significant) / significant,
+          // TODO: find more less sketchy rounding xdd
+          const rounded_boi = (
+            Math.round(mathy_boi * significant) / significant
           ).toString();
           total = rounded_boi;
           console.log(total);
