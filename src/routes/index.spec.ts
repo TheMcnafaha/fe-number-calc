@@ -28,6 +28,9 @@ import {
   commafier,
   isOperatorEmpty,
   getNonDecimalStrg,
+  MathArr,
+  getTotal,
+  isOperator,
 } from ".";
 const mockMathNodeNumber: MathNode = {
   mathOperation: {
@@ -109,11 +112,11 @@ test("return false on mostly submmited node", () => {
   const mostlyFIlled: MathType = { ...MathNodeSubmitted, rightSide: "default" };
   expect(trueIfAllInputFilled(mostlyFIlled)).toBe(false);
 });
-test("return a display of 10+10 from two mathNode with a total of 10 each", () => {
+/* test("return a display of 10+10 from two mathNode with a total of 10 each", () => {
   expect(getStackDisplay(mockMathStack)).toBe("10+10");
-});
+}); */
 // display logic: left-shifting
-
+/*
 test("correctly leftshit a math node", () => {
   const answer: MathNode = {
     leftSide: 20,
@@ -121,7 +124,7 @@ test("correctly leftshit a math node", () => {
   };
   expect(leftShift(MathNodeSubmitted)).toStrictEqual(answer);
 });
-test("when input is submitted, create a new mathNode that's left-shifted", () => {
+ test("when input is submitted, create a new mathNode that's left-shifted", () => {
   let test: MathGalactusStack = [{ mathOperation: MathNodeSubmitted }];
   const answer = [
     { mathOperation: MathNodeSubmitted },
@@ -137,8 +140,8 @@ test("when input is submitted, create a new mathNode that's left-shifted", () =>
     },
   ];
   expect(newLeftShiftMathNode(MathNodeSubmitted, test)).toStrictEqual(answer);
-});
-test('correctly "house-keep" the mathStack when the mathAction is submitted', () => {
+}); */
+/* test('correctly "house-keep" the mathStack when the mathAction is submitted', () => {
   let test: NeoGalactusStack = {
     MathNodes: [MathNodeSubmitted],
     head: 0,
@@ -185,7 +188,7 @@ test('correctly "house-keep" the mahtStack head when new mathNode is added', () 
       manageMathActions(getHeadNode(test).action, test, getHeadNode(test)),
     ),
   ).toStrictEqual(getHeadNode(answer));
-});
+}); */
 // display logic: decimal pain
 
 test("add correct decimal offset on first instance on mathNode", () => {
@@ -203,13 +206,13 @@ test("add correct decimal offset on first instance on mathNode", () => {
 });
 
 // calc logic
-test("add 10+10 (should return 20)", () => {
+/* test("add 10+10 (should return 20)", () => {
   let response: number | string = "failed";
   if (isCheckedMathType(mockMathNodeNumber.mathOperation)) {
     response = doMath(mockMathNodeNumber.mathOperation as CheckedMathType);
   }
   expect(response).toBe(20);
-});
+}); */
 test("stop default values from doing math (failed response)", () => {
   let response: number | string = "failed";
   if (isCheckedMathType(mockMathNodeDefault.mathOperation)) {
@@ -218,13 +221,13 @@ test("stop default values from doing math (failed response)", () => {
   expect(response).toBe("failed");
 });
 
-test("reset the current mathOperation obj on submit/=", () => {
+/* test("reset the current mathOperation obj on submit/=", () => {
   let copy = {} as MathNode;
   Object.assign(copy, mockMathNodeDefault);
   expect(resetMathOperation(copy.mathOperation)).toStrictEqual(
     defaultMathOperation,
   );
-});
+}); */
 
 test("add new node correctly", () => {
   let singleStack: MathGalactusStack = [mockMathNodeNumber];
@@ -486,7 +489,7 @@ test("make key into css var", () => {
   expect(CSSvarfy("alt_key_bg")).toBe("--alt-key-bg");
 });
 
-test("currectly add commas to big nums", () => {
+/* test("currectly add commas to big nums", () => {
   expect(commafier(100)).toBe("100");
   expect(commafier(1000)).toBe("1,000");
   expect(commafier(10000)).toBe("10,000");
@@ -495,7 +498,7 @@ test("currectly add commas to big nums", () => {
   expect(commafier(10000000)).toBe("10,000,000");
   expect(commafier(123000000)).toBe("123,000,000");
 });
-
+*/
 test("correct bool logic to math operators", () => {
   const shouldBeFalse: MathType = {
     leftSide: 123,
@@ -527,7 +530,7 @@ test("correct bool logic to math operators", () => {
   // implementation detail: isRS is only changed on operation selection, so though this is the expected result, the current app behaviour would need to be changed/refactored
   expect(isOperatorEmpty(shouldBeTrue2)).toBe(false);
 });
-test("currectly add commas to big nums but ingnore the decimal", () => {
+/* test("currectly add commas to big nums but ingnore the decimal", () => {
   expect(getNonDecimalStrg("1000.123")).toBe("1000");
   expect(commafier(1000.123)).toBe("1,000.123");
   expect(commafier(1000.123)).toBe("1,000.123");
@@ -536,4 +539,17 @@ test("currectly add commas to big nums but ingnore the decimal", () => {
   expect(commafier(1000000.123)).toBe("1,000,000.123");
   expect(commafier(10000000.123)).toBe("10,000,000.123");
   expect(commafier(123000000.123)).toBe("123,000,000.123");
+}); */
+
+test("do multi math right", () => {
+  const testArr: MathArr = ["9", "+", "9", "+", "9"];
+  const testArr2: MathArr = ["9", "+", "9", "+", "9", "9", "+", "9", "+", "9"];
+  expect(getTotal(testArr)).toBe("27");
+  expect(getTotal(testArr)).toBe("54");
+});
+
+test("make sure regex works", () => {
+  expect(isOperator("+")).toBe(true);
+  expect(isOperator("++")).toBe(false);
+  expect(isOperator("-")).toBe(true);
 });

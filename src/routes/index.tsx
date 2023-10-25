@@ -243,8 +243,8 @@ export default component$(() => {
             <TextInputSlot color="normal">
               <button
                 onClick$={() => {
-                  mathArr.value = [...mathArr.value, "+", ""];
-                  setOperator("+", currentMathNode);
+                  mathArr.value = getOperator("+", mathArr.value);
+                  // setOperator("+", currentMathNode);
                 }}
               >
                 +
@@ -270,6 +270,7 @@ export default component$(() => {
             <TextInputSlot color="normal">
               <button
                 onClick$={() => {
+                  mathArr.value = getOperator("-", mathArr.value);
                   setOperator("-", currentMathNode);
                 }}
               >
@@ -800,6 +801,19 @@ export function getNonDecimalStrg(input: string): string {
   return decimalIndex === -1 ? input : input.substring(0, decimalIndex);
 }
 
+function getOperator(input: Operators, mathArr: MathArr): MathArr {
+  const headValue = mathArr[mathArr.length - 1];
+  if (headValue !== undefined) {
+    // this condition is true when an operator is added, and we dont want to ever have more than one operator at the same time
+    // see comment on next return statement
+    if (headValue === "") {
+      return mathArr;
+    }
+    // emtpy strg is added to  correctly concatenate
+    return [...mathArr, input, ""];
+  }
+  return mathArr;
+}
 function setOperator(input: Operators, mathNode: MathNode) {
   if (mathNode.leftInput !== "" && mathNode.operation === undefined) {
     mathNode.operation = input;
@@ -822,14 +836,13 @@ function getDisplayFromMathArr(mathArr: MathArr): string {
   return display;
 }
 
-function getTotal(mathArr: MathArr): string {
+export function getTotal(mathArr: MathArr): string {
   let total = "";
   for (let index = 0; index < mathArr.length; index++) {
     const strg = mathArr[index];
 
     if (strg !== undefined) {
-      const isOperator = /^[+-/x]$/.test(strg);
-      if (isOperator) {
+      if (isOperator(strg)) {
         const leftSide = mathArr[index - 1];
         const rightSide = mathArr[index + 1];
         if (leftSide && rightSide) {
@@ -842,13 +855,19 @@ function getTotal(mathArr: MathArr): string {
           console.log(doMath(mathNode));
 
           console.log(total);
-          total = total + " " + doMath(mathNode).toString();
+          const mathy_boi = doMath(mathNode).toString();
+          total = mathy_boi;
           console.log(total);
           // todo: implement middle opartion
-          index += 2;
+          // index += 2; good idea, is better done with a smart continue
+          mathArr[index + 1] = mathy_boi;
         }
       }
     }
   }
   return total;
+}
+
+export function isOperator(input: string) {
+  return /^[+-/x]$/.test(input);
 }
