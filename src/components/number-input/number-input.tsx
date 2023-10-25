@@ -19,12 +19,11 @@ export type MathStore = {
 };
 export interface NumberInputProps {
   input: number;
-  currentMathNode: MathNode;
   mathArr: MathStore;
 }
 
 export const NumberInput = component$<NumberInputProps>(
-  ({ input, currentMathNode, mathArr }) => {
+  ({ input, mathArr }) => {
     return (
       <button
         class="w-12  bg-key-bg border-key-border border-b-[3px] font-bold rounded-md   text-3xl text-key-text"

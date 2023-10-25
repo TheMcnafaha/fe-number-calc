@@ -180,21 +180,10 @@ export default component$(() => {
         ></CalculatorDisplay>
         <section class="bg-keypad-bg   grid grid-rows-5 grid-cols-1 items-center rounded-lg gap-2 py-4">
           <div class="flex justify-center  h-full gap-3 px-4">
-            <NumberInput
-              input={7}
-              currentMathNode={currentMathNode}
-            ></NumberInput>
-            <NumberInput
-              input={8}
-              currentMathNode={currentMathNode}
-            ></NumberInput>
+            <NumberInput input={7} mathArr={mathArr}></NumberInput>
+            <NumberInput input={8} mathArr={mathArr}></NumberInput>
 
-            <NumberInput
-              input={9}
-              currentMathNode={currentMathNode}
-              // mathStore={mathStore}
-              mathArr={mathArr}
-            ></NumberInput>
+            <NumberInput input={9} mathArr={mathArr}></NumberInput>
             <TextInputSlot color="alt">
               <button
                 value={"DEL"}
@@ -228,18 +217,9 @@ export default component$(() => {
             </TextInputSlot>
           </div>
           <div class="flex justify-center  gap-3 px-4">
-            <NumberInput
-              input={4}
-              currentMathNode={currentMathNode}
-            ></NumberInput>
-            <NumberInput
-              input={5}
-              currentMathNode={currentMathNode}
-            ></NumberInput>
-            <NumberInput
-              input={6}
-              currentMathNode={currentMathNode}
-            ></NumberInput>
+            <NumberInput input={4} mathArr={mathArr}></NumberInput>
+            <NumberInput input={5} mathArr={mathArr}></NumberInput>
+            <NumberInput input={6} mathArr={mathArr}></NumberInput>
             <TextInputSlot color="normal">
               <button
                 onClick$={() => {
@@ -255,23 +235,13 @@ export default component$(() => {
             }
           </div>
           <div class="flex justify-center  gap-3 px-4">
-            <NumberInput
-              input={1}
-              currentMathNode={currentMathNode}
-            ></NumberInput>
-            <NumberInput
-              input={2}
-              currentMathNode={currentMathNode}
-            ></NumberInput>
-            <NumberInput
-              input={3}
-              currentMathNode={currentMathNode}
-            ></NumberInput>
+            <NumberInput input={1} mathArr={mathArr}></NumberInput>
+            <NumberInput input={2} mathArr={mathArr}></NumberInput>
+            <NumberInput input={3} mathArr={mathArr}></NumberInput>
             <TextInputSlot color="normal">
               <button
                 onClick$={() => {
                   mathArr.value = getOperator("-", mathArr.value);
-                  setOperator("-", currentMathNode);
                 }}
               >
                 -
@@ -283,30 +253,28 @@ export default component$(() => {
               <button
                 value={"."}
                 onClick$={() => {
-                  if (currentMathNode.operation === undefined) {
-                    if (!currentMathNode.leftInput.includes(".")) {
-                      currentMathNode.leftInput =
-                        currentMathNode.leftInput.concat(".");
+                  const headValue = mathArr.value[mathArr.value.length - 1];
+                  if (
+                    headValue !== undefined &&
+                    !isOperator(mathArr.value[mathArr.value.length - 1])
+                  ) {
+                    if (!headValue.includes(".")) {
+                      mathArr.value = [
+                        ...mathArr.value.slice(0, -1),
+                        headValue?.concat("."),
+                      ];
                     }
-                    return;
-                  }
-                  if (!currentMathNode.rightInput.includes(".")) {
-                    currentMathNode.rightInput =
-                      currentMathNode.rightInput.concat(".");
                   }
                 }}
               >
                 {"."}
               </button>
             </TextInputSlot>
-            <NumberInput
-              input={0}
-              currentMathNode={currentMathNode}
-            ></NumberInput>
+            <NumberInput input={0} mathArr={mathArr}></NumberInput>
             <TextInputSlot color="normal">
               <button
                 onClick$={() => {
-                  setOperator("/", currentMathNode);
+                  mathArr.value = getOperator("/", mathArr.value);
                 }}
               >
                 /
@@ -315,7 +283,7 @@ export default component$(() => {
             <TextInputSlot color="normal">
               <button
                 onClick$={() => {
-                  setOperator("x", currentMathNode);
+                  mathArr.value = getOperator("x", mathArr.value);
                 }}
               >
                 x
@@ -855,19 +823,28 @@ export function getTotal(mathArr: MathArr): string {
           console.log(doMath(mathNode));
 
           console.log(total);
-          const mathy_boi = doMath(mathNode).toString();
-          total = mathy_boi;
+          const mathy_boi = doMath(mathNode);
+          const significant = Math.pow(10, 5);
+          const rounded_boi = Math.round(
+            (mathy_boi * significant) / significant,
+          ).toString();
+          total = rounded_boi;
           console.log(total);
           // todo: implement middle opartion
           // index += 2; good idea, is better done with a smart continue
-          mathArr[index + 1] = mathy_boi;
+          mathArr[index + 1] = rounded_boi;
         }
       }
     }
   }
+  // TODO: find more less sketchy rounding xdd
+  // return total.slice(0, 5);
   return total;
 }
 
-export function isOperator(input: string) {
+export function isOperator(input: string | undefined) {
+  if (input === undefined) {
+    return false;
+  }
   return /^[+-/x]$/.test(input);
 }
