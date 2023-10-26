@@ -33,14 +33,3 @@ export const ThreeStageToggle = component$<ThreeStageToggleProps>(
     );
   },
 );
-
-// <div class="w-3 h-3 bg-accent-bg rounded-full"> </div>
-function getPlacement(index: number) {
-  if (index === 0) {
-    return " justify-start";
-  }
-  if (index === 1) {
-    return " justify-center";
-  }
-  return " justify-end";
-}

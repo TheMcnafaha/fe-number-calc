@@ -61,3 +61,5 @@ lerna-debug.log*
 # personal bash files (used for my dev setup)
 eog.bash
 
+# Vercel
+.vercel

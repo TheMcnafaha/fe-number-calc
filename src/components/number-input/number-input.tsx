@@ -1,18 +1,5 @@
-import {
-  component$,
-  PropFunction,
-  Signal,
-  $,
-  useStore,
-  useSignal,
-} from "@builder.io/qwik";
-import {
-  commafier,
-  MathArr,
-  type MathNode,
-  type MathType,
-  type Sides,
-} from "~/routes";
+import { component$ } from "@builder.io/qwik";
+import type { MathArr } from "~/routes";
 
 export type MathStore = {
   value: MathArr;

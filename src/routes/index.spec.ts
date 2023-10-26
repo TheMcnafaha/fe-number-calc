@@ -1,64 +1,18 @@
 import { expect, test } from "vitest";
 import {
-  MathType,
   nextTheme,
   CSSvarfy,
   themeArr,
   commafier,
-  isOperatorEmpty,
   getNonDecimalStrg,
   MathArr,
   getTotal,
   isOperator,
-  deleteDigit,
 } from ".";
 
 // display logic: decimal pain
 
 // calc logic: actions
-
-test("correctly delete digits", () => {
-  const deleteMockRight: MathType = {
-    leftSide: 123,
-    operation: "+",
-    rightSide: 10,
-    action: "delete",
-    //the total is porposefully wrong to test display logic outside of calc logic
-    total: "default",
-    isRightSide: true,
-  };
-  const deleteMockLeft: MathType = {
-    leftSide: 123,
-    operation: "+",
-    rightSide: 10,
-    action: "delete",
-    //the total is porposefully wrong to test display logic outside of calc logic
-    total: "default",
-    isRightSide: false,
-  };
-  const answerMockRight: MathType = {
-    leftSide: 123,
-    operation: "+",
-    rightSide: 1,
-    action: "default",
-    //the total is porposefully wrong to test display logic outside of calc logic
-    total: "default",
-    isRightSide: true,
-  };
-  const answerMockLeft: MathType = {
-    leftSide: 12,
-    operation: "+",
-    rightSide: 10,
-    action: "default",
-    //the total is porposefully wrong to test display logic outside of calc logic
-    total: "default",
-    isRightSide: false,
-  };
-  deleteDigit(deleteMockRight);
-  deleteDigit(deleteMockLeft);
-  expect(deleteMockRight).toStrictEqual(answerMockRight);
-  expect(deleteMockLeft).toStrictEqual(answerMockLeft);
-});
 
 test("currect get currentIndex", () => {
   const index_0 = themeArr[0];
@@ -84,37 +38,6 @@ test("currectly add commas to big nums", () => {
   expect(commafier("123000000")).toBe("123,000,000");
 });
 
-test("correct bool logic to math operators", () => {
-  const shouldBeFalse: MathType = {
-    leftSide: 123,
-    operation: "default",
-    rightSide: "default",
-    action: "default",
-    total: "default",
-    isRightSide: true,
-  };
-  const shouldBeTrue1: MathType = {
-    leftSide: "default",
-    operation: "default",
-    rightSide: "default",
-    action: "default",
-    total: "default",
-    isRightSide: true,
-  };
-  const shouldBeTrue2: MathType = {
-    leftSide: 123,
-    operation: "default",
-    rightSide: 456,
-    action: "default",
-    total: "default",
-    isRightSide: false,
-  };
-
-  expect(isOperatorEmpty(shouldBeFalse)).toBe(false);
-  expect(isOperatorEmpty(shouldBeTrue1)).toBe(true);
-  // implementation detail: isRS is only changed on operation selection, so though this is the expected result, the current app behaviour would need to be changed/refactored
-  expect(isOperatorEmpty(shouldBeTrue2)).toBe(false);
-});
 test("currectly add commas to big nums but ingnore the decimal", () => {
   expect(getNonDecimalStrg("1000.123")).toBe("1000");
   expect(commafier("1000.123")).toBe("1,000.123");

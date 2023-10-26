@@ -1,53 +1,17 @@
-import { component$, useSignal, useStore } from "@builder.io/qwik";
+import { component$, useSignal } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { CalculatorDisplay } from "~/components/calculator-display/calculator-display";
 import { NumberInput } from "~/components/number-input/number-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
 import { TextInputSlot } from "~/components/text-input-slot/text-input-slot";
 import { LargeTextInputSlot } from "~/components/large-text-input-slot/large-text-input-slot";
-export type Sides = "leftSide" | "rightSide";
-export type MathType = {
-  rightSide: number | "default";
-  operation: Operators;
-  leftSide: number | "default";
-  action: Actions;
-  total: number | "default";
-  isRightSide: boolean;
-  // right
-  rightSideDecimalOffSet?: number;
-  leftSideDecimalOffSet?: number;
-};
 export type MathNode = {
   leftInput: string;
   rightInput: string;
   operation?: Operators;
   total?: number;
 };
-export type MathInputType = {
-  rightSide: number | "default";
-  operation: Operators;
-  leftSide: number | "default";
-  action: Actions;
-  total: number | "default";
-  isRightSide: boolean;
-};
 export type MathArr = Array<string | NeoOperators>;
-export type CheckedMathType = {
-  rightSide: number;
-  operation: Operators;
-  leftSide: number;
-  action: Actions;
-  total: number | "default";
-  isRightSide: boolean;
-  rightSideDecimalOffSet?: number;
-  leftSideDecimalOffSet?: number;
-};
-// we use arrs bc we can
-export type MathGalactusStack = Array<MathNode>;
-export type NeoGalactusStack = {
-  head: number;
-  MathNodes: Array<MathType>;
-};
 // operators are all arethmetic operators in nature
 export type Operators = "+" | "-" | "x" | "/";
 export type NeoOperators = "+" | "-" | "x" | "/" | undefined;
@@ -125,12 +89,6 @@ export const themeArr: Array<Theme> = [
   },
 ];
 export default component$(() => {
-  // remove this as its duplicate state
-  const currentMathNode = useStore<MathNode>({
-    // string must be initialized as empty strg so that concatination can happen smoothly
-    leftInput: "",
-    rightInput: "",
-  });
   const mathArr = useSignal<MathArr>([]);
   const themeIndex = useSignal<number>(0);
 
@@ -333,23 +291,6 @@ export function doMath(mathOperation: MathNode): number {
   }
 }
 
-export function isCheckedMathType(mathOperation: MathType): boolean {
-  const leftValue = mathOperation.leftSide;
-  const rightValue = mathOperation.rightSide;
-  if (leftValue != "default" && rightValue != "default") {
-    return true;
-  }
-  return false;
-}
-
-export function addNewMathNode(
-  mathNode: MathNode,
-  mathStack: MathGalactusStack,
-) {
-  mathStack.push(mathNode);
-  return mathStack;
-}
-
 export function leftShift(mathNode: MathNode): MathNode {
   if (mathNode.total === undefined) {
     return mathNode;
@@ -361,49 +302,6 @@ export function leftShift(mathNode: MathNode): MathNode {
     operation: undefined,
   };
 }
-// export function newLeftShiftMathNode(
-//   newNode: MathType,
-//   mathStack: MathGalactusStack,
-// ): MathGalactusStack {
-//   mathStack.push({ mathOperation: leftShift(newNode) });
-//   return mathStack;
-// }
-//
-// export function neoAddLeftShiftMathNoe(
-//   newNode: MathType,
-//   mathStack: NeoGalactusStack,
-// ): NeoGalactusStack {
-//   mathStack.MathNodes.push(leftShift(newNode));
-//   return mathStack;
-// }
-
-// function getDisplayFromMathStack(
-//   mathStack: NeoGalactusStack,
-//   mathOperations: MathType,
-// ): string {
-//   // handle actions here before they are passed to the display node
-//   if (mathOperations.action === "=") {
-//     // TODO: refactor this code into the mageMathActions fn
-//     // TODO: deprecated manageMathActions
-//     manageMathActions(mathOperations.action, mathStack, mathOperations);
-//     console.log("im better", getHeadNode(mathStack));
-//     const newMathNode = getHeadNode(mathStack);
-//     Object.assign(mathOperations, newMathNode);
-//     return getDisplayOfMathNode(mathOperations);
-//   }
-//   manageMathActions(mathOperations.action, mathStack, mathOperations);
-//
-//   return getDisplayOfMathNode(mathOperations);
-// }
-export const head: DocumentHead = {
-  title: "Welcome to Qwik",
-  meta: [
-    {
-      name: "description",
-      content: "Qwik site description",
-    },
-  ],
-};
 
 export function decimator(input: number, offset: number): number {
   const stringRepresentation = input.toString();
@@ -420,82 +318,6 @@ export function strgDecimator(input: number, offset: number): string {
     "." +
     stringRepresentation.substring(offset)
   );
-}
-
-export function decimalAdjustAndReset(
-  mathOperation: CheckedMathType,
-): CheckedMathType {
-  if (mathOperation.leftSideDecimalOffSet !== undefined) {
-    mathOperation.leftSide = decimator(
-      mathOperation.leftSide,
-      mathOperation.leftSideDecimalOffSet,
-    );
-    mathOperation.leftSideDecimalOffSet = undefined;
-  }
-
-  if (mathOperation.rightSideDecimalOffSet !== undefined) {
-    mathOperation.rightSide = decimator(
-      mathOperation.rightSide,
-      mathOperation.rightSideDecimalOffSet,
-    );
-    mathOperation.rightSideDecimalOffSet = undefined;
-  }
-
-  return mathOperation;
-}
-
-export function setDecimalOffSet(input: MathType, side: "left" | "right") {
-  if (side === "right") {
-    input.rightSideDecimalOffSet = input.rightSide.toString().length;
-    return;
-  }
-  input.leftSideDecimalOffSet = input.leftSide.toString().length;
-}
-
-export function deleteDigit(mathNode: MathType) {
-  // house-keeping
-  mathNode.action = "default";
-  if (mathNode.isRightSide && mathNode.rightSide !== "default") {
-    if (isDeletingOnDecimal(mathNode)) {
-      mathNode.rightSideDecimalOffSet = undefined;
-      return;
-    }
-    const number_string = mathNode.rightSide.toString();
-    if (number_string.length <= 1) {
-      mathNode.rightSide = "default";
-      return;
-    }
-    mathNode.rightSide = Number(number_string.slice(0, -1));
-    return;
-  }
-  if (mathNode.leftSide !== "default") {
-    if (isDeletingOnDecimal(mathNode)) {
-      mathNode.leftSideDecimalOffSet = undefined;
-      return;
-    }
-    const number_string = mathNode.leftSide.toString();
-    if (number_string.length <= 1) {
-      mathNode.leftSide = "default";
-      return;
-    }
-    mathNode.leftSide = Number(number_string.slice(0, -1));
-    return;
-  }
-}
-
-export function isDeletingOnDecimal(mathNode: MathType): boolean {
-  if (mathNode.isRightSide) {
-    if (mathNode.rightSideDecimalOffSet === undefined) {
-      return false;
-    }
-    return (
-      mathNode.rightSide.toString().length === mathNode.rightSideDecimalOffSet
-    );
-  }
-  if (mathNode.leftSideDecimalOffSet === undefined) {
-    return false;
-  }
-  return mathNode.leftSide.toString().length === mathNode.leftSideDecimalOffSet;
 }
 
 function toggleRootCSSVar(variable: string, new_value: string) {
@@ -542,13 +364,6 @@ export function commafier(input: string): string {
     strg = strg.substring(0, replaceStrg) + "," + strg.substring(replaceStrg);
   }
   return strg;
-}
-
-export function isOperatorEmpty(mathNode: MathType): boolean {
-  if (mathNode.leftSide != "default") {
-    return false;
-  }
-  return true;
 }
 
 export function getNonDecimalStrg(input: string): string {
@@ -624,3 +439,12 @@ export function isOperator(input: string | undefined) {
   }
   return /^[+-/x]$/.test(input);
 }
+export const head: DocumentHead = {
+  title: "Welcome to Qwik",
+  meta: [
+    {
+      name: "description",
+      content: "Qwik site description",
+    },
+  ],
+};
