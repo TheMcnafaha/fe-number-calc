@@ -146,7 +146,7 @@ export default component$(() => {
     <>
       <main class=" px-4 flex flex-col items-center">
         <div class="flex    justify-center">
-          <div class="grid w-[260px] grid-cols-3 py-4">
+          <div class="grid w-[260px] md:w-[400px]  grid-cols-3 py-4">
             <h1 class="self-end text-display-text">Calc</h1>
             <p class="text-xs place-self-end uppercase text-display-text">
               Theme
@@ -169,14 +169,6 @@ export default component$(() => {
                       themeArr[themeIndex.value][key_name as keyof Theme],
                     );
                   }
-                  // Object.keys(themeArr[themeIndex.value]).forEach(
-                  //   (key_name) => {
-                  //     toggleRootCSSVar(
-                  //       CSSvarfy(key_name),
-                  //       themeArr[themeIndex.value][key_name],
-                  //     );
-                  //   },
-                  // );
                 }}
               ></button>
             </ThreeStageToggle>
@@ -185,7 +177,7 @@ export default component$(() => {
         <CalculatorDisplay
           input={getDisplayFromMathArr(mathArr.value)}
         ></CalculatorDisplay>
-        <section class="bg-keypad-bg   grid grid-rows-5 grid-cols-1 items-center rounded-lg gap-2 py-4">
+        <section class="bg-keypad-bg md:w-[400px]   grid grid-rows-5 grid-cols-1 items-center rounded-lg gap-2 py-4">
           <div class="flex justify-center  h-full gap-3 px-4">
             <NumberInput input={7} mathArr={mathArr}></NumberInput>
             <NumberInput input={8} mathArr={mathArr}></NumberInput>
