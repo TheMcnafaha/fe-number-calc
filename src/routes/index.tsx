@@ -5,7 +5,6 @@ import { NumberInput } from "~/components/number-input/number-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
 import { TextInputSlot } from "~/components/text-input-slot/text-input-slot";
 import { LargeTextInputSlot } from "~/components/large-text-input-slot/large-text-input-slot";
-import { t } from "vitest/dist/types-198fd1d9";
 export type Sides = "leftSide" | "rightSide";
 export type MathType = {
   rightSide: number | "default";
