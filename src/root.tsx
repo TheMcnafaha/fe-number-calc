@@ -27,15 +27,12 @@ export default component$(() => {
           href="https://fonts.gstatic.com"
           crossOrigin=""
         />
-        <link
-          href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@700&display=swap"
-          rel="stylesheet"
-        />
+        <link href="/fonts/static/LeagueSpartan-Bold.ttf" rel="stylesheet" />
         <RouterHead />
       </head>
       <body
         lang="en"
-        class="bg-bg-color text-xl flex flex-col justify-center h-screen font-spartan font-bold"
+        class="bg-bg-color text-xl flex flex-col justify-center h-screen font-[League Spartan] font-bold"
       >
         <RouterOutlet />
         <ServiceWorkerRegister />

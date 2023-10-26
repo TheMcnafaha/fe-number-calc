@@ -440,11 +440,11 @@ export function isOperator(input: string | undefined) {
   return /^[+-/x]$/.test(input);
 }
 export const head: DocumentHead = {
-  title: "Welcome to Qwik",
+  title: "FE Calculator",
   meta: [
     {
       name: "description",
-      content: "Qwik site description",
+      content: "This is as frontend project, a calculator.",
     },
   ],
 };
