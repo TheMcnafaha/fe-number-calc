@@ -11,7 +11,7 @@ export const ThreeStageToggle = component$<ThreeStageToggleProps>(
 
     if (index === 0) {
       className =
-        "flex justify-start bg-keypad-bg rounded-xl items-center px-1 py-1";
+        "flex justify-start  bg-keypad-bg rounded-xl items-center px-1 py-1";
     } else if (index === 1) {
       className =
         "flex justify-center bg-keypad-bg rounded-xl items-center px-1 py-1";
@@ -21,8 +21,8 @@ export const ThreeStageToggle = component$<ThreeStageToggleProps>(
     }
     return (
       <div class="w-[60px] justify-self-end text-sm">
-        <ul class="flex text-center justify-between text-display-text p-1">
-          <li class=" w-[12px]">1</li>
+        <ul class="flex text-center justify-between text-display-text p-1 md:text-lg">
+          <li class=" w-[12px] ">1</li>
           <li class=" w-[12px]">2</li>
           <li class=" w-[12px]">3</li>
         </ul>

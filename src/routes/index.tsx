@@ -1,10 +1,11 @@
-import { component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
+import { component$, useSignal, useStore } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { CalculatorDisplay } from "~/components/calculator-display/calculator-display";
 import { NumberInput } from "~/components/number-input/number-input";
 import { ThreeStageToggle } from "~/components/three-stage-toggle/three-stage-toggle";
 import { TextInputSlot } from "~/components/text-input-slot/text-input-slot";
 import { LargeTextInputSlot } from "~/components/large-text-input-slot/large-text-input-slot";
+import { t } from "vitest/dist/types-198fd1d9";
 export type Sides = "leftSide" | "rightSide";
 export type MathType = {
   rightSide: number | "default";
@@ -60,13 +61,16 @@ type Display = {
 };
 type Theme = {
   key_text: string;
+  key_focus: string;
   alt_key_text: string;
   key_bg: string;
   alt_key_bg: string;
   key_border: string;
   alt_key_border: string;
+  alt_key_focus: string;
   keypad_bg: string;
   accent_bg: string;
+  accent_focus: string;
   accent_border: string;
   display_bg: string;
   display_text: string;
@@ -75,13 +79,16 @@ type Theme = {
 export const themeArr: Array<Theme> = [
   {
     key_text: "  hsl(221, 14%, 31%)",
+    key_focus: "  hsl(0, 0%, 100%)",
     alt_key_text: "  hsl(0, 0%, 100%)",
     key_bg: "  hsl(30, 25%, 89%)",
     alt_key_bg: "  hsl(225, 21%, 49%)",
     key_border: "  hsl(28, 16%, 65%)",
     alt_key_border: "  hsl(224, 28%, 35%)",
+    alt_key_focus: " #acb8e4",
     keypad_bg: "  hsl(223, 31%, 20%)",
     accent_bg: "  hsl(6, 63%, 50%)",
+    accent_focus: " #ff6c5c",
     accent_border: "  hsl(6, 70%, 34%)",
     display_bg: "  hsl(224, 36%, 15%)",
     display_text: "hsl(0, 0%, 100%)",
@@ -90,8 +97,11 @@ export const themeArr: Array<Theme> = [
   {
     key_text: "hsl(60, 10%, 19%)",
     alt_key_text: "  hsl(0, 0%, 100%)",
+    alt_key_focus: " #68b4bc",
+    key_focus: "  hsl(0, 0%, 100%)",
     key_bg: "hsl(45, 7%, 89%)",
     alt_key_bg: "hsl(185, 42%, 37%) ",
+    accent_focus: " #ff8c3c",
     key_border: "hsl(35, 11%, 61%)",
     alt_key_border: "hsl(185, 58%, 25%)",
     keypad_bg: "hsl(0, 5%, 81%) ",
@@ -104,7 +114,10 @@ export const themeArr: Array<Theme> = [
   {
     // - Very dark blue: hsl(198, 20%, 13%)
     key_text: "hsl(52, 100%, 62%)",
+    key_focus: " #7034ac",
+    accent_focus: " #98fcfc",
     alt_key_text: "  hsl(0, 0%, 100%)",
+    alt_key_focus: " #8834b4",
     key_bg: "hsl(268, 47%, 21%)",
     alt_key_bg: "hsl(281, 89%, 26%)",
     key_border: "hsl(290, 70%, 36%)",
@@ -141,7 +154,7 @@ export default component$(() => {
             <ThreeStageToggle index={themeIndex.value} id="toggle">
               <button
                 id="toggle"
-                class="w-3 h-3 bg-accent-bg rounded-full"
+                class="w-3 h-3 bg-accent-bg rounded-full hover:bg-accent-focus"
                 onClick$={() => {
                   // toggleRootCSSVar("--bg-color", "red");
                   themeIndex.value = themeIndex.value + 1;
@@ -285,6 +298,7 @@ export default component$(() => {
             </LargeTextInputSlot>
             <LargeTextInputSlot color="accent">
               <button
+                class={themeIndex.value === 2 ? "text-[#0c2828]" : ""}
                 onClick$={() => {
                   mathArr.value = [getTotal(mathArr.value)];
                   currentMathNode.total = doMath(currentMathNode);
@@ -360,21 +374,6 @@ export function getDisplayOfMathNode(math: MathType): string {
     commafier(responseString.rightSide)
   );
 }
-function getDisplayText(mathNode: MathNode): string {
-  if (mathNode.operation === undefined) {
-    return mathNode.leftInput;
-  }
-  return mathNode.leftInput + mathNode.operation + mathNode.rightInput;
-}
-// export function getStackDisplay(mathStack: MathGalactusStack) {
-//   return mathStack.reduce((display: string, mathNode, i, a) => {
-//     const currentTotal = getDisplayOfMathNode(mathNode.mathOperation);
-//     if (i < a.length && i > 0) {
-//       return display.concat("+", currentTotal.toString());
-//     }
-//     return display.concat(currentTotal.toString());
-//   }, "");
-// }
 export function isCheckedMathType(mathOperation: MathType): boolean {
   const leftValue = mathOperation.leftSide;
   const rightValue = mathOperation.rightSide;
@@ -504,18 +503,6 @@ export function getHeadNode(mathStack: NeoGalactusStack | undefined): MathType {
 //       break;
 //   }
 // }
-function newMathOperation(
-  mathOperation: MathType,
-  mathStack: NeoGalactusStack,
-) {
-  const newMathOperation = getHeadNode(mathStack);
-  mathOperation.action = newMathOperation.action;
-  mathOperation.leftSide = newMathOperation.leftSide;
-  mathOperation.action = newMathOperation.action;
-  mathOperation.rightSide = newMathOperation.rightSide;
-  mathOperation.total = newMathOperation.total;
-  mathOperation.isRightSide = newMathOperation.isRightSide;
-}
 
 export function decimator(input: number, offset: number): number {
   const stringRepresentation = input.toString();
@@ -757,26 +744,17 @@ function getOperator(input: Operators, mathArr: MathArr): MathArr {
   }
   return mathArr;
 }
-function setOperator(input: Operators, mathNode: MathNode) {
-  if (mathNode.leftInput !== "" && mathNode.operation === undefined) {
-    mathNode.operation = input;
-  }
-}
 
 function getDisplayFromMathArr(mathArr: MathArr): string {
-  let display = "";
-  return mathArr.reduce((t, n) => {
-    return t + commafier(n);
-  }, "");
-  for (const strg of mathArr) {
-    console.log(strg);
-
-    if (strg === undefined || strg === "") {
-      continue;
-    }
-    display.concat(strg);
+  if (mathArr === undefined) {
+    return "";
   }
-  return display;
+  return mathArr.reduce((t, n) => {
+    if (n === undefined) {
+      return "";
+    }
+    return t + commafier(n);
+  }, "") as string;
 }
 
 export function getTotal(mathArr: MathArr): string {

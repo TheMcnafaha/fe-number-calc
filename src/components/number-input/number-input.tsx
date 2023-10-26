@@ -26,7 +26,7 @@ export const NumberInput = component$<NumberInputProps>(
   ({ input, mathArr }) => {
     return (
       <button
-        class="w-12  bg-key-bg border-key-border border-b-[3px] font-bold rounded-md   text-3xl text-key-text"
+        class="w-12 md:w-20 md:text-4xl  hover:bg-key-focus bg-key-bg border-key-border border-b-[3px] pt-[3px] font-bold rounded-md    text-3xl text-key-text"
         value={input}
         onClick$={(event, currentTarget) => {
           const target = currentTarget as HTMLInputElement;
