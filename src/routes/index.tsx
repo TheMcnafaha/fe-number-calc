@@ -49,15 +49,10 @@ export type NeoGalactusStack = {
   MathNodes: Array<MathType>;
 };
 // operators are all arethmetic operators in nature
-export type Operators = "+" | "-" | "x" | "/" | "default";
+export type Operators = "+" | "-" | "x" | "/";
 export type NeoOperators = "+" | "-" | "x" | "/" | undefined;
 // actions are non-arethmetic display actions
 export type Actions = "=" | "." | "delete" | "default";
-type Display = {
-  rightSide: string;
-  operation: string;
-  leftSide: string;
-};
 type Theme = {
   key_text: string;
   key_focus: string;
@@ -247,7 +242,7 @@ export default component$(() => {
                     if (!headValue.includes(".")) {
                       mathArr.value = [
                         ...mathArr.value.slice(0, -1),
-                        headValue?.concat("."),
+                        headValue.concat("."),
                       ];
                     }
                   }
@@ -292,8 +287,6 @@ export default component$(() => {
                 class={themeIndex.value === 2 ? "text-[#0c2828]" : ""}
                 onClick$={() => {
                   mathArr.value = [getTotal(mathArr.value)];
-                  currentMathNode.total = doMath(currentMathNode);
-                  Object.assign(currentMathNode, leftShift(currentMathNode));
                 }}
               >
                 =
@@ -334,37 +327,12 @@ export function doMath(mathOperation: MathNode): number {
         return 0;
       }
       return Number(mathOperation.leftInput) / Number(mathOperation.rightInput);
-    case "default":
     default:
       // this should make it clear something went wrong to the user without making it my problem lol
       return -10000;
   }
 }
-export function getDisplayOfMathNode(math: MathType): string {
-  let responseString: Display = {
-    rightSide: "",
-    operation: "",
-    leftSide: "",
-  };
-  if (math.total != "default") {
-    return math.total.toString();
-  }
-  // TODO: refactor the double check of default on  setSideString
-  if (math.leftSide != "default") {
-    responseString.leftSide = setSideString("left", math);
-  }
-  if (math.operation != "default") {
-    responseString.operation = math.operation.toString();
-  }
-  if (math.rightSide != "default") {
-    responseString.rightSide = setSideString("right", math);
-  }
-  return (
-    commafier(responseString.leftSide) +
-    responseString.operation +
-    commafier(responseString.rightSide)
-  );
-}
+
 export function isCheckedMathType(mathOperation: MathType): boolean {
   const leftValue = mathOperation.leftSide;
   const rightValue = mathOperation.rightSide;
@@ -374,18 +342,6 @@ export function isCheckedMathType(mathOperation: MathType): boolean {
   return false;
 }
 
-export function resetMathOperation(mathOperation: MathType): MathType {
-  mathOperation.leftSide =
-    mathOperation.operation =
-    mathOperation.rightSide =
-    mathOperation.action =
-    mathOperation.total =
-      "default";
-  mathOperation.isRightSide = false;
-  mathOperation.leftSideDecimalOffSet = mathOperation.rightSideDecimalOffSet =
-    undefined;
-  return mathOperation;
-}
 export function addNewMathNode(
   mathNode: MathNode,
   mathStack: MathGalactusStack,
@@ -448,52 +404,6 @@ export const head: DocumentHead = {
     },
   ],
 };
-export function getHeadNode(mathStack: NeoGalactusStack | undefined): MathType {
-  if (mathStack === undefined) {
-    return {
-      rightSide: "default",
-      operation: "default",
-      leftSide: "default",
-      action: "default",
-      total: "default",
-      isRightSide: false,
-    };
-  }
-  return mathStack.MathNodes[mathStack.head];
-}
-// export function manageMathActions(
-//   type: Actions,
-//   mathStack: NeoGalactusStack,
-//   mathOperation: MathType,
-// ) {
-//   switch (type) {
-//     case "=":
-//       neoAddLeftShiftMathNoe(decimalAdjustAndReset(mathOperation), mathStack);
-//       mathStack.head++;
-//       console.log("new head ", getHeadNode(mathStack));
-//
-//       // newMathOperation(mathOperation, mathStack);
-//       return mathStack;
-//
-//     case ".":
-//       return;
-//       if (mathOperation.isRightSide) {
-//         if (mathOperation.rightSideDecimalOffSet === undefined) {
-//           setDecimalOffSet(mathOperation, "right");
-//         }
-//       }
-//       if (mathOperation.leftSideDecimalOffSet === undefined) {
-//         setDecimalOffSet(mathOperation, "left");
-//       }
-//
-//       // house-keeping
-//       mathOperation.action = "default";
-//
-//     case "default":
-//     default:
-//       break;
-//   }
-// }
 
 export function decimator(input: number, offset: number): number {
   const stringRepresentation = input.toString();
@@ -511,34 +421,7 @@ export function strgDecimator(input: number, offset: number): string {
     stringRepresentation.substring(offset)
   );
 }
-function setSideString(
-  side: "left" | "right",
-  mathOperation: MathType,
-): string {
-  if (side === "left") {
-    if (
-      mathOperation.leftSideDecimalOffSet !== undefined &&
-      mathOperation.leftSide != "default"
-    ) {
-      return strgDecimator(
-        mathOperation.leftSide,
-        mathOperation.leftSideDecimalOffSet,
-      );
-    }
-    return mathOperation.leftSide.toString();
-  }
 
-  if (
-    mathOperation.rightSideDecimalOffSet !== undefined &&
-    mathOperation.rightSide != "default"
-  ) {
-    return strgDecimator(
-      mathOperation.rightSide,
-      mathOperation.rightSideDecimalOffSet,
-    );
-  }
-  return mathOperation.rightSide.toString();
-}
 export function decimalAdjustAndReset(
   mathOperation: CheckedMathType,
 ): CheckedMathType {
@@ -561,38 +444,6 @@ export function decimalAdjustAndReset(
   return mathOperation;
 }
 
-export function trueIfAllInputFilled(math: MathType): boolean {
-  /* 
-              /=\\
-             /===\ \
-            /=====\' \
-           /=======\'' \
-          /=========\ ' '\
-         /===========\''   \
-        /=============\ ' '  \
-       /===============\   ''  \
-      /=================\' ' ' ' \
-     /===================\' ' '  ' \
-    /=====================\' '   ' ' \
-   /=======================\  '   ' /
-  /=========================\   ' /
- /===========================\'  /
-/=============================\/
-
-*/
-  if (math.leftSide !== "default") {
-    if (math.operation !== "default") {
-      if (math.rightSide !== "default") {
-        if (math.action !== "default") {
-          if (math.total === "default") {
-            return true;
-          }
-        }
-      }
-    }
-  }
-  return false;
-}
 export function setDecimalOffSet(input: MathType, side: "left" | "right") {
   if (side === "right") {
     input.rightSideDecimalOffSet = input.rightSide.toString().length;
@@ -645,23 +496,6 @@ export function isDeletingOnDecimal(mathNode: MathType): boolean {
     return false;
   }
   return mathNode.leftSide.toString().length === mathNode.leftSideDecimalOffSet;
-}
-
-function deleteOperator(mathNode: MathType) {
-  mathNode.operation = "default";
-  mathNode.action = "default";
-}
-
-export function handleDelete(mathNode: MathType) {
-  const isDeleteOperator: boolean =
-    mathNode.rightSide === "default" && mathNode.operation !== "default";
-  if (isDeleteOperator) {
-    console.log("miss me with the operator");
-
-    deleteOperator(mathNode);
-    return;
-  }
-  deleteDigit(mathNode);
 }
 
 function toggleRootCSSVar(variable: string, new_value: string) {
@@ -758,15 +592,15 @@ export function getTotal(mathArr: MathArr): string {
         const leftSide = mathArr[index - 1];
         const rightSide = mathArr[index + 1];
         if (leftSide && rightSide) {
+          if (rightSide === "0" && strg === "/") {
+            total = "💀";
+            break;
+          }
           const mathNode: MathNode = {
             leftInput: leftSide,
             operation: strg as Operators,
             rightInput: rightSide,
           };
-          console.log(mathNode);
-          console.log(doMath(mathNode));
-
-          console.log(total);
           const mathy_boi = doMath(mathNode);
           const significant = Math.pow(10, 5);
           // TODO: find more less sketchy rounding xdd
@@ -774,16 +608,13 @@ export function getTotal(mathArr: MathArr): string {
             Math.round(mathy_boi * significant) / significant
           ).toString();
           total = rounded_boi;
-          console.log(total);
-          // todo: implement middle opartion
-          // index += 2; good idea, is better done with a smart continue
           mathArr[index + 1] = rounded_boi;
         }
       }
     }
   }
-  // TODO: find more less sketchy rounding xdd
-  // return total.slice(0, 5);
+  console.log(total);
+
   return total;
 }
 

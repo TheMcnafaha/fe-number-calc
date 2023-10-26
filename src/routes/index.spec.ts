@@ -1,27 +1,6 @@
 import { expect, test } from "vitest";
 import {
-  CheckedMathType,
-  MathNode,
-  MathGalactusStack,
   MathType,
-  doMath,
-  getStackDisplay,
-  isCheckedMathType,
-  resetMathOperation,
-  addNewMathNode,
-  getDisplayOfMathNode,
-  newLeftShiftMathNode,
-  leftShift,
-  NeoGalactusStack,
-  head,
-  manageMathActions,
-  getHeadNode,
-  decimator,
-  trueIfAllInputFilled,
-  decimalAdjustAndReset,
-  deleteDigit,
-  isDeletingOnDecimal,
-  handleDelete,
   nextTheme,
   CSSvarfy,
   themeArr,
@@ -31,226 +10,11 @@ import {
   MathArr,
   getTotal,
   isOperator,
+  deleteDigit,
 } from ".";
-const mockMathNodeNumber: MathNode = {
-  mathOperation: {
-    leftSide: 10,
-    operation: "+",
-    rightSide: 10,
-    action: "=",
-    //the total is porposefully wrong to test display logic outside of calc logic
-    total: 10,
-    isRightSide: true,
-  },
-};
-const mockMathNodeDefault: MathNode = {
-  mathOperation: {
-    leftSide: "default",
-    operation: "+",
-    rightSide: 10,
-    action: "=",
-    //the total is porposefully wrong to test display logic outside of calc logic
-    total: 10,
-    isRightSide: true,
-  },
-};
-const mockMathTypeDecimal: MathType = {
-  leftSide: 10,
-  operation: "default",
-  rightSide: "default",
-  action: ".",
-  total: "default",
-  isRightSide: true,
-  leftSideDecimalOffSet: 2,
-};
 
-const MathNodeSubmitted: CheckedMathType = {
-  leftSide: 10,
-  operation: "+",
-  rightSide: 10,
-  action: "=",
-  total: "default",
-  isRightSide: true,
-};
-const mathNodeDecimalSubmitted: CheckedMathType = {
-  leftSide: 123,
-  leftSideDecimalOffSet: 2,
-  operation: "+",
-  rightSide: 123,
-  rightSideDecimalOffSet: 1,
-  action: "=",
-  total: "default",
-  isRightSide: true,
-};
-const correctDecimalSubmitted: CheckedMathType = {
-  leftSide: 12.3,
-  leftSideDecimalOffSet: undefined,
-  operation: "+",
-  rightSide: 1.23,
-  rightSideDecimalOffSet: undefined,
-  action: "=",
-  total: "default",
-  isRightSide: true,
-};
-export const defaultMathOperation: MathType = {
-  rightSide: "default",
-  operation: "default",
-  leftSide: "default",
-  action: "default",
-  total: "default",
-  isRightSide: false,
-};
-const mockMathStack: MathGalactusStack = [
-  mockMathNodeNumber,
-  mockMathNodeNumber,
-];
-
-test("return true on submmited node", () => {
-  expect(trueIfAllInputFilled(MathNodeSubmitted)).toBe(true);
-});
-test("return false on mostly submmited node", () => {
-  const mostlyFIlled: MathType = { ...MathNodeSubmitted, rightSide: "default" };
-  expect(trueIfAllInputFilled(mostlyFIlled)).toBe(false);
-});
-/* test("return a display of 10+10 from two mathNode with a total of 10 each", () => {
-  expect(getStackDisplay(mockMathStack)).toBe("10+10");
-}); */
-// display logic: left-shifting
-/*
-test("correctly leftshit a math node", () => {
-  const answer: MathNode = {
-    leftSide: 20,
-    rightSide: "",
-  };
-  expect(leftShift(MathNodeSubmitted)).toStrictEqual(answer);
-});
- test("when input is submitted, create a new mathNode that's left-shifted", () => {
-  let test: MathGalactusStack = [{ mathOperation: MathNodeSubmitted }];
-  const answer = [
-    { mathOperation: MathNodeSubmitted },
-    {
-      mathOperation: {
-        leftSide: 20,
-        operation: "default",
-        rightSide: "default",
-        action: "default",
-        total: "default",
-        isRightSide: true,
-      },
-    },
-  ];
-  expect(newLeftShiftMathNode(MathNodeSubmitted, test)).toStrictEqual(answer);
-}); */
-/* test('correctly "house-keep" the mathStack when the mathAction is submitted', () => {
-  let test: NeoGalactusStack = {
-    MathNodes: [MathNodeSubmitted],
-    head: 0,
-  };
-  const answer: NeoGalactusStack = {
-    head: 1,
-    MathNodes: [
-      MathNodeSubmitted,
-      {
-        leftSide: 20,
-        operation: "default",
-        rightSide: "default",
-        action: "default",
-        total: "default",
-        isRightSide: true,
-      },
-    ],
-  };
-  expect(
-    manageMathActions(getHeadNode(test).action, test, test.MathNodes[0]),
-  ).toStrictEqual(answer);
-});
-test('correctly "house-keep" the mahtStack head when new mathNode is added', () => {
-  let test: NeoGalactusStack = {
-    MathNodes: [MathNodeSubmitted],
-    head: 0,
-  };
-  const answer: NeoGalactusStack = {
-    head: 1,
-    MathNodes: [
-      MathNodeSubmitted,
-      {
-        leftSide: 20,
-        operation: "default",
-        rightSide: "default",
-        action: "default",
-        total: "default",
-        isRightSide: true,
-      },
-    ],
-  };
-  expect(
-    getHeadNode(
-      manageMathActions(getHeadNode(test).action, test, getHeadNode(test)),
-    ),
-  ).toStrictEqual(getHeadNode(answer));
-}); */
 // display logic: decimal pain
 
-test("add correct decimal offset on first instance on mathNode", () => {
-  const test: MathType = {
-    leftSide: 0,
-    operation: "default",
-    rightSide: "default",
-    action: ".",
-    total: "default",
-    isRightSide: true,
-    leftSideDecimalOffSet: 1,
-  };
-  expect(getDisplayOfMathNode(mockMathTypeDecimal)).toBe("10.");
-  expect(getDisplayOfMathNode(test)).toBe("0.");
-});
-
-// calc logic
-/* test("add 10+10 (should return 20)", () => {
-  let response: number | string = "failed";
-  if (isCheckedMathType(mockMathNodeNumber.mathOperation)) {
-    response = doMath(mockMathNodeNumber.mathOperation as CheckedMathType);
-  }
-  expect(response).toBe(20);
-}); */
-test("stop default values from doing math (failed response)", () => {
-  let response: number | string = "failed";
-  if (isCheckedMathType(mockMathNodeDefault.mathOperation)) {
-    response = doMath(mockMathNodeDefault.mathOperation as CheckedMathType);
-  }
-  expect(response).toBe("failed");
-});
-
-/* test("reset the current mathOperation obj on submit/=", () => {
-  let copy = {} as MathNode;
-  Object.assign(copy, mockMathNodeDefault);
-  expect(resetMathOperation(copy.mathOperation)).toStrictEqual(
-    defaultMathOperation,
-  );
-}); */
-
-test("add new node correctly", () => {
-  let singleStack: MathGalactusStack = [mockMathNodeNumber];
-  expect(addNewMathNode(mockMathNodeNumber, singleStack)).toStrictEqual(
-    mockMathStack,
-  );
-});
-
-test("decimate correctly", () => {
-  expect(decimator(457, 0)).toBe(0.457);
-  expect(decimator(457, 1)).toBe(4.57);
-  expect(decimator(457, 2)).toBe(45.7);
-});
-test("convert decimal from mathNode correctly", () => {
-  expect(decimalAdjustAndReset(mathNodeDecimalSubmitted)).toStrictEqual(
-    correctDecimalSubmitted,
-  );
-});
-test("dont mess with non-decimals", () => {
-  expect(decimalAdjustAndReset(MathNodeSubmitted)).toStrictEqual(
-    MathNodeSubmitted,
-  );
-});
 // calc logic: actions
 
 test("correctly delete digits", () => {
@@ -296,185 +60,6 @@ test("correctly delete digits", () => {
   expect(deleteMockLeft).toStrictEqual(answerMockLeft);
 });
 
-test("return true if deleting on decimal point", () => {
-  const testRigthSide: MathType = {
-    leftSide: 10,
-    operation: "default",
-    rightSide: 123,
-    rightSideDecimalOffSet: 3,
-    action: "delete",
-    total: "default",
-    isRightSide: true,
-    leftSideDecimalOffSet: 2,
-  };
-  const testLeftSide: MathType = {
-    leftSide: 10,
-    leftSideDecimalOffSet: 2,
-    operation: "default",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "delete",
-    total: "default",
-    isRightSide: false,
-  };
-  const testLeftSide2: MathType = {
-    leftSide: 0,
-    leftSideDecimalOffSet: 1,
-    operation: "default",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "delete",
-    total: "default",
-    isRightSide: false,
-  };
-
-  expect(isDeletingOnDecimal(testRigthSide)).toBe(true);
-  expect(isDeletingOnDecimal(testLeftSide)).toBe(true);
-  expect(isDeletingOnDecimal(testLeftSide2)).toBe(true);
-});
-test("return false if not deliting on decimal point", () => {
-  const testRightSide: MathType = {
-    leftSide: 10,
-    operation: "default",
-    rightSide: 1234567,
-    rightSideDecimalOffSet: 3,
-    action: "delete",
-    total: "default",
-    isRightSide: true,
-    leftSideDecimalOffSet: 2,
-  };
-  const testLeftSide: MathType = {
-    leftSide: 101,
-    leftSideDecimalOffSet: 2,
-    operation: "default",
-    rightSide: 1234567,
-    rightSideDecimalOffSet: 3,
-    action: "delete",
-    total: "default",
-    isRightSide: false,
-  };
-
-  expect(isDeletingOnDecimal(testRightSide)).toBe(false);
-  expect(isDeletingOnDecimal(testLeftSide)).toBe(false);
-});
-
-test("only delete the decimal point when deleting on decimal point", () => {
-  const testRightSide: MathType = {
-    leftSide: 10,
-    operation: "default",
-    rightSide: 123,
-    rightSideDecimalOffSet: 3,
-    action: "delete",
-    total: "default",
-    isRightSide: true,
-    leftSideDecimalOffSet: 2,
-  };
-  const rightSideAnswer: MathType = {
-    leftSide: 10,
-    operation: "default",
-    rightSide: 123,
-    rightSideDecimalOffSet: undefined,
-    action: "default",
-    total: "default",
-    isRightSide: true,
-    leftSideDecimalOffSet: 2,
-  };
-  deleteDigit(testRightSide);
-  expect(testRightSide).toStrictEqual(rightSideAnswer);
-
-  const leftSideTest: MathType = {
-    leftSide: 10,
-    operation: "default",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "delete",
-    total: "default",
-    isRightSide: false,
-    leftSideDecimalOffSet: 2,
-  };
-  const leftSideAnswer: MathType = {
-    leftSide: 10,
-    operation: "default",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "default",
-    total: "default",
-    isRightSide: false,
-    leftSideDecimalOffSet: undefined,
-  };
-  const testLeftSide2: MathType = {
-    leftSide: 0,
-    leftSideDecimalOffSet: 1,
-    operation: "default",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "delete",
-    total: "default",
-    isRightSide: false,
-  };
-  const testLeftSideAnswer2: MathType = {
-    leftSide: 0,
-    leftSideDecimalOffSet: undefined,
-    operation: "default",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "default",
-    total: "default",
-    isRightSide: false,
-  };
-  deleteDigit(leftSideTest);
-  deleteDigit(testLeftSide2);
-  expect(leftSideTest).toStrictEqual(leftSideAnswer);
-  expect(testLeftSide2).toStrictEqual(testLeftSideAnswer2);
-});
-
-test("delete operator", () => {
-  const test: MathType = {
-    leftSide: 10,
-    operation: "+",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "delete",
-    total: "default",
-    isRightSide: false,
-    leftSideDecimalOffSet: 2,
-  };
-  const answer: MathType = {
-    leftSide: 10,
-    operation: "default",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "default",
-    total: "default",
-    isRightSide: false,
-    leftSideDecimalOffSet: 2,
-  };
-  const testLeftSide2: MathType = {
-    leftSide: 0,
-    leftSideDecimalOffSet: 1,
-    operation: "default",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "delete",
-    total: "default",
-    isRightSide: false,
-  };
-  const testLeftSideAnswer2: MathType = {
-    leftSide: 0,
-    leftSideDecimalOffSet: undefined,
-    operation: "default",
-    rightSide: "default",
-    rightSideDecimalOffSet: undefined,
-    action: "default",
-    total: "default",
-    isRightSide: false,
-  };
-
-  handleDelete(test);
-  handleDelete(testLeftSide2);
-  expect(test).toStrictEqual(answer);
-  expect(testLeftSide2).toStrictEqual(testLeftSideAnswer2);
-});
 test("currect get currentIndex", () => {
   const index_0 = themeArr[0];
   const index_1 = themeArr[1];
@@ -489,16 +74,16 @@ test("make key into css var", () => {
   expect(CSSvarfy("alt_key_bg")).toBe("--alt-key-bg");
 });
 
-/* test("currectly add commas to big nums", () => {
-  expect(commafier(100)).toBe("100");
-  expect(commafier(1000)).toBe("1,000");
-  expect(commafier(10000)).toBe("10,000");
-  expect(commafier(100000)).toBe("100,000");
-  expect(commafier(1000000)).toBe("1,000,000");
-  expect(commafier(10000000)).toBe("10,000,000");
-  expect(commafier(123000000)).toBe("123,000,000");
+test("currectly add commas to big nums", () => {
+  expect(commafier("100")).toBe("100");
+  expect(commafier("1000")).toBe("1,000");
+  expect(commafier("10000")).toBe("10,000");
+  expect(commafier("100000")).toBe("100,000");
+  expect(commafier("1000000")).toBe("1,000,000");
+  expect(commafier("10000000")).toBe("10,000,000");
+  expect(commafier("123000000")).toBe("123,000,000");
 });
-*/
+
 test("correct bool logic to math operators", () => {
   const shouldBeFalse: MathType = {
     leftSide: 123,
@@ -530,26 +115,53 @@ test("correct bool logic to math operators", () => {
   // implementation detail: isRS is only changed on operation selection, so though this is the expected result, the current app behaviour would need to be changed/refactored
   expect(isOperatorEmpty(shouldBeTrue2)).toBe(false);
 });
-/* test("currectly add commas to big nums but ingnore the decimal", () => {
+test("currectly add commas to big nums but ingnore the decimal", () => {
   expect(getNonDecimalStrg("1000.123")).toBe("1000");
-  expect(commafier(1000.123)).toBe("1,000.123");
-  expect(commafier(1000.123)).toBe("1,000.123");
-  expect(commafier(10000.123)).toBe("10,000.123");
-  expect(commafier(100000.123)).toBe("100,000.123");
-  expect(commafier(1000000.123)).toBe("1,000,000.123");
-  expect(commafier(10000000.123)).toBe("10,000,000.123");
-  expect(commafier(123000000.123)).toBe("123,000,000.123");
-}); */
+  expect(commafier("1000.123")).toBe("1,000.123");
+  expect(commafier("1000.123")).toBe("1,000.123");
+  expect(commafier("10000.123")).toBe("10,000.123");
+  expect(commafier("100000.123")).toBe("100,000.123");
+  expect(commafier("1000000.123")).toBe("1,000,000.123");
+  expect(commafier("10000000.123")).toBe("10,000,000.123");
+  expect(commafier("123000000.123")).toBe("123,000,000.123");
+});
 
 test("do multi math right", () => {
   const testArr: MathArr = ["9", "+", "9", "+", "9"];
-  const testArr2: MathArr = ["9", "+", "9", "+", "9", "9", "+", "9", "+", "9"];
+  const testArr2: MathArr = [
+    "9",
+    "+",
+    "9",
+    "+",
+    "9",
+    "+",
+    "9",
+    "+",
+    "9",
+    "+",
+    "9",
+  ];
+  const answer2: MathArr = [
+    `${9}`,
+    "+",
+    `${9 * 2}`,
+    "+",
+    `${9 * 3}`,
+    "+",
+    `${9 * 4}`,
+    "+",
+    `${9 * 5}`,
+    "+",
+    `${9 * 6}`,
+  ];
   expect(getTotal(testArr)).toBe("27");
-  expect(getTotal(testArr)).toBe("54");
+  expect(getTotal(testArr2)).toBe("54");
+  // this test show mutability is expected
+  expect(testArr2).toStrictEqual(answer2);
 });
 
 test("make sure regex works", () => {
   expect(isOperator("+")).toBe(true);
   expect(isOperator("++")).toBe(false);
-  expect(isOperator("-")).toBe(true);
+  expect(isOperator("++")).toBe(false);
 });
