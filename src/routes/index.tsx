@@ -1,4 +1,4 @@
-import { component$, useSignal, useStore } from "@builder.io/qwik";
+import { component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { CalculatorDisplay } from "~/components/calculator-display/calculator-display";
 import { NumberInput } from "~/components/number-input/number-input";
@@ -127,7 +127,6 @@ export default component$(() => {
   const mathArr = useSignal<MathArr>([]);
   const themeIndex = useSignal<number>(0);
 
-  // const mathStack = useStore<MathGalactusStack>([]);
   // add commans when state changes,
   // could be optimazid but is no big deal
   return (
@@ -168,11 +167,6 @@ export default component$(() => {
                 }}
               ></button>
             </ThreeStageToggle>
-            {
-              <div class="text-display-text flex flex-wrap gap-3 w-[260px] mx-0 my-auto">
-                <p>mathArr: {mathArr}</p>
-              </div>
-            }
           </div>
         </div>{" "}
         <CalculatorDisplay
@@ -187,27 +181,16 @@ export default component$(() => {
               <button
                 value={"DEL"}
                 onClick$={() => {
-                  if (
-                    currentMathNode.operation === undefined &&
-                    currentMathNode.leftInput !== ""
-                  ) {
-                    currentMathNode.leftInput = currentMathNode.leftInput.slice(
-                      0,
-                      -1,
-                    );
-                    return;
-                  }
-                  if (
-                    currentMathNode.operation !== undefined &&
-                    currentMathNode.rightInput === ""
-                  ) {
-                    currentMathNode.operation = undefined;
-                    return;
-                  }
-                  if (currentMathNode.rightInput !== "") {
-                    currentMathNode.rightInput =
-                      currentMathNode.rightInput.slice(0, -1);
-                    return;
+                  const head = mathArr.value[mathArr.value.length - 1];
+                  if (head !== undefined) {
+                    if (head.length > 1) {
+                      mathArr.value = [
+                        ...mathArr.value.slice(0, -1),
+                        head.slice(0, -1),
+                      ];
+                      return;
+                    }
+                    mathArr.value = [...mathArr.value.slice(0, -1)];
                   }
                 }}
               >
@@ -294,14 +277,7 @@ export default component$(() => {
               <button
                 value={"reset"}
                 onClick$={() => {
-                  console.log("reseteted");
-                  const resetted: MathNode = {
-                    leftInput: "",
-                    rightInput: "",
-                    operation: undefined,
-                    total: undefined,
-                  };
-                  Object.assign(currentMathNode, resetted);
+                  mathArr.value = [];
                 }}
               >
                 {"RESET"}
@@ -790,7 +766,7 @@ function setOperator(input: Operators, mathNode: MathNode) {
 function getDisplayFromMathArr(mathArr: MathArr): string {
   let display = "";
   return mathArr.reduce((t, n) => {
-    return t + n;
+    return t + commafier(n);
   }, "");
   for (const strg of mathArr) {
     console.log(strg);
