@@ -57,3 +57,8 @@ body {
   padding: 0;
   line-height: inherit;
 }
+
+@font-face {
+  font-family: "League Spartan";
+  src: url("/fonts/static/LeagueSpartan-Bold.ttf");
+}

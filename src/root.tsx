@@ -27,7 +27,6 @@ export default component$(() => {
           href="https://fonts.gstatic.com"
           crossOrigin=""
         />
-        <link href="/fonts/static/LeagueSpartan-Bold.ttf" rel="stylesheet" />
         <RouterHead />
       </head>
       <body
