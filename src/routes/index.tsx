@@ -107,6 +107,7 @@ export default component$(() => {
               <button
                 id="toggle"
                 class="w-3 h-3 bg-accent-bg rounded-full hover:bg-accent-focus"
+                aria-label="change calculator theme"
                 onClick$={() => {
                   // toggleRootCSSVar("--bg-color", "red");
                   themeIndex.value = themeIndex.value + 1;
