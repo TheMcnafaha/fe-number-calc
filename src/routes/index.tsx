@@ -399,6 +399,12 @@ function getDisplayFromMathArr(mathArr: MathArr): string {
 
 export function getTotal(mathArr: MathArr): string {
   let total = "";
+  while (mathArr.includes("x")) {
+    removeMultiplicationOnce(mathArr);
+  }
+  while (mathArr.includes("/")) {
+    removeDivisonOnce(mathArr);
+  }
   for (let index = 0; index < mathArr.length; index++) {
     const strg = mathArr[index];
 
@@ -448,3 +454,68 @@ export const head: DocumentHead = {
     },
   ],
 };
+
+export function multiplicationPass(mathArr: MathArr): {
+  total: string;
+  deleteIndex?: number;
+} {
+  if (mathArr.includes("x")) {
+    const multIndex = mathArr.indexOf("x");
+    const leftSide = mathArr[multIndex - 1];
+    const rigthSide = mathArr[multIndex + 1];
+    if (leftSide && rigthSide) {
+      const mathNode: MathNode = {
+        leftInput: leftSide,
+        operation: "x",
+        rightInput: rigthSide,
+      };
+      return {
+        total: doMath(mathNode).toString(),
+        deleteIndex: multIndex,
+      };
+    }
+  }
+  return {
+    total: "",
+  };
+}
+export function divisionPass(mathArr: MathArr): {
+  total: string;
+  deleteIndex?: number;
+} {
+  if (mathArr.includes("/")) {
+    const multIndex = mathArr.indexOf("/");
+    const leftSide = mathArr[multIndex - 1];
+    const rigthSide = mathArr[multIndex + 1];
+    if (leftSide && rigthSide) {
+      const mathNode: MathNode = {
+        leftInput: leftSide,
+        operation: "/",
+        rightInput: rigthSide,
+      };
+      return {
+        total: doMath(mathNode).toString(),
+        deleteIndex: multIndex,
+      };
+    }
+  }
+  return {
+    total: "",
+  };
+}
+export function removeDivisonOnce(mathArr: MathArr) {
+  const mutationGuide = divisionPass(mathArr);
+  if (mutationGuide.deleteIndex !== undefined) {
+    console.log("pre ", mathArr);
+    mathArr.splice(mutationGuide.deleteIndex - 1, 3, mutationGuide.total);
+    console.log("post ", mathArr);
+  }
+}
+export function removeMultiplicationOnce(mathArr: MathArr) {
+  const mutationGuide = multiplicationPass(mathArr);
+  if (mutationGuide.deleteIndex !== undefined) {
+    console.log("pre ", mathArr);
+    mathArr.splice(mutationGuide.deleteIndex - 1, 3, mutationGuide.total);
+    console.log("post ", mathArr);
+  }
+}

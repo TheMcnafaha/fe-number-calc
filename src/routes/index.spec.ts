@@ -8,6 +8,10 @@ import {
   MathArr,
   getTotal,
   isOperator,
+  removeMultiplicationOnce,
+  multiplicationPass,
+  divisionPass,
+  removeDivisonOnce,
 } from ".";
 
 // display logic: decimal pain
@@ -87,4 +91,64 @@ test("make sure regex works", () => {
   expect(isOperator("+")).toBe(true);
   expect(isOperator("++")).toBe(false);
   expect(isOperator("++")).toBe(false);
+});
+
+test("follow PEMDAS for multi", () => {
+  const test = ["9", "+", "2", "x", "2"];
+  const test2 = ["2", "x", "2"];
+  const test3 = ["9", "+", "2", "x", "2", "+", "10"];
+  const test4 = ["10", "+", "9", "x", "2", "x", "2"];
+  const test5 = ["9", "x", "2", "+", "2", "+", "10", "x", "3"];
+  expect(multiplicationPass(test2)).toStrictEqual({
+    total: "4",
+    deleteIndex: 1,
+  });
+  removeMultiplicationOnce(test);
+  expect(test).toStrictEqual(["9", "+", "4"]);
+  expect(getTotal(test)).toStrictEqual("13");
+  removeMultiplicationOnce(test3);
+  expect(getTotal(test3)).toBe("23");
+  // test4 has two "x", so it must run twice to be accurate
+  removeMultiplicationOnce(test4);
+  removeMultiplicationOnce(test4);
+  expect(getTotal(test4)).toBe("46");
+  expect(getTotal(test5)).toBe("50");
+});
+test("follow PEMDAS for divi", () => {
+  const test = ["9", "+", "2", "/", "2"];
+  const test2 = ["2", "/", "2"];
+  const test3 = ["9", "+", "2", "/", "2", "+", "10"];
+  const test4 = ["10", "+", "50", "/", "5", "/", "2"];
+  expect(divisionPass(test2)).toStrictEqual({
+    total: "1",
+    deleteIndex: 1,
+  });
+  removeDivisonOnce(test);
+  expect(test).toStrictEqual(["9", "+", "1"]);
+  expect(getTotal(test)).toStrictEqual("10");
+  removeDivisonOnce(test3);
+  expect(getTotal(test3)).toBe("20");
+  // test4 has two "/", so it must be called twice
+  removeDivisonOnce(test4);
+  removeDivisonOnce(test4);
+  expect(getTotal(test4)).toBe("15");
+});
+
+test("follow PEMDAS for both divi and multi", () => {
+  const test = ["10", "+", "10", "x", "2", "/", "4", "+", "30"];
+  const test2 = ["10", "+", "10", "x", "2", "/", "4", "+", "30"];
+  expect(multiplicationPass(test)).toStrictEqual({
+    total: "20",
+    deleteIndex: 3,
+  });
+  removeMultiplicationOnce(test);
+  expect(test).toStrictEqual(["10", "+", "20", "/", "4", "+", "30"]);
+  expect(divisionPass(test)).toStrictEqual({
+    total: "5",
+    deleteIndex: 3,
+  });
+  removeDivisonOnce(test);
+  expect(test).toStrictEqual(["10", "+", "5", "+", "30"]);
+  // all ecompassing test
+  expect(getTotal(test2)).toBe("45");
 });
