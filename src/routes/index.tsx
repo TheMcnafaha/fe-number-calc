@@ -399,11 +399,16 @@ function getDisplayFromMathArr(mathArr: MathArr): string {
 
 export function getTotal(mathArr: MathArr): string {
   let total = "";
+  // TODO: refactor logic to either use while loops or one big for loop
+  // TODO: have a prevention for infinite loop on while loop
   while (mathArr.includes("x")) {
     removeMultiplicationOnce(mathArr);
   }
   while (mathArr.includes("/")) {
     removeDivisonOnce(mathArr);
+  }
+  if (mathArr.length === 1) {
+    return mathArr[0]!;
   }
   for (let index = 0; index < mathArr.length; index++) {
     const strg = mathArr[index];
@@ -434,7 +439,6 @@ export function getTotal(mathArr: MathArr): string {
       }
     }
   }
-  console.log(total);
 
   return total;
 }
@@ -503,19 +507,18 @@ export function divisionPass(mathArr: MathArr): {
     total: "",
   };
 }
+// TODO: refactor removeMulti/Divi functions into either one fn or 3
+// it would be 3 bc id refactor the arr mutation into its one piece of code
+// ideally, that thoeritical arr mutation could also be used in the for loop
 export function removeDivisonOnce(mathArr: MathArr) {
   const mutationGuide = divisionPass(mathArr);
   if (mutationGuide.deleteIndex !== undefined) {
-    console.log("pre ", mathArr);
     mathArr.splice(mutationGuide.deleteIndex - 1, 3, mutationGuide.total);
-    console.log("post ", mathArr);
   }
 }
 export function removeMultiplicationOnce(mathArr: MathArr) {
   const mutationGuide = multiplicationPass(mathArr);
   if (mutationGuide.deleteIndex !== undefined) {
-    console.log("pre ", mathArr);
     mathArr.splice(mutationGuide.deleteIndex - 1, 3, mutationGuide.total);
-    console.log("post ", mathArr);
   }
 }
