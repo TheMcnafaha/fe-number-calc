@@ -32,8 +32,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [https://github.com/TheMcnafaha/fe-number-calc](https://your-live-site-url.com)
-- Live Site URL: [https://fe-number-calc-git-main-themcnafaha.vercel.app/](https://your-solution-url.com)
+- Solution URL: [https://github.com/TheMcnafaha/fe-number-calc](https://github.com/TheMcnafaha/fe-number-calc)
+- Live Site URL: [https://fe-number-calc-git-main-themcnafaha.vercel.app/](https://fe-number-calc-git-main-themcnafaha.vercel.app/)
 
 ## My process
 
