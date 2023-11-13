@@ -97,6 +97,9 @@ export default component$(() => {
   return (
     <>
       <main class=" px-4 flex flex-col items-center">
+        <h1 class=" text-display-text text-center ">
+          Hi Swee, I am inside your walls
+        </h1>
         <div class="flex    justify-center">
           <div class="grid w-[260px] md:w-[400px]  grid-cols-3 py-4">
             <h1 class="self-end text-display-text">Calc</h1>
